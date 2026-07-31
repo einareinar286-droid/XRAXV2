@@ -13,6 +13,14 @@
       "style": { "navigationBarTitleText": "隐患闭环详情" }
     },
     {
+      "path": "pages/issue/list",
+      "style": { "navigationBarTitleText": "整改单" }
+    },
+    {
+      "path": "pages/messages/index",
+      "style": { "navigationBarTitleText": "消息中心" }
+    },
+    {
       "path": "pages/duty/index",
       "style": { "navigationBarTitleText": "安全履职" }
     },
@@ -25,14 +33,26 @@
       "style": { "navigationBarTitleText": "履职总览" }
     },
     {
+      "path": "pages/admin/inspection",
+      "style": { "navigationBarTitleText": "安监抽查" }
+    },
+    {
+      "path": "pages/admin/templates",
+      "style": { "navigationBarTitleText": "检查表模板" }
+    },
+    {
+      "path": "pages/auth/login",
+      "style": { "navigationBarTitleText": "登录徐燃安巡" }
+    },
+    {
       "path": "pages/profile/index",
       "style": { "navigationBarTitleText": "我的" }
     }
   ],
   "tabBar": {
     "color": "#7C8490",
-    "selectedColor": "#006E55",
-    "backgroundColor": "#FFFFFF",
+    "selectedColor": "#9F2349",
+    "backgroundColor": "#FFFCFA",
     "borderStyle": "white",
     "list": [
       { "pagePath": "pages/index/index", "text": "待办" },
@@ -42,9 +62,9 @@
     ]
   },
   "globalStyle": {
-    "navigationBarBackgroundColor": "#F4F7F6",
+    "navigationBarBackgroundColor": "#F5F2EF",
     "navigationBarTextStyle": "black",
-    "backgroundColor": "#F4F7F6",
+    "backgroundColor": "#F5F2EF",
     "backgroundTextStyle": "dark"
   }
 }

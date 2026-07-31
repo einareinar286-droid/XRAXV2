@@ -1,15 +1,15 @@
 <template>
   <view class="form-page">
-    <view class="notice"><text class="notice-title">现场隐患随手拍</text><text>上传后将生成不可删除的隐患记录，并进入交办闭环。</text></view>
+    <view class="notice"><text class="notice-title">现场隐患随手拍</text><text>{{ demoStore.can('issue-assign') ? '安监上报后可直接下达市场营销部整改。' : '上报后生成不可删除记录，等待安监部交办。' }}</text></view>
     <view class="form-card">
       <view class="field-label">隐患描述</view><textarea v-model="form.title" maxlength="60" placeholder="例如：餐饮用户使用可调节减压阀" />
       <view class="field-label">隐患类别</view><picker :range="categories" @change="form.category = categories[$event.detail.value]"><view class="picker">{{ form.category }} <text>⌄</text></view></picker>
       <view class="risk-switch" @click="form.major = !form.major"><view><text class="field-label">是否重大隐患</text><text class="hint">依据《城镇燃气经营安全重大隐患判定标准》</text></view><view class="switch" :class="{ on: form.major }"><view /></view></view>
       <view class="field-label">现场位置</view><view class="location-box"><text>{{ form.location || '未选择位置' }}</text><view class="location-actions"><button @click="currentLocation">当前位置</button><button @click="pickLocation">地图选点</button></view></view>
       <view class="field-label">现场照片</view><view class="upload-row"><view v-for="item in form.attachments" :key="item" class="thumb"><image :src="item" mode="aspectFill" /></view><view class="add-photo" @click="addPhotos">＋<text>上传</text></view></view>
-      <view class="field-label">交办部门与限期</view><view class="picker">市场营销部 · 默认负责人：演示负责人</view><picker mode="date" :value="form.deadline" @change="form.deadline = $event.detail.value"><view class="picker">{{ form.deadline }} 前整改 <text>⌄</text></view></picker>
+      <view class="field-label">整改期限</view><picker mode="date" :value="form.deadline" @change="form.deadline = $event.detail.value"><view class="picker">{{ form.deadline }} <text>⌄</text></view></picker>
     </view>
-    <button class="primary" :disabled="!form.title" @click="submit">下达交办单并进入待整改</button>
+    <button class="primary" :disabled="!form.title" @click="submit">{{ demoStore.can('issue-assign') ? '下达交办单并进入待整改' : '提交隐患，等待安监交办' }}</button>
   </view>
 </template>
 
@@ -22,7 +22,7 @@ const form = reactive({ title:'', category:categories[0], major:false, location:
 async function addPhotos(){try{const res=await chooseEvidenceImages();form.attachments.push(...res.tempFilePaths)}catch{}}
 async function currentLocation(){try{const res=await getCurrentLocation();form.location=`当前位置：${res.latitude.toFixed(6)}, ${res.longitude.toFixed(6)}`}catch{uni.showToast({title:'未取得定位权限',icon:'none'})}}
 async function pickLocation(){try{const res=await chooseMapLocation();form.location=res.address||res.name}catch{}}
-function submit(){const id=demoStore.addIssue({...form,reporter:'安全监察部 · 演示上报人',assignee:'市场营销部 · 演示负责人',description:form.title});uni.showToast({title:'交办单已生成',icon:'success'});setTimeout(()=>uni.navigateTo({url:`/pages/issue/detail?id=${id}`}),600)}
+function submit(){const id=demoStore.addIssue({...form,description:form.title});uni.showToast({title:demoStore.can('issue-assign')?'交办单已生成':'隐患已上报',icon:'success'});setTimeout(()=>uni.navigateTo({url:`/pages/issue/detail?id=${id}`}),600)}
 </script>
 
 <style lang="scss" scoped>
