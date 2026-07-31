@@ -1,0 +1,31 @@
+{
+  "bsonType": "object",
+  "description": "Immutable duty cycle instances. Server access only.",
+  "permission": { "read": false, "create": false, "update": false, "delete": false },
+  "required": ["assignmentId", "ownerUid", "periodStart", "periodEnd", "dueDate", "status"],
+  "properties": {
+    "assignmentId": { "bsonType": "string" },
+    "ownerUid": { "bsonType": "string" },
+    "ownerName": { "bsonType": "string" },
+    "department": { "bsonType": "string" },
+    "actionName": { "bsonType": "string" },
+    "category": { "bsonType": "string" },
+    "frequency": { "bsonType": "string" },
+    "periodStart": { "bsonType": "string" },
+    "periodEnd": { "bsonType": "string" },
+    "dueDate": { "bsonType": "string" },
+    "status": {
+      "bsonType": "string",
+      "enum": [
+        { "text": "PENDING", "value": "PENDING" },
+        { "text": "OVERDUE", "value": "OVERDUE" },
+        { "text": "DONE", "value": "DONE" }
+      ]
+    },
+    "description": { "bsonType": "string" },
+    "files": { "bsonType": "array" },
+    "completedAt": { "bsonType": "timestamp" },
+    "createdAt": { "bsonType": "timestamp" },
+    "updatedAt": { "bsonType": "timestamp" }
+  }
+}

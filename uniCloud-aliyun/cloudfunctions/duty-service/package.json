@@ -1,0 +1,18 @@
+{
+  "name": "duty-service",
+  "version": "0.1.0",
+  "cloudfunction-config": {
+    "timeout": 60,
+    "memorySize": 256,
+    "triggers": [
+      {
+        "name": "generate-duty-instances",
+        "type": "timer",
+        "config": "0 10 0 * * * *"
+      }
+    ]
+  },
+  "dependencies": {
+    "uni-id-common": "file:../common/uni-id-common"
+  }
+}

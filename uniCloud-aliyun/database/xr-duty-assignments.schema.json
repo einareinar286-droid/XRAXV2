@@ -1,0 +1,16 @@
+{
+  "bsonType": "object",
+  "description": "Effective employee-to-duty action mapping. Server access only.",
+  "permission": { "read": false, "create": false, "update": false, "delete": false },
+  "required": ["ownerUid", "ownerName", "department", "actionName", "frequency", "effectiveFrom"],
+  "properties": {
+    "ownerUid": { "bsonType": "string" },
+    "ownerName": { "bsonType": "string" },
+    "department": { "bsonType": "string" },
+    "actionName": { "bsonType": "string" },
+    "category": { "bsonType": "string" },
+    "frequency": { "bsonType": "string" },
+    "effectiveFrom": { "bsonType": "string", "description": "YYYY-MM-DD in China time." },
+    "enabled": { "bsonType": "bool", "defaultValue": true }
+  }
+}

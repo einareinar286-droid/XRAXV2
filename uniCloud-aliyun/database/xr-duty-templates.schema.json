@@ -1,0 +1,22 @@
+{
+  "bsonType": "object",
+  "description": "Duty action template. Server access only.",
+  "permission": { "read": false, "create": false, "update": false, "delete": false },
+  "required": ["action_name", "frequency", "category"],
+  "properties": {
+    "action_name": { "bsonType": "string" },
+    "frequency": {
+      "bsonType": "string",
+      "enum": [
+        { "text": "weekly", "value": "weekly" },
+        { "text": "biweekly", "value": "biweekly" },
+        { "text": "monthly", "value": "monthly" },
+        { "text": "quarterly", "value": "quarterly" },
+        { "text": "semiannual", "value": "semiannual" },
+        { "text": "annual", "value": "annual" }
+      ]
+    },
+    "category": { "bsonType": "string" },
+    "enabled": { "bsonType": "bool", "defaultValue": true }
+  }
+}
