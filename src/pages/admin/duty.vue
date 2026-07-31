@@ -1,5 +1,5 @@
 <template>
-  <view class="page">
+  <DesktopSidebar active="overview"/><view class="page xr-desktop-page">
     <view class="header"><view class="eyebrow">安全监察部 · 管理员</view><view class="title">安全履职总览</view><view class="copy">按状态、部门、分类筛选；普通员工无法进入本页。</view></view>
     <scroll-view scroll-x class="filters"><view v-for="x in statusOptions" :key="x.value" class="chip" :class="{active:status===x.value}" @click="change('status',x.value)">{{ x.label }}</view></scroll-view>
     <scroll-view scroll-x class="filters"><view v-for="x in categoryOptions" :key="x.value" class="chip" :class="{active:category===x.value}" @click="change('category',x.value)">{{ x.label }}</view></scroll-view>
@@ -13,6 +13,7 @@
 <script setup>
 import { computed, onMounted, ref } from 'vue'
 import { dutyStatusText,listAllDuties } from '../../services/duty'
+import DesktopSidebar from '../../components/DesktopSidebar.vue'
 const rows=ref([]), total=ref(0), page=ref(1), status=ref(''), category=ref(''), department=ref('')
 const statusOptions=[{label:'全部状态',value:''},{label:'待填写',value:'PENDING'},{label:'已逾期',value:'OVERDUE'},{label:'已完成',value:'DONE'}]
 const categoryOptions=[{label:'全部分类',value:''},{label:'安全检查',value:'安全检查'},{label:'安全活动',value:'安全活动'},{label:'线下抽查',value:'线下抽查'},{label:'安全宣教',value:'安全宣教'}]

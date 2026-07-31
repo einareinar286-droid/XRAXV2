@@ -19,5 +19,6 @@ button { transition: transform .2s ease, opacity .2s ease, background .2s ease; 
 button:active { transform: scale(.98); }
 @media (min-width: 900px) {
   page { min-height: 100dvh; }
+  .xr-desktop-page { margin-left: 260px !important; max-width: 1280px !important; }
 }
 </style>

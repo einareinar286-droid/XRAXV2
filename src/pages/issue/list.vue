@@ -1,5 +1,5 @@
 <template>
-  <view class="page"><view class="head"><view><view class="eyebrow">受限协作区</view><view class="title">整改单</view><view class="copy">仅安监部可全量处理；市场部仅查看本部门交办事项。</view></view><button v-if="demoStore.can('issue-assign')" class="create" @click="create">新建交办</button></view>
+  <DesktopSidebar active="issues"/><view class="page xr-desktop-page"><view class="head"><view><view class="eyebrow">受限协作区</view><view class="title">整改单</view><view class="copy">仅安监部可全量处理；市场部仅查看本部门交办事项。</view></view><button v-if="demoStore.can('issue-assign')" class="create" @click="create">新建交办</button></view>
     <view v-if="!allowed" class="denied"><view class="denied-title">无整改单处理权限</view><view>普通员工可使用随手拍和我的履职。已公开事项可在待办中查看进度。</view><button @click="back">返回待办</button></view>
     <template v-else><view class="filters"><view v-for="x in filters" :key="x.value" class="filter" :class="{active:status===x.value}" @click="status=x.value">{{x.label}}</view></view><view v-for="issue in rows" :key="issue.id" class="row" :class="{major:issue.major}" @click="open(issue.id)"><view class="top"><view class="status" :class="statusClass(issue.status)">{{issue.status}}</view><view v-if="issue.major" class="major">重大隐患</view><view class="id">{{issue.id}}</view></view><view class="name">{{issue.title}}</view><view class="meta"><text>{{issue.assignee || '待安监交办'}}</text><text>限期 {{issue.deadline}}</text></view></view><view v-if="!rows.length" class="empty">当前筛选没有整改单</view></template>
   </view>
@@ -7,6 +7,7 @@
 <script setup>
 import {computed,ref} from 'vue'
 import {demoStore} from '../../stores/demo'
+import DesktopSidebar from '../../components/DesktopSidebar.vue'
 const status=ref('');const allowed=computed(()=>demoStore.can('issue-list'));const filters=[{label:'全部',value:''},{label:'待交办',value:'待交办'},{label:'待整改',value:'待整改'},{label:'待复核',value:'待复核'},{label:'已逾期',value:'已逾期'}];const rows=computed(()=>demoStore.visibleIssues().filter(x=>!status.value||x.status===status.value));function statusClass(v){return ({'待交办':'draft','待整改':'todo','待复核':'review','已逾期':'overdue','已闭环':'closed'})[v]}function open(id){uni.navigateTo({url:`/pages/issue/detail?id=${id}`})}function create(){uni.navigateTo({url:'/pages/issue/create'})}function back(){uni.switchTab({url:'/pages/index/index'})}
 </script>
 <style lang="scss" scoped>

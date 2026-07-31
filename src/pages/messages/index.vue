@@ -1,5 +1,5 @@
 <template>
-  <view class="page"><view class="head"><view><view class="eyebrow">系统内提醒</view><view class="title">消息中心</view></view><view class="count">{{ unread }} 未读</view></view>
+  <DesktopSidebar active="messages"/><view class="page xr-desktop-page"><view class="head"><view><view class="eyebrow">系统内提醒</view><view class="title">消息中心</view></view><view class="count">{{ unread }} 未读</view></view>
     <view class="tip">临期、逾期、交办、退回和闭环均在此留痕。生产环境由服务端根据权限分发。</view>
     <view v-for="item in demoStore.messages" :key="item.id" class="message" :class="[{ unread:!item.read }, item.type]" @click="open(item)"><view class="message-top"><view class="message-title">{{ item.title }}</view><view class="time">{{ item.time }}</view></view><view class="copy">{{ item.copy }}</view><view class="go">查看事项 ›</view></view>
     <view v-if="!demoStore.messages.length" class="empty">当前没有需要处理的消息</view>
@@ -8,6 +8,7 @@
 <script setup>
 import { computed } from 'vue'
 import { demoStore } from '../../stores/demo'
+import DesktopSidebar from '../../components/DesktopSidebar.vue'
 const unread=computed(()=>demoStore.messages.filter(x=>!x.read).length)
 function open(item){demoStore.markRead(item.id); if(item.issueId) uni.navigateTo({url:`/pages/issue/detail?id=${item.issueId}`})}
 </script>
