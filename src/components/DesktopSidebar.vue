@@ -1,16 +1,20 @@
 <template>
   <aside class="sidebar">
-    <view class="brand" @click="goTab('/pages/index/index')"><view class="mark">安</view><view><view class="company">徐州中燃能源有限公司</view><view class="name">徐燃安巡</view></view></view>
+    <view class="brand" @click="goTab('/pages/index/index')">
+      <view class="mark">安</view>
+      <view><view class="name">徐燃安巡</view><view class="company">Xuzhou China Gas</view></view>
+    </view>
     <nav class="nav">
-      <view class="item" :class="{active:active==='home'}" @click="goTab('/pages/index/index')">待办工作台</view>
-      <view class="item" :class="{active:active==='messages'}" @click="go('/pages/messages/index')">消息中心 <text v-if="unread" class="count">{{unread}}</text></view>
-      <view v-if="demoStore.can('issue-list')" class="item" :class="{active:active==='issues'}" @click="go('/pages/issue/list')">整改单</view>
-      <view class="item" :class="{active:active==='duty'}" @click="goTab('/pages/duty/index')">我的履职</view>
-      <view v-if="demoStore.can('duty-overview')" class="item" :class="{active:active==='overview'}" @click="go('/pages/admin/duty')">管理总览</view>
-      <view v-if="demoStore.can('admin')" class="item" :class="{active:active==='inspection'}" @click="go('/pages/admin/inspection')">安监抽查</view>
-      <view v-if="demoStore.can('admin')" class="item" :class="{active:active==='templates'}" @click="go('/pages/admin/templates')">检查表模板</view>
+      <view class="item" :class="{active:active==='home'}" @click="goTab('/pages/index/index')"><text class="nav-icon">▦</text><text>工作台</text></view>
+      <view class="item" :class="{active:active==='issues'}" @click="go('/pages/issue/list')"><text class="nav-icon">▤</text><text>隐患管理</text></view>
+      <view class="item" :class="{active:active==='duty'||active==='overview'}" @click="goTab('/pages/duty/index')"><text class="nav-icon">☑</text><text>安全履职</text></view>
+      <view class="item" :class="{active:active==='messages'}" @click="go('/pages/messages/index')"><text class="nav-icon">◌</text><text>消息中心</text><text v-if="unread" class="count">{{ unread }}</text></view>
+      <view class="item" :class="{active:active==='profile'||active==='inspection'||active==='templates'}" @click="goTab('/pages/profile/index')"><text class="nav-icon">⚙</text><text>设置</text></view>
     </nav>
-    <view class="footer" @click="goTab('/pages/profile/index')">{{roleNames[demoStore.role]}}<text>我的 ›</text></view>
+    <view class="sidebar-bottom">
+      <button class="new-hazard" @click="goTab('/pages/issue/create')">＋ 新建隐患</button>
+      <view class="help" @click="goTab('/pages/profile/index')">当前身份: {{ roleNames[demoStore.role] }}</view>
+    </view>
   </aside>
 </template>
 <script setup>
@@ -21,5 +25,20 @@ const unread=computed(()=>demoStore.messages.filter(x=>!x.read).length)
 function go(url){uni.navigateTo({url})}function goTab(url){uni.switchTab({url})}
 </script>
 <style lang="scss" scoped>
-.sidebar{display:none}@media(min-width:900px){.sidebar{position:fixed;z-index:20;top:18px;bottom:18px;left:18px;width:224px;box-sizing:border-box;display:flex;flex-direction:column;padding:24px 18px;background:#fffcfa;border-radius:25px}.brand{display:flex;align-items:center;gap:12px;padding:3px 8px 34px}.mark{width:42px;height:42px;display:flex;align-items:center;justify-content:center;border-radius:13px 13px 13px 3px;background:#211d1d;color:#fff;font-size:20px;font-weight:800}.company{font-size:10px;letter-spacing:1px;color:#756c6b}.name{font-size:20px;font-weight:760}.nav{display:grid;gap:6px}.item{font-size:14px;color:#6f6663;padding:12px 13px;border-radius:11px}.item.active{background:#211d1d;color:#fff}.count{float:right;background:#9f2349;color:#fff;padding:1px 6px;border-radius:6px}.footer{margin-top:auto;border-top:1px solid #e8dfdc;padding:18px 8px 2px;color:#756c6b;font-size:12px;line-height:1.6}.footer text{display:block;color:#211d1d}}
+.sidebar { display: none; }
+@media (min-width: 900px) {
+  .sidebar { position: fixed; z-index: 20; inset: 0 auto 0 0; width: 208px; display: flex; flex-direction: column; box-sizing: border-box; padding: 22px 12px 18px; background: rgba(255,255,255,.92); border-right: 1px solid #edf0f3; }
+  .brand { display: flex; align-items: center; gap: 9px; padding: 2px 8px 28px; }
+  .mark { width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; border-radius: 8px; background: #003c90; color: #fff; font-size: 14px; font-weight: 800; }
+  .name { color: #003c90; font-size: 15px; line-height: 1.2; font-weight: 800; letter-spacing: -.3px; }
+  .company { margin-top: 2px; color: #89919c; font-size: 9px; letter-spacing: .2px; }
+  .nav { display: grid; gap: 3px; }
+  .item { min-height: 36px; display: flex; align-items: center; gap: 9px; padding: 0 10px; border-radius: 7px; color: #66707d; font-size: 12px; box-sizing: border-box; }
+  .item.active { background: #e8f0ff; color: #003c90; font-weight: 700; }
+  .nav-icon { width: 16px; color: inherit; font-size: 14px; text-align: center; }
+  .count { min-width: 16px; height: 16px; margin-left: auto; display: flex; align-items: center; justify-content: center; border-radius: 50%; background: #ef4444; color: #fff; font-size: 9px; }
+  .sidebar-bottom { margin-top: auto; }
+  .new-hazard { width: 100%; height: 34px; display: flex; align-items: center; justify-content: center; border-radius: 7px; background: #003c90; color: #fff; font-size: 11px; font-weight: 700; box-shadow: 0 7px 16px rgba(15,82,186,.18); }
+  .help { padding: 16px 7px 0; color: #8b939e; font-size: 10px; line-height: 1.5; }
+}
 </style>

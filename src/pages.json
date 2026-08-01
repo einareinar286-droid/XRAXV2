@@ -6,53 +6,61 @@
     },
     {
       "path": "pages/issue/create",
-      "style": { "navigationBarTitleText": "上报安全隐患" }
+      "style": { "navigationStyle": "custom", "navigationBarTitleText": "上报安全隐患" }
     },
     {
       "path": "pages/issue/detail",
-      "style": { "navigationBarTitleText": "隐患闭环详情" }
+      "style": { "navigationStyle": "custom", "navigationBarTitleText": "隐患闭环详情" }
+    },
+    {
+      "path": "pages/issue/assign",
+      "style": { "navigationStyle": "custom", "navigationBarTitleText": "安监交办" }
+    },
+    {
+      "path": "pages/issue/review",
+      "style": { "navigationStyle": "custom", "navigationBarTitleText": "复核闭环" }
     },
     {
       "path": "pages/issue/list",
-      "style": { "navigationBarTitleText": "整改单" }
+      "style": { "navigationStyle": "custom", "navigationBarTitleText": "整改单" }
     },
     {
       "path": "pages/messages/index",
-      "style": { "navigationBarTitleText": "消息中心" }
+      "style": { "navigationStyle": "custom", "navigationBarTitleText": "消息中心" }
     },
     {
       "path": "pages/duty/index",
-      "style": { "navigationBarTitleText": "安全履职" }
+      "style": { "navigationStyle": "custom", "navigationBarTitleText": "安全履职" }
     },
     {
       "path": "pages/duty/record",
-      "style": { "navigationBarTitleText": "履职填报" }
+      "style": { "navigationStyle": "custom", "navigationBarTitleText": "履职填报" }
     },
     {
       "path": "pages/admin/duty",
-      "style": { "navigationBarTitleText": "履职总览" }
+      "style": { "navigationStyle": "custom", "navigationBarTitleText": "履职总览" }
     },
     {
       "path": "pages/admin/inspection",
-      "style": { "navigationBarTitleText": "安监抽查" }
+      "style": { "navigationStyle": "custom", "navigationBarTitleText": "安监抽查" }
     },
     {
       "path": "pages/admin/templates",
-      "style": { "navigationBarTitleText": "检查表模板" }
+      "style": { "navigationStyle": "custom", "navigationBarTitleText": "检查表模板" }
     },
     {
       "path": "pages/auth/login",
-      "style": { "navigationBarTitleText": "登录徐燃安巡" }
+      "style": { "navigationStyle": "custom", "navigationBarTitleText": "登录徐燃安巡" }
     },
     {
       "path": "pages/profile/index",
-      "style": { "navigationBarTitleText": "我的" }
+      "style": { "navigationStyle": "custom", "navigationBarTitleText": "我的" }
     }
   ],
   "tabBar": {
     "color": "#7C8490",
-    "selectedColor": "#9F2349",
-    "backgroundColor": "#FFFCFA",
+    "selectedColor": "#003C90",
+    "backgroundColor": "#FFFFFF",
     "borderStyle": "white",
     "list": [
       { "pagePath": "pages/index/index", "text": "待办" },
@@ -62,9 +70,9 @@
     ]
   },
   "globalStyle": {
-    "navigationBarBackgroundColor": "#F5F2EF",
+    "navigationBarBackgroundColor": "#F8F9FA",
     "navigationBarTextStyle": "black",
-    "backgroundColor": "#F5F2EF",
+    "backgroundColor": "#F8F9FA",
     "backgroundTextStyle": "dark"
   }
 }
