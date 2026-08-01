@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Quick Report - Xuran Safety</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;family=Manrope:wght@600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "surface": "#faf8ff",
+                      "surface-bg": "#F8F9FA",
+                      "error-container": "#ffdad6",
+                      "background": "#faf8ff",
+                      "surface-tint": "#1d59c1",
+                      "on-secondary-container": "#00714d",
+                      "surface-dim": "#d9d9e2",
+                      "surface-container-high": "#e7e7f1",
+                      "secondary-fixed": "#6ffbbe",
+                      "surface-container-highest": "#e1e2eb",
+                      "tertiary-fixed": "#ffdbcd",
+                      "inverse-on-surface": "#f0f0f9",
+                      "error": "#ba1a1a",
+                      "on-error": "#ffffff",
+                      "surface-bright": "#faf8ff",
+                      "on-background": "#191b22",
+                      "sidebar-bg": "rgba(255, 255, 255, 0.7)",
+                      "inverse-primary": "#b0c6ff",
+                      "on-secondary-fixed": "#002113",
+                      "primary-fixed-dim": "#b0c6ff",
+                      "outline": "#737784",
+                      "on-primary-fixed": "#001945",
+                      "on-primary-container": "#bcceff",
+                      "primary-container": "#0f52ba",
+                      "outline-variant": "#c3c6d5",
+                      "inverse-surface": "#2e3037",
+                      "on-error-container": "#93000a",
+                      "surface-variant": "#e1e2eb",
+                      "secondary-container": "#6cf8bb",
+                      "on-tertiary-fixed-variant": "#7d2d00",
+                      "surface-container-lowest": "#ffffff",
+                      "on-tertiary": "#ffffff",
+                      "on-primary-fixed-variant": "#00419c",
+                      "tertiary-fixed-dim": "#ffb596",
+                      "secondary-fixed-dim": "#4edea3",
+                      "tertiary": "#732900",
+                      "hazard-overdue": "#991B1B",
+                      "on-secondary-fixed-variant": "#005236",
+                      "on-primary": "#ffffff",
+                      "primary-fixed": "#d9e2ff",
+                      "on-tertiary-container": "#ffc0a7",
+                      "surface-container": "#ededf6",
+                      "on-surface": "#191b22",
+                      "tertiary-container": "#993900",
+                      "hazard-major": "#EF4444",
+                      "hazard-impending": "#F59E0B",
+                      "primary": "#003c90",
+                      "on-secondary": "#ffffff",
+                      "secondary": "#006c49",
+                      "surface-card": "#FFFFFF",
+                      "on-tertiary-fixed": "#360f00",
+                      "surface-container-low": "#f3f3fc",
+                      "on-surface-variant": "#434653"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "margin-desktop": "32px",
+                      "stack-gap": "12px",
+                      "card-padding": "24px",
+                      "margin-mobile": "16px",
+                      "sidebar-width": "260px",
+                      "sidebar-collapsed": "80px",
+                      "gutter": "24px"
+              },
+              "fontFamily": {
+                      "list-title": [
+                              "Inter"
+                      ],
+                      "display-brand": [
+                              "Manrope"
+                      ],
+                      "headline-lg": [
+                              "Manrope"
+                      ],
+                      "body-md": [
+                              "Inter"
+                      ],
+                      "caption": [
+                              "Inter"
+                      ],
+                      "status-label": [
+                              "Inter"
+                      ],
+                      "headline-lg-mobile": [
+                              "Manrope"
+                      ],
+                      "section-header": [
+                              "Manrope"
+                      ]
+              },
+              "fontSize": {
+                      "list-title": [
+                              "16px",
+                              {
+                                      "lineHeight": "22px",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "display-brand": [
+                              "24px",
+                              {
+                                      "lineHeight": "32px",
+                                      "letterSpacing": "-0.02em",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "headline-lg": [
+                              "32px",
+                              {
+                                      "lineHeight": "40px",
+                                      "letterSpacing": "-0.01em",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "body-md": [
+                              "14px",
+                              {
+                                      "lineHeight": "20px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "caption": [
+                              "12px",
+                              {
+                                      "lineHeight": "16px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "status-label": [
+                              "11px",
+                              {
+                                      "lineHeight": "12px",
+                                      "letterSpacing": "0.05em",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "headline-lg-mobile": [
+                              "24px",
+                              {
+                                      "lineHeight": "32px",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "section-header": [
+                              "18px",
+                              {
+                                      "lineHeight": "24px",
+                                      "fontWeight": "600"
+                              }
+                      ]
+              }
+      },
+          },
+        }
+      </script>
+</head>
+<body class="bg-surface-bg text-on-background font-body-md antialiased min-h-screen flex">
+<aside class="hidden md:flex flex-col h-full py-6 bg-sidebar-bg dark:bg-inverse-surface/70 w-sidebar-width h-screen fixed left-0 top-0 backdrop-blur-xl border-r border-outline-variant/30 shadow-sm z-50">
+<div class="px-6 mb-8 flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-on-primary font-bold">X</div>
+<div>
+<h1 class="font-display-brand text-display-brand text-primary dark:text-inverse-primary m-0 p-0 leading-none">Xuran Safety</h1>
+<span class="text-caption font-caption text-on-surface-variant block mt-1">徐燃安巡</span>
+</div>
+</div>
+<nav class="flex-1 px-3 space-y-1">
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-variant/50 transition-colors rounded-lg group hover:bg-primary-fixed-dim/20 transition-all duration-200 ease-in-out active:scale-95" href="#">
+<span class="material-symbols-outlined text-outline group-hover:text-primary">dashboard</span>
+<span class="font-body-md text-body-md">Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 bg-primary/10 text-primary border-l-4 border-primary font-semibold rounded-lg group hover:bg-primary-fixed-dim/20 transition-all duration-200 ease-in-out active:scale-95" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">list_alt</span>
+<span class="font-body-md text-body-md">Hazard List</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-variant/50 transition-colors rounded-lg group hover:bg-primary-fixed-dim/20 transition-all duration-200 ease-in-out active:scale-95" href="#">
+<span class="material-symbols-outlined text-outline group-hover:text-primary">verified_user</span>
+<span class="font-body-md text-body-md">Safety Duty</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-variant/50 transition-colors rounded-lg group hover:bg-primary-fixed-dim/20 transition-all duration-200 ease-in-out active:scale-95" href="#">
+<span class="material-symbols-outlined text-outline group-hover:text-primary">chat_bubble</span>
+<span class="font-body-md text-body-md">Messages</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-variant/50 transition-colors rounded-lg group hover:bg-primary-fixed-dim/20 transition-all duration-200 ease-in-out active:scale-95" href="#">
+<span class="material-symbols-outlined text-outline group-hover:text-primary">settings</span>
+<span class="font-body-md text-body-md">Settings</span>
+</a>
+</nav>
+<div class="px-6 mt-auto">
+<button class="w-full bg-primary text-on-primary py-3 rounded-lg font-semibold shadow-sm hover:bg-primary/90 transition-colors flex items-center justify-center gap-2 mb-4">
+<span class="material-symbols-outlined">add</span>
+                New Hazard
+            </button>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-variant/50 transition-colors rounded-lg group" href="#">
+<span class="material-symbols-outlined text-outline group-hover:text-primary">help</span>
+<span class="font-body-md text-body-md">Help Center</span>
+</a>
+</div>
+</aside>
+<div class="flex-1 md:ml-sidebar-width flex flex-col min-h-screen">
+<header class="h-16 fixed top-0 right-0 left-sidebar-width z-40 backdrop-blur-md border-b border-outline-variant/20 bg-surface-bg/80 dark:bg-surface-dim/80 flex justify-between items-center px-margin-desktop w-[calc(100%-260px)]">
+<div class="flex-1 max-w-md">
+<div class="relative focus-within:ring-2 focus-within:ring-primary/20 rounded-full">
+<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline">search</span>
+<input class="w-full bg-surface-container-high border-none rounded-full py-2 pl-12 pr-4 text-body-md focus:bg-surface-card focus:border-primary focus:ring-0 transition-colors" placeholder="Search..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-6">
+<button class="text-primary font-semibold hover:text-primary/80 transition-colors">Switch Role</button>
+<div class="flex items-center gap-4 border-l border-outline-variant/30 pl-6">
+<button class="text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined">account_circle</span>
+</button>
+<div class="w-8 h-8 rounded-full bg-surface-variant overflow-hidden">
+<img alt="User Profile Avatar" class="w-full h-full object-cover" data-alt="A small, professional profile picture avatar of an industrial safety manager. Neutral background, clean lighting, head and shoulders shot, wearing a standard high-visibility vest over a collared shirt. Soft, natural skin tones, looking directly at the camera with a calm, trustworthy expression." src="https://lh3.googleusercontent.com/aida-public/AB6AXuB8l9DvExiCwHNDfNl8wDzpltXy2g_nGbqPBpni4JLeIiKy674m09JmMG18TJ6JDHCHCa6HZftPMeu9ypVdYDsosDD8Mux7b0xk1Zm9mPwdYonf5KQ3mMOLe9D0y5yxxnCV02D26nqgGOJnYVWUqZrgDK1_oaeTPByenwYWGRtzaE3w5HBll6tM7uHq3x_TPe91VWg4PJQEqKnA905bgp37mMu4Ld6PYiTQx73xa-hBOwVP9F2sgOzw"/>
+</div>
+</div>
+</div>
+</header>
+<main class="flex-1 pt-24 px-margin-desktop pb-margin-desktop overflow-y-auto">
+<div class="max-w-3xl mx-auto w-full">
+<div class="mb-8 flex items-center gap-4">
+<button class="w-10 h-10 rounded-full bg-surface-card shadow-sm flex items-center justify-center text-on-surface hover:bg-surface-container transition-colors">
+<span class="material-symbols-outlined">arrow_back</span>
+</button>
+<div>
+<h2 class="font-headline-lg text-headline-lg text-on-background">Quick Report</h2>
+<p class="text-body-md font-body-md text-on-surface-variant mt-1">Log a new safety hazard or observation (隐患随手拍)</p>
+</div>
+</div>
+<div class="bg-surface-card rounded-xl shadow-[0px_8px_24px_rgba(0,0,0,0.04)] p-card-padding">
+<form class="space-y-6">
+<div class="space-y-6 border-b border-outline-variant/20 pb-8">
+<h3 class="font-section-header text-section-header text-on-surface flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">description</span>
+                                Details
+                            </h3>
+<div>
+<label class="block text-body-md font-semibold text-on-surface mb-2">Title *</label>
+<input class="w-full bg-[#F1F3F5] border-none rounded-lg py-3 px-4 text-body-md focus:bg-white focus:border-2 focus:border-primary focus:ring-0 transition-all" placeholder="E.g., Exposed wiring in Sector A" type="text"/>
+</div>
+<div>
+<label class="block text-body-md font-semibold text-on-surface mb-2">Description</label>
+<textarea class="w-full bg-[#F1F3F5] border-none rounded-lg py-3 px-4 text-body-md focus:bg-white focus:border-2 focus:border-primary focus:ring-0 transition-all resize-none" placeholder="Provide additional details about the hazard..." rows="4"></textarea>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<div>
+<label class="block text-body-md font-semibold text-on-surface mb-2">Category *</label>
+<select class="w-full bg-[#F1F3F5] border-none rounded-lg py-3 px-4 text-body-md focus:bg-white focus:border-2 focus:border-primary focus:ring-0 transition-all appearance-none cursor-pointer">
+<option disabled="" selected="" value="">Select category...</option>
+<option>Electrical</option>
+<option>Structural</option>
+<option>Fire Safety</option>
+<option>Trip Hazard</option>
+<option>Other</option>
+</select>
+</div>
+<div>
+<label class="block text-body-md font-semibold text-on-surface mb-2">Severity *</label>
+<div class="flex gap-3">
+<button class="flex-1 py-2 px-4 rounded-full border border-outline-variant text-on-surface-variant hover:bg-surface-container transition-colors font-semibold text-sm" type="button">Low</button>
+<button class="flex-1 py-2 px-4 rounded-full border border-hazard-impending/30 bg-hazard-impending/10 text-hazard-impending font-semibold text-sm ring-2 ring-hazard-impending/50" type="button">Medium</button>
+<button class="flex-1 py-2 px-4 rounded-full border border-outline-variant text-on-surface-variant hover:bg-surface-container transition-colors font-semibold text-sm" type="button">High</button>
+</div>
+</div>
+</div>
+</div>
+<div class="space-y-6 border-b border-outline-variant/20 pb-8">
+<h3 class="font-section-header text-section-header text-on-surface flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">photo_camera</span>
+                                Media
+                            </h3>
+<div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+<div class="aspect-square bg-surface-container-high rounded-lg border-2 border-dashed border-outline-variant flex flex-col items-center justify-center text-outline cursor-pointer hover:bg-surface-variant/50 transition-colors hover:border-primary hover:text-primary">
+<span class="material-symbols-outlined text-3xl mb-1">add_a_photo</span>
+<span class="text-caption font-semibold">Add Photo</span>
+</div>
+<div class="aspect-square rounded-lg overflow-hidden relative group">
+<img alt="Uploaded photo 1" class="w-full h-full object-cover" data-alt="Close up shot of exposed electrical wires coming out of an industrial wall conduit. The wires are red, blue, and yellow with frayed insulation. The wall is painted grey concrete. High contrast, sharp focus on the danger area, bright daylight illumination. Professional safety inspection photography style." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCabu4tzGoTNTa1HO8VCZwzDAc2Krb_O45ByQBkA5oR4EvqKL4ZKO2J0odq1I4vqM3gqg-c35pNxegGOJlQ8JrN38nSHJFcraryEt5nO08CbSwbIdd2EgYrVK6T9Hv304WfFw2bEPzCb0z_-WRrvkQS62Dcq1ZxfHxb8cqvULGkBgC8ZAclRDdu_ZfTc2tH1la9ZbSR_0ofm-sSYPiz7lNTEUb4007LsVxo8RyvU8FqvipPOSEjbnuF"/>
+<button class="absolute top-2 right-2 w-6 h-6 bg-surface-card/80 backdrop-blur rounded-full flex items-center justify-center text-error opacity-0 group-hover:opacity-100 transition-opacity">
+<span class="material-symbols-outlined text-sm">close</span>
+</button>
+</div>
+</div>
+</div>
+<div class="space-y-6">
+<h3 class="font-section-header text-section-header text-on-surface flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">location_on</span>
+                                Location
+                            </h3>
+<div class="flex gap-4 mb-4">
+<button class="flex items-center gap-2 px-4 py-2 bg-primary-container text-on-primary-container rounded-full text-sm font-semibold" type="button">
+<span class="material-symbols-outlined text-sm">my_location</span>
+                                    Current Location
+                                </button>
+<button class="flex items-center gap-2 px-4 py-2 border border-outline-variant text-on-surface rounded-full text-sm font-semibold hover:bg-surface-container transition-colors" type="button">
+<span class="material-symbols-outlined text-sm">map</span>
+                                    Choose on Map
+                                </button>
+</div>
+<div class="relative w-full h-48 rounded-lg overflow-hidden border border-outline-variant/30">
+<img alt="Location Map" class="w-full h-full object-cover" data-alt="A top-down satellite view map interface showing an industrial complex or factory grounds. Clean UI style map with soft colors, prominent roads, and a single bright red location pin marker indicating a specific spot within the complex. Modern, crisp, digital map style." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBEogZUY-cPO3a4brWH5VfuKq0JsU56ZnAwCWGQyByWuaAMUowTpRIaTkRuGu2xRfqxnqYM-OWQuTcGVie1XKt6mG-CbvdmaX5Ih1XPYMWcbFzt9dUI0U22OkUDjXPAd26aQaPuNoy3C26M23cqsjH_YeGJ6TwstTorKw9Ou2Q34ZWqZDqAEV_Zwh5QNu9N-Bv2RVonAVwFwjQpYJ_knofpxC65Hpeo7iwmb85E68v4zJEakEiQSWB-"/>
+<div class="absolute bottom-4 left-4 right-4 bg-surface-card/90 backdrop-blur-sm p-3 rounded-lg shadow-sm flex items-center gap-3">
+<span class="material-symbols-outlined text-primary">pin_drop</span>
+<span class="text-body-md font-medium text-on-surface truncate">Sector A, Maintenance Hall 3</span>
+</div>
+</div>
+</div>
+<div class="pt-6 flex justify-end gap-4">
+<button class="px-6 py-3 rounded-lg font-semibold text-on-surface-variant hover:bg-surface-container transition-colors" type="button">Cancel</button>
+<button class="px-8 py-3 bg-primary text-on-primary rounded-lg font-semibold shadow-sm hover:bg-primary/90 transition-colors flex items-center gap-2" type="submit">
+<span class="material-symbols-outlined">send</span>
+                                Submit Report
+                            </button>
+</div>
+</form>
+</div>
+</div>
+</main>
+</div>
+</body></html>

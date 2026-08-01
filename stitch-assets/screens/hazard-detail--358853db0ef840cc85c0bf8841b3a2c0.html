@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Hazard Detail - Xuran Safety</title>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;family=Manrope:wght@600;700&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface": "#faf8ff",
+                        "surface-bg": "#F8F9FA",
+                        "error-container": "#ffdad6",
+                        "background": "#faf8ff",
+                        "surface-tint": "#1d59c1",
+                        "on-secondary-container": "#00714d",
+                        "surface-dim": "#d9d9e2",
+                        "surface-container-high": "#e7e7f1",
+                        "secondary-fixed": "#6ffbbe",
+                        "surface-container-highest": "#e1e2eb",
+                        "tertiary-fixed": "#ffdbcd",
+                        "inverse-on-surface": "#f0f0f9",
+                        "error": "#ba1a1a",
+                        "on-error": "#ffffff",
+                        "surface-bright": "#faf8ff",
+                        "on-background": "#191b22",
+                        "sidebar-bg": "rgba(255, 255, 255, 0.7)",
+                        "inverse-primary": "#b0c6ff",
+                        "on-secondary-fixed": "#002113",
+                        "primary-fixed-dim": "#b0c6ff",
+                        "outline": "#737784",
+                        "on-primary-fixed": "#001945",
+                        "on-primary-container": "#bcceff",
+                        "primary-container": "#0f52ba",
+                        "outline-variant": "#c3c6d5",
+                        "inverse-surface": "#2e3037",
+                        "on-error-container": "#93000a",
+                        "surface-variant": "#e1e2eb",
+                        "secondary-container": "#6cf8bb",
+                        "on-tertiary-fixed-variant": "#7d2d00",
+                        "surface-container-lowest": "#ffffff",
+                        "on-tertiary": "#ffffff",
+                        "on-primary-fixed-variant": "#00419c",
+                        "tertiary-fixed-dim": "#ffb596",
+                        "secondary-fixed-dim": "#4edea3",
+                        "tertiary": "#732900",
+                        "hazard-overdue": "#991B1B",
+                        "on-secondary-fixed-variant": "#005236",
+                        "on-primary": "#ffffff",
+                        "primary-fixed": "#d9e2ff",
+                        "on-tertiary-container": "#ffc0a7",
+                        "surface-container": "#ededf6",
+                        "on-surface": "#191b22",
+                        "tertiary-container": "#993900",
+                        "hazard-major": "#EF4444",
+                        "hazard-impending": "#F59E0B",
+                        "primary": "#003c90",
+                        "on-secondary": "#ffffff",
+                        "secondary": "#006c49",
+                        "surface-card": "#FFFFFF",
+                        "on-tertiary-fixed": "#360f00",
+                        "surface-container-low": "#f3f3fc",
+                        "on-surface-variant": "#434653"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "margin-desktop": "32px",
+                        "stack-gap": "12px",
+                        "card-padding": "24px",
+                        "margin-mobile": "16px",
+                        "sidebar-width": "260px",
+                        "sidebar-collapsed": "80px",
+                        "gutter": "24px"
+                    },
+                    "fontFamily": {
+                        "list-title": ["Inter"],
+                        "display-brand": ["Manrope"],
+                        "headline-lg": ["Manrope"],
+                        "body-md": ["Inter"],
+                        "caption": ["Inter"],
+                        "status-label": ["Inter"],
+                        "headline-lg-mobile": ["Manrope"],
+                        "section-header": ["Manrope"]
+                    },
+                    "fontSize": {
+                        "list-title": ["16px", { "lineHeight": "22px", "fontWeight": "600" }],
+                        "display-brand": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+                        "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "caption": ["12px", { "lineHeight": "16px", "fontWeight": "400" }],
+                        "status-label": ["11px", { "lineHeight": "12px", "letterSpacing": "0.05em", "fontWeight": "700" }],
+                        "headline-lg-mobile": ["24px", { "lineHeight": "32px", "fontWeight": "700" }],
+                        "section-header": ["18px", { "lineHeight": "24px", "fontWeight": "600" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .elevation-1 { box-shadow: 0px 8px 24px rgba(0,0,0,0.04); }
+        .elevation-2 { box-shadow: 0px 12px 32px rgba(0,0,0,0.06); }
+    </style>
+</head>
+<body class="bg-surface-bg text-on-surface antialiased min-h-screen">
+<!-- TopNavBar -->
+<header class="h-16 fixed top-0 right-0 left-0 md:left-sidebar-width z-40 bg-surface-bg/80 dark:bg-surface-dim/80 backdrop-blur-md border-b border-outline-variant/20 flex justify-between items-center px-margin-mobile md:px-margin-desktop w-full transition-all duration-300">
+<div class="flex items-center gap-4">
+<button class="md:hidden p-2 text-on-surface-variant hover:text-primary transition-colors focus-within:ring-2 focus-within:ring-primary/20 rounded-full">
+<span class="material-symbols-outlined">menu</span>
+</button>
+<div class="hidden font-section-header text-section-header text-primary dark:text-inverse-primary">Xuran Safety</div>
+<!-- Search -->
+<div class="relative hidden sm:flex items-center w-64 md:w-96">
+<span class="material-symbols-outlined absolute left-3 text-on-surface-variant/60 text-sm">search</span>
+<input class="w-full pl-10 pr-4 py-2 bg-surface-container-low border-none rounded-full font-body-md text-body-md text-on-surface placeholder:text-on-surface-variant/60 focus:ring-2 focus:ring-primary/20 focus:bg-surface-card transition-colors" placeholder="Search hazards..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-2 md:gap-4">
+<button class="p-2 text-on-surface-variant hover:text-primary transition-colors focus-within:ring-2 focus-within:ring-primary/20 rounded-full relative">
+<span class="material-symbols-outlined">notifications</span>
+<span class="absolute top-1.5 right-1.5 w-2 h-2 bg-hazard-major rounded-full"></span>
+</button>
+<button class="p-2 text-on-surface-variant hover:text-primary transition-colors focus-within:ring-2 focus-within:ring-primary/20 rounded-full">
+<span class="material-symbols-outlined">account_circle</span>
+</button>
+<button class="hidden sm:block ml-2 px-4 py-2 bg-primary/10 text-primary font-section-header text-sm rounded-full hover:bg-primary/20 transition-colors">
+                Switch Role
+            </button>
+</div>
+</header>
+<!-- SideNavBar (Desktop) -->
+<nav class="hidden md:flex w-sidebar-width h-screen fixed left-0 top-0 bg-sidebar-bg dark:bg-inverse-surface/70 backdrop-blur-xl border-r border-outline-variant/30 shadow-sm flex-col py-6 z-50">
+<!-- Brand Header -->
+<div class="px-6 mb-8 flex items-center gap-4">
+<div class="w-10 h-10 rounded-xl bg-primary flex items-center justify-center text-on-primary font-bold text-xl shadow-sm">X</div>
+<div>
+<h1 class="font-display-brand text-display-brand text-primary dark:text-inverse-primary leading-tight">Xuran Safety</h1>
+<p class="font-caption text-caption text-on-surface-variant">徐燃安巡</p>
+</div>
+</div>
+<!-- CTA -->
+<div class="px-4 mb-6">
+<button class="w-full py-3 bg-primary text-on-primary rounded-xl font-list-title text-list-title flex items-center justify-center gap-2 hover:bg-primary-container hover:text-on-primary-container transition-all duration-200 ease-in-out active:scale-95 shadow-sm">
+<span class="material-symbols-outlined text-sm">add</span>
+                New Hazard
+            </button>
+</div>
+<!-- Navigation Links -->
+<div class="flex-1 overflow-y-auto flex flex-col gap-1 px-2 font-body-md text-body-md">
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-variant/50 transition-colors hover:bg-primary-fixed-dim/20 transition-all duration-200 ease-in-out active:scale-95 rounded-lg" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+                Dashboard
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 bg-primary/10 text-primary border-l-4 border-primary font-semibold transition-all duration-200 ease-in-out active:scale-95 rounded-r-lg rounded-l-sm" href="#">
+<span class="material-symbols-outlined">list_alt</span>
+                Hazard List
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-variant/50 transition-colors hover:bg-primary-fixed-dim/20 transition-all duration-200 ease-in-out active:scale-95 rounded-lg" href="#">
+<span class="material-symbols-outlined">verified_user</span>
+                Safety Duty
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-variant/50 transition-colors hover:bg-primary-fixed-dim/20 transition-all duration-200 ease-in-out active:scale-95 rounded-lg" href="#">
+<span class="material-symbols-outlined">chat_bubble</span>
+                Messages
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-variant/50 transition-colors hover:bg-primary-fixed-dim/20 transition-all duration-200 ease-in-out active:scale-95 rounded-lg" href="#">
+<span class="material-symbols-outlined">settings</span>
+                Settings
+            </a>
+</div>
+<!-- Footer Link -->
+<div class="px-2 mt-auto font-body-md text-body-md">
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-variant/50 transition-colors hover:bg-primary-fixed-dim/20 transition-all duration-200 ease-in-out active:scale-95 rounded-lg" href="#">
+<span class="material-symbols-outlined">help</span>
+                Help Center
+            </a>
+</div>
+</nav>
+<!-- Main Content Area -->
+<main class="pt-24 pb-20 md:pb-8 md:pl-sidebar-width px-margin-mobile md:px-margin-desktop min-h-screen">
+<!-- Page Header -->
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
+<div>
+<div class="flex items-center gap-3 mb-2">
+<a class="text-on-surface-variant hover:text-primary transition-colors flex items-center text-sm font-body-md" href="#">
+<span class="material-symbols-outlined text-sm mr-1">arrow_back</span>
+                        Back to List
+                    </a>
+</div>
+<div class="flex flex-wrap items-center gap-3">
+<h2 class="font-headline-lg-mobile md:font-headline-lg text-headline-lg-mobile md:text-headline-lg text-on-surface">HZ-2023-0892</h2>
+<span class="inline-flex items-center px-2.5 py-1 rounded-full bg-hazard-major/10 text-hazard-major font-status-label text-status-label uppercase tracking-wider">
+<span class="w-1.5 h-1.5 rounded-full bg-hazard-major mr-1.5"></span>
+                        Major Hazard
+                    </span>
+</div>
+</div>
+<!-- Actions (Mobile & Desktop) -->
+<div class="flex items-center gap-3 w-full md:w-auto">
+<button class="flex-1 md:flex-none px-4 py-2 border border-outline-variant text-on-surface font-list-title text-sm rounded-lg hover:bg-surface-container transition-colors">
+                    Edit Details
+                </button>
+<button class="flex-1 md:flex-none px-4 py-2 bg-primary text-on-primary font-list-title text-sm rounded-lg hover:bg-primary-container transition-colors flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-sm">person_add</span>
+                    Assign
+                </button>
+</div>
+</div>
+<!-- 12-Column Grid Layout -->
+<div class="grid grid-cols-12 gap-gutter">
+<!-- Left Column: Details (Span 7) -->
+<div class="col-span-12 lg:col-span-7 flex flex-col gap-stack-gap">
+<!-- Main Detail Card -->
+<div class="bg-surface-card rounded-xl elevation-1 p-card-padding">
+<h3 class="font-section-header text-section-header text-on-surface mb-4">Hazard Information</h3>
+<!-- Photo Placeholder -->
+<div class="w-full h-64 md:h-80 rounded-lg overflow-hidden mb-6 relative group bg-surface-container-highest">
+<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" data-alt="A detailed, wide-angle photograph of an industrial factory floor highlighting a clear safety hazard: a significant puddle of unidentifiable liquid near a high-voltage electrical panel. The lighting is harsh, typical of industrial settings, with a cool, slightly sterile color palette emphasizing the danger. Yellow caution tape is partially visible in the blurred foreground." src="https://lh3.googleusercontent.com/aida-public/AB6AXuB6tP52GwnRLBnfzSA7FJvmA4VZeFGJUM07Eoy01Nu22XzIbQ_fogMIkhboKn42BVq5k1dyirprNT1PJjPCnDr7oRSbr_Hh7AgX04SQOYxidA2zWqAQCHV9zXXXRyI3ybHddEAwxlFEyb054a_n0KfEjmONgfhzTy5mFbTxPwSGWTCCARLK4OZeBCCziKnaD-tFUvA5R3BqV21p6sD0FxrciJx-nLAO5QhparNPwG13JmHs8UC9hcBj"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
+<span class="text-white font-body-md text-sm flex items-center gap-1">
+<span class="material-symbols-outlined text-sm">photo_camera</span> View Full Image
+                            </span>
+</div>
+</div>
+<div class="space-y-6">
+<div>
+<p class="font-caption text-caption text-on-surface-variant uppercase tracking-wider mb-1">Description</p>
+<p class="font-body-md text-body-md text-on-surface leading-relaxed">
+                                A large pool of unidentified oily liquid has accumulated near the main electrical distribution panel in Sector 4. The spill covers approximately 2 square meters and poses a significant slip hazard, as well as a potential electrical short risk if it spreads closer to the conduit base. Immediate cleanup and source identification required.
+                            </p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+<div class="p-4 rounded-lg bg-surface-container-low border border-outline-variant/30">
+<div class="flex items-start gap-3">
+<span class="material-symbols-outlined text-primary/70 mt-0.5">location_on</span>
+<div>
+<p class="font-caption text-caption text-on-surface-variant uppercase tracking-wider mb-0.5">Location</p>
+<p class="font-list-title text-list-title text-on-surface">Sector 4, Main Assembly Line</p>
+<p class="font-body-md text-sm text-on-surface-variant mt-1" data-location="Shenzhen Industrial Park">Near Panel E-402</p>
+</div>
+</div>
+</div>
+<div class="p-4 rounded-lg bg-surface-container-low border border-outline-variant/30">
+<div class="flex items-start gap-3">
+<span class="material-symbols-outlined text-primary/70 mt-0.5">account_circle</span>
+<div>
+<p class="font-caption text-caption text-on-surface-variant uppercase tracking-wider mb-0.5">Reported By</p>
+<p class="font-list-title text-list-title text-on-surface">Li Wei</p>
+<p class="font-body-md text-sm text-on-surface-variant mt-1">Safety Inspector • 2 hours ago</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Right Column: Timeline (Span 5) -->
+<div class="col-span-12 lg:col-span-5 flex flex-col gap-stack-gap">
+<!-- Audit Timeline Card -->
+<div class="bg-surface-card rounded-xl elevation-1 p-card-padding h-full min-h-[500px]">
+<div class="flex items-center justify-between mb-6">
+<h3 class="font-section-header text-section-header text-on-surface">Audit Timeline</h3>
+<button class="text-primary hover:text-primary-container transition-colors p-1 rounded-full">
+<span class="material-symbols-outlined text-sm">filter_list</span>
+</button>
+</div>
+<div class="relative pl-6 border-l-2 border-surface-container-highest space-y-8">
+<!-- Timeline Item 1 (Active) -->
+<div class="relative">
+<div class="absolute -left-[31px] bg-surface-card p-1">
+<div class="w-4 h-4 rounded-full border-4 border-hazard-major bg-white shadow-[0_0_0_2px_rgba(255,255,255,1)]"></div>
+</div>
+<div>
+<p class="font-caption text-caption text-hazard-major font-semibold mb-1">Current Status</p>
+<p class="font-list-title text-list-title text-on-surface">Awaiting Assignment</p>
+<p class="font-body-md text-sm text-on-surface-variant mt-1">Hazard escalated to management review due to severity.</p>
+</div>
+</div>
+<!-- Timeline Item 2 -->
+<div class="relative">
+<div class="absolute -left-[31px] bg-surface-card p-1">
+<div class="w-4 h-4 rounded-full border-2 border-primary bg-primary/20"></div>
+</div>
+<div>
+<p class="font-caption text-caption text-on-surface-variant mb-1">Today, 10:45 AM</p>
+<p class="font-list-title text-list-title text-on-surface">Severity Upgraded</p>
+<p class="font-body-md text-sm text-on-surface-variant mt-1">System automatically upgraded severity to <span class="font-semibold text-hazard-major">Major</span> based on proximity to electrical equipment.</p>
+<div class="mt-2 flex items-center gap-2">
+<div class="w-6 h-6 rounded-full bg-surface-variant flex items-center justify-center text-xs font-bold text-on-surface-variant">S</div>
+<span class="font-caption text-caption text-on-surface-variant">System Automated</span>
+</div>
+</div>
+</div>
+<!-- Timeline Item 3 -->
+<div class="relative">
+<div class="absolute -left-[31px] bg-surface-card p-1">
+<div class="w-4 h-4 rounded-full border-2 border-outline-variant bg-surface-bg"></div>
+</div>
+<div>
+<p class="font-caption text-caption text-on-surface-variant mb-1">Today, 09:12 AM</p>
+<p class="font-list-title text-list-title text-on-surface">Hazard Reported</p>
+<p class="font-body-md text-sm text-on-surface-variant mt-1">Initial report submitted with photograph and location data.</p>
+<div class="mt-2 flex items-center gap-2">
+<div class="w-6 h-6 rounded-full bg-primary/10 text-primary flex items-center justify-center text-xs font-bold">LW</div>
+<span class="font-caption text-caption text-on-surface-variant">Li Wei (Inspector)</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Admin Action Card (Optional context) -->
+<div class="bg-surface-card rounded-xl elevation-1 p-card-padding border border-error-container">
+<h4 class="font-list-title text-list-title text-on-surface mb-2 flex items-center gap-2">
+<span class="material-symbols-outlined text-hazard-major">warning</span>
+                        Admin Actions
+                    </h4>
+<p class="font-body-md text-sm text-on-surface-variant mb-4">As an administrator, you can override the standard workflow for this high-severity hazard.</p>
+<button class="w-full py-2 bg-hazard-major/10 text-hazard-major hover:bg-hazard-major/20 transition-colors font-list-title text-sm rounded-lg border border-hazard-major/20">
+                        Force Close (Override)
+                    </button>
+</div>
+</div>
+</div>
+</main>
+</body></html>

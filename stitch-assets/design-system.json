@@ -1,0 +1,142 @@
+{
+  "name": "assets/1fe2940ca72b4cddb02522120f6d8232",
+  "designSystem": {
+    "displayName": "Safety Glass",
+    "styleGuidelines": "## Brand & Style\n\nThis design system embodies a **Modern, Trustworthy, and Data-Driven** personality tailored for safety management. The visual language is a refined mix of **Minimalism** and **Glassmorphism**, prioritizing clarity and auditability without sacrificing contemporary aesthetics.\n\nThe system utilizes a soft, off-white background as a canvas for high-elevation white cards. This creates a clear mental model of \"sheets of data\" stacked in a digital environment. Subtle backdrop blurs and semi-transparency are reserved for secondary UI elements like sidebars and floating action bars to provide a sense of depth and focus. The overall mood is professional, calm, and highly organized, ensuring that critical safety hazards are never lost in visual noise.\n\n## Layout & Spacing\n\nThis design system uses a **Fluid-Fixed Hybrid Grid**. \n\n- **Desktop:** A fixed-width left sidebar (260px) persists for global navigation. The main content area uses a fluid 12-column grid with 24px gutters. Detailed views often utilize a \"Dual-Pane\" layout where a list resides in a 4-column span and the details expand into the remaining 8 columns.\n- **Mobile:** A single-column vertical stack with 16px horizontal margins. The navigation moves to a fixed bottom tab bar for ergonomic thumb access.\n- **Rhythm:** An 8px linear scale governs all spacing. Components like list items are separated by a 12px `stack-gap` to maintain visual distinction while remaining information-dense.\n\n## Elevation & Depth\n\nVisual hierarchy is established through a **Tonal & Glassmorphic Layering** system:\n\n1.  **Level 0 (Floor):** The off-white background (`#F8F9FA`).\n2.  **Level 1 (Cards):** Pure white surfaces with a soft, expansive shadow (0px 8px 24px rgba(0,0,0,0.04)). This is the primary container for all data.\n3.  **Level 2 (Overlays/Sidebar):** Semi-transparent layers (`rgba(255,255,255,0.7)`) with a 20px backdrop blur. Used for the fixed navigation and floating filters to suggest they exist on a separate plane above the scrolling content.\n4.  **Level 3 (Modals/Popovers):** Higher contrast shadows (0px 16px 48px rgba(0,0,0,0.08)) to indicate blocking interactions or critical secondary actions.\n\n## Components\n\n### Buttons & Chips\n- **Primary Button:** Solid Safety Blue, rounded corners, white text. No shadow; depth is conveyed via slight hover color shifts.\n- **Secondary/Ghost:** Transparent background with a 1px border or subtle gray fill.\n- **Status Chips:** Pill-shaped, high-contrast labels with light backgrounds (e.g., a 10% opacity Red fill with 100% Red text for \"Major Hazard\").\n\n### Cards\n- Standard containers for \"Issues\" and \"Tasks.\" Cards must include a padding of 24px and should never have a border. Use a vertical layout for content on mobile and horizontal \"row\" layouts for desktop lists.\n\n### Input Fields\n- Soft gray backgrounds (`#F1F3F5`) with no borders in their default state. Upon focus, they transition to a white background with a 2px Primary Blue border.\n\n### Sidebar Navigation\n- Icons should be modern, \"thin-line\" style. Active states are indicated by a solid blue vertical bar on the left and a subtle background tint behind the icon.\n\n### Status Lights\n- For employee duty tracking, use perfectly circular \"Status Lights\" (Red/Yellow/Green) with a subtle inner glow to mimic physical LEDs.",
+    "theme": {
+      "colorMode": "LIGHT",
+      "font": "MANROPE",
+      "roundness": "ROUND_EIGHT",
+      "customColor": "#0f52ba",
+      "headlineFont": "MANROPE",
+      "bodyFont": "INTER",
+      "labelFont": "INTER",
+      "namedColors": {
+        "background": "#faf8ff",
+        "error": "#ba1a1a",
+        "error_container": "#ffdad6",
+        "hazard-impending": "#F59E0B",
+        "hazard-major": "#EF4444",
+        "hazard-overdue": "#991B1B",
+        "inverse_on_surface": "#f0f0f9",
+        "inverse_primary": "#b0c6ff",
+        "inverse_surface": "#2e3037",
+        "on_background": "#191b22",
+        "on_error": "#ffffff",
+        "on_error_container": "#93000a",
+        "on_primary": "#ffffff",
+        "on_primary_container": "#bcceff",
+        "on_primary_fixed": "#001945",
+        "on_primary_fixed_variant": "#00419c",
+        "on_secondary": "#ffffff",
+        "on_secondary_container": "#00714d",
+        "on_secondary_fixed": "#002113",
+        "on_secondary_fixed_variant": "#005236",
+        "on_surface": "#191b22",
+        "on_surface_variant": "#434653",
+        "on_tertiary": "#ffffff",
+        "on_tertiary_container": "#ffc0a7",
+        "on_tertiary_fixed": "#360f00",
+        "on_tertiary_fixed_variant": "#7d2d00",
+        "outline": "#737784",
+        "outline_variant": "#c3c6d5",
+        "primary": "#003c90",
+        "primary_container": "#0f52ba",
+        "primary_fixed": "#d9e2ff",
+        "primary_fixed_dim": "#b0c6ff",
+        "secondary": "#006c49",
+        "secondary_container": "#6cf8bb",
+        "secondary_fixed": "#6ffbbe",
+        "secondary_fixed_dim": "#4edea3",
+        "sidebar-bg": "rgba(255, 255, 255, 0.7)",
+        "surface": "#faf8ff",
+        "surface-bg": "#F8F9FA",
+        "surface-card": "#FFFFFF",
+        "surface_bright": "#faf8ff",
+        "surface_container": "#ededf6",
+        "surface_container_high": "#e7e7f1",
+        "surface_container_highest": "#e1e2eb",
+        "surface_container_low": "#f3f3fc",
+        "surface_container_lowest": "#ffffff",
+        "surface_dim": "#d9d9e2",
+        "surface_tint": "#1d59c1",
+        "surface_variant": "#e1e2eb",
+        "tertiary": "#732900",
+        "tertiary_container": "#993900",
+        "tertiary_fixed": "#ffdbcd",
+        "tertiary_fixed_dim": "#ffb596"
+      },
+      "designMd": "---\nname: Safety Glass\ncolors:\n  surface: '#faf8ff'\n  surface-dim: '#d9d9e2'\n  surface-bright: '#faf8ff'\n  surface-container-lowest: '#ffffff'\n  surface-container-low: '#f3f3fc'\n  surface-container: '#ededf6'\n  surface-container-high: '#e7e7f1'\n  surface-container-highest: '#e1e2eb'\n  on-surface: '#191b22'\n  on-surface-variant: '#434653'\n  inverse-surface: '#2e3037'\n  inverse-on-surface: '#f0f0f9'\n  outline: '#737784'\n  outline-variant: '#c3c6d5'\n  surface-tint: '#1d59c1'\n  primary: '#003c90'\n  on-primary: '#ffffff'\n  primary-container: '#0f52ba'\n  on-primary-container: '#bcceff'\n  inverse-primary: '#b0c6ff'\n  secondary: '#006c49'\n  on-secondary: '#ffffff'\n  secondary-container: '#6cf8bb'\n  on-secondary-container: '#00714d'\n  tertiary: '#732900'\n  on-tertiary: '#ffffff'\n  tertiary-container: '#993900'\n  on-tertiary-container: '#ffc0a7'\n  error: '#ba1a1a'\n  on-error: '#ffffff'\n  error-container: '#ffdad6'\n  on-error-container: '#93000a'\n  primary-fixed: '#d9e2ff'\n  primary-fixed-dim: '#b0c6ff'\n  on-primary-fixed: '#001945'\n  on-primary-fixed-variant: '#00419c'\n  secondary-fixed: '#6ffbbe'\n  secondary-fixed-dim: '#4edea3'\n  on-secondary-fixed: '#002113'\n  on-secondary-fixed-variant: '#005236'\n  tertiary-fixed: '#ffdbcd'\n  tertiary-fixed-dim: '#ffb596'\n  on-tertiary-fixed: '#360f00'\n  on-tertiary-fixed-variant: '#7d2d00'\n  background: '#faf8ff'\n  on-background: '#191b22'\n  surface-variant: '#e1e2eb'\n  hazard-major: '#EF4444'\n  hazard-overdue: '#991B1B'\n  hazard-impending: '#F59E0B'\n  surface-bg: '#F8F9FA'\n  surface-card: '#FFFFFF'\n  sidebar-bg: rgba(255, 255, 255, 0.7)\ntypography:\n  display-brand:\n    fontFamily: Manrope\n    fontSize: 24px\n    fontWeight: '700'\n    lineHeight: 32px\n    letterSpacing: -0.02em\n  headline-lg:\n    fontFamily: Manrope\n    fontSize: 32px\n    fontWeight: '700'\n    lineHeight: 40px\n    letterSpacing: -0.01em\n  headline-lg-mobile:\n    fontFamily: Manrope\n    fontSize: 24px\n    fontWeight: '700'\n    lineHeight: 32px\n  section-header:\n    fontFamily: Manrope\n    fontSize: 18px\n    fontWeight: '600'\n    lineHeight: 24px\n  list-title:\n    fontFamily: Inter\n    fontSize: 16px\n    fontWeight: '600'\n    lineHeight: 22px\n  body-md:\n    fontFamily: Inter\n    fontSize: 14px\n    fontWeight: '400'\n    lineHeight: 20px\n  caption:\n    fontFamily: Inter\n    fontSize: 12px\n    fontWeight: '400'\n    lineHeight: 16px\n  status-label:\n    fontFamily: Inter\n    fontSize: 11px\n    fontWeight: '700'\n    lineHeight: 12px\n    letterSpacing: 0.05em\nrounded:\n  sm: 0.25rem\n  DEFAULT: 0.5rem\n  md: 0.75rem\n  lg: 1rem\n  xl: 1.5rem\n  full: 9999px\nspacing:\n  sidebar-width: 260px\n  sidebar-collapsed: 80px\n  gutter: 24px\n  margin-mobile: 16px\n  margin-desktop: 32px\n  card-padding: 24px\n  stack-gap: 12px\n---\n\n## Brand & Style\n\nThis design system embodies a **Modern, Trustworthy, and Data-Driven** personality tailored for safety management. The visual language is a refined mix of **Minimalism** and **Glassmorphism**, prioritizing clarity and auditability without sacrificing contemporary aesthetics.\n\nThe system utilizes a soft, off-white background as a canvas for high-elevation white cards. This creates a clear mental model of \"sheets of data\" stacked in a digital environment. Subtle backdrop blurs and semi-transparency are reserved for secondary UI elements like sidebars and floating action bars to provide a sense of depth and focus. The overall mood is professional, calm, and highly organized, ensuring that critical safety hazards are never lost in visual noise.\n\n## Colors\n\nThe palette is anchored by a **Professional Safety Blue** (#0F52BA) used for primary actions and navigation states, and a **Success Green** (#10B981) for completed statuses.\n\nThe \"Traffic Light\" system is strictly implemented via named colors to signal urgency:\n- **Major/Critical:** High-saturation Reds for immediate danger.\n- **Impending:** Warm Ambers for preventative warnings.\n- **Surface:** The background uses a specific off-white (`#F8F9FA`) to reduce eye strain during long audits, while primary content rests on pure white cards to maximize contrast.\n\nGlassmorphism is applied to the navigation sidebar using a semi-transparent white with a 20px backdrop blur, allowing the primary background colors to subtly bleed through.\n\n## Typography\n\nThe system uses **Manrope** for headlines to provide a modern, technical feel with excellent legibility. **Inter** is used for all functional body text, data tables, and labels, chosen for its neutral tone and superior performance in high-density data environments.\n\n- **Hierarchy:** Use strong weight contrasts (e.g., Semi-bold titles against Regular body) to guide the eye through complex hazard reports.\n- **Numbers:** Tabular lining should be used for timestamps and coordinates to ensure vertical alignment in list views.\n- **Scaling:** On mobile, display and headline sizes are reduced to prevent excessive word wrapping, while body sizes remain constant for accessibility.\n\n## Layout & Spacing\n\nThis design system uses a **Fluid-Fixed Hybrid Grid**. \n\n- **Desktop:** A fixed-width left sidebar (260px) persists for global navigation. The main content area uses a fluid 12-column grid with 24px gutters. Detailed views often utilize a \"Dual-Pane\" layout where a list resides in a 4-column span and the details expand into the remaining 8 columns.\n- **Mobile:** A single-column vertical stack with 16px horizontal margins. The navigation moves to a fixed bottom tab bar for ergonomic thumb access.\n- **Rhythm:** An 8px linear scale governs all spacing. Components like list items are separated by a 12px `stack-gap` to maintain visual distinction while remaining information-dense.\n\n## Elevation & Depth\n\nVisual hierarchy is established through a **Tonal & Glassmorphic Layering** system:\n\n1.  **Level 0 (Floor):** The off-white background (`#F8F9FA`).\n2.  **Level 1 (Cards):** Pure white surfaces with a soft, expansive shadow (0px 8px 24px rgba(0,0,0,0.04)). This is the primary container for all data.\n3.  **Level 2 (Overlays/Sidebar):** Semi-transparent layers (`rgba(255,255,255,0.7)`) with a 20px backdrop blur. Used for the fixed navigation and floating filters to suggest they exist on a separate plane above the scrolling content.\n4.  **Level 3 (Modals/Popovers):** Higher contrast shadows (0px 16px 48px rgba(0,0,0,0.08)) to indicate blocking interactions or critical secondary actions.\n\n## Shapes\n\nThe shape language is **Rounded and Organic**, softening the technical nature of safety data to make the tool more approachable.\n\n- **Primary Containers:** All main cards and panels use a `rounded-xl` (24px) corner radius.\n- **Interactive Elements:** Buttons and input fields use a standard `rounded-lg` (12px-16px) for a balanced professional look.\n- **Status Pills:** Tags and status indicators use a full `pill-shaped` (100px) radius to distinguish them from functional buttons.\n- **Visual Style:** Avoid sharp edges entirely to maintain the \"Glassmorphism\" aesthetic.\n\n## Components\n\n### Buttons & Chips\n- **Primary Button:** Solid Safety Blue, rounded corners, white text. No shadow; depth is conveyed via slight hover color shifts.\n- **Secondary/Ghost:** Transparent background with a 1px border or subtle gray fill.\n- **Status Chips:** Pill-shaped, high-contrast labels with light backgrounds (e.g., a 10% opacity Red fill with 100% Red text for \"Major Hazard\").\n\n### Cards\n- Standard containers for \"Issues\" and \"Tasks.\" Cards must include a padding of 24px and should never have a border. Use a vertical layout for content on mobile and horizontal \"row\" layouts for desktop lists.\n\n### Input Fields\n- Soft gray backgrounds (`#F1F3F5`) with no borders in their default state. Upon focus, they transition to a white background with a 2px Primary Blue border.\n\n### Sidebar Navigation\n- Icons should be modern, \"thin-line\" style. Active states are indicated by a solid blue vertical bar on the left and a subtle background tint behind the icon.\n\n### Status Lights\n- For employee duty tracking, use perfectly circular \"Status Lights\" (Red/Yellow/Green) with a subtle inner glow to mimic physical LEDs.",
+      "colorVariant": "FIDELITY",
+      "overridePrimaryColor": "#0f52ba",
+      "overrideSecondaryColor": "#10b981",
+      "spacingScale": 2,
+      "typography": {
+        "body-md": {
+          "fontFamily": "Inter",
+          "fontSize": "14px",
+          "fontWeight": "400",
+          "lineHeight": "20px"
+        },
+        "caption": {
+          "fontFamily": "Inter",
+          "fontSize": "12px",
+          "fontWeight": "400",
+          "lineHeight": "16px"
+        },
+        "display-brand": {
+          "fontFamily": "Manrope",
+          "fontSize": "24px",
+          "fontWeight": "700",
+          "lineHeight": "32px",
+          "letterSpacing": "-0.02em"
+        },
+        "headline-lg": {
+          "fontFamily": "Manrope",
+          "fontSize": "32px",
+          "fontWeight": "700",
+          "lineHeight": "40px",
+          "letterSpacing": "-0.01em"
+        },
+        "headline-lg-mobile": {
+          "fontFamily": "Manrope",
+          "fontSize": "24px",
+          "fontWeight": "700",
+          "lineHeight": "32px"
+        },
+        "list-title": {
+          "fontFamily": "Inter",
+          "fontSize": "16px",
+          "fontWeight": "600",
+          "lineHeight": "22px"
+        },
+        "section-header": {
+          "fontFamily": "Manrope",
+          "fontSize": "18px",
+          "fontWeight": "600",
+          "lineHeight": "24px"
+        },
+        "status-label": {
+          "fontFamily": "Inter",
+          "fontSize": "11px",
+          "fontWeight": "700",
+          "lineHeight": "12px",
+          "letterSpacing": "0.05em"
+        }
+      },
+      "spacing": {
+        "card-padding": "24px",
+        "gutter": "24px",
+        "margin-desktop": "32px",
+        "margin-mobile": "16px",
+        "sidebar-collapsed": "80px",
+        "sidebar-width": "260px",
+        "stack-gap": "12px"
+      },
+      "headlineFontFamily": "Manrope",
+      "bodyFontFamily": "Inter",
+      "labelFontFamily": "Inter"
+    }
+  },
+  "version": "1"
+}

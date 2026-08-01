@@ -1,0 +1,178 @@
+{
+  "projectId": "9744180028146380792",
+  "source": "Google Stitch MCP",
+  "screens": [
+    {
+      "id": "b1fbcc5ca9414e21af5767e6648b2479",
+      "slug": "todo-admin",
+      "title": "待办首页 - 管理员视角",
+      "width": "3080",
+      "height": "2048",
+      "files": {
+        "screenshot": {
+          "path": "D:/xrax/.worktrees/pc-miniprogram/stitch-assets/screens/todo-admin--b1fbcc5ca9414e21af5767e6648b2479.png",
+          "size": 43112
+        },
+        "html": {
+          "path": "D:/xrax/.worktrees/pc-miniprogram/stitch-assets/screens/todo-admin--b1fbcc5ca9414e21af5767e6648b2479.html",
+          "size": 29794
+        }
+      },
+      "status": "downloaded"
+    },
+    {
+      "id": "7c8d8e0c54e645e8bcb2b33ea3ff5be8",
+      "slug": "rectification-list",
+      "title": "整改单列表 - 隐患管理",
+      "width": "3080",
+      "height": "2048",
+      "files": {
+        "screenshot": {
+          "path": "D:/xrax/.worktrees/pc-miniprogram/stitch-assets/screens/rectification-list--7c8d8e0c54e645e8bcb2b33ea3ff5be8.png",
+          "size": 34688
+        },
+        "html": {
+          "path": "D:/xrax/.worktrees/pc-miniprogram/stitch-assets/screens/rectification-list--7c8d8e0c54e645e8bcb2b33ea3ff5be8.html",
+          "size": 23250
+        }
+      },
+      "status": "downloaded"
+    },
+    {
+      "id": "c0099682ae08437e8ad03c0b83f90294",
+      "slug": "login",
+      "title": "登录页 - 徐燃安巡",
+      "width": "2560",
+      "height": "2048",
+      "files": {
+        "screenshot": {
+          "path": "D:/xrax/.worktrees/pc-miniprogram/stitch-assets/screens/login--c0099682ae08437e8ad03c0b83f90294.png",
+          "size": 14159
+        },
+        "html": {
+          "path": "D:/xrax/.worktrees/pc-miniprogram/stitch-assets/screens/login--c0099682ae08437e8ad03c0b83f90294.html",
+          "size": 12241
+        }
+      },
+      "status": "downloaded"
+    },
+    {
+      "id": "358853db0ef840cc85c0bf8841b3a2c0",
+      "slug": "hazard-detail",
+      "title": "隐患详情与审计线",
+      "width": "3080",
+      "height": "2048",
+      "files": {
+        "screenshot": {
+          "path": "D:/xrax/.worktrees/pc-miniprogram/stitch-assets/screens/hazard-detail--358853db0ef840cc85c0bf8841b3a2c0.png",
+          "size": 86474
+        },
+        "html": {
+          "path": "D:/xrax/.worktrees/pc-miniprogram/stitch-assets/screens/hazard-detail--358853db0ef840cc85c0bf8841b3a2c0.html",
+          "size": 20178
+        }
+      },
+      "status": "downloaded"
+    },
+    {
+      "id": "341bcf2de81b4c77abc889b3aba93c21",
+      "slug": "quick-report",
+      "title": "隐患随手拍 - 快速上报",
+      "width": "2560",
+      "height": "2756",
+      "files": {
+        "screenshot": {
+          "path": "D:/xrax/.worktrees/pc-miniprogram/stitch-assets/screens/quick-report--341bcf2de81b4c77abc889b3aba93c21.png",
+          "size": 75856
+        },
+        "html": {
+          "path": "D:/xrax/.worktrees/pc-miniprogram/stitch-assets/screens/quick-report--341bcf2de81b4c77abc889b3aba93c21.html",
+          "size": 20391
+        }
+      },
+      "status": "downloaded"
+    },
+    {
+      "id": "2750a980723f413cb6ed200e07313044",
+      "slug": "assignment",
+      "title": "安监交办 - 任务分配",
+      "width": "3080",
+      "height": "2048",
+      "files": {
+        "screenshot": {
+          "path": "D:/xrax/.worktrees/pc-miniprogram/stitch-assets/screens/assignment--2750a980723f413cb6ed200e07313044.png",
+          "size": 29281
+        },
+        "html": {
+          "path": "D:/xrax/.worktrees/pc-miniprogram/stitch-assets/screens/assignment--2750a980723f413cb6ed200e07313044.html",
+          "size": 17951
+        }
+      },
+      "status": "downloaded"
+    },
+    {
+      "id": "1836cc3ece744c91b5e490409b298e22",
+      "slug": "closure-review",
+      "title": "复核闭环 - 最终审核阶段",
+      "width": "3080",
+      "height": "2048",
+      "files": {
+        "screenshot": {
+          "path": "D:/xrax/.worktrees/pc-miniprogram/stitch-assets/screens/closure-review--1836cc3ece744c91b5e490409b298e22.png",
+          "size": 57729
+        },
+        "html": {
+          "path": "D:/xrax/.worktrees/pc-miniprogram/stitch-assets/screens/closure-review--1836cc3ece744c91b5e490409b298e22.html",
+          "size": 19031
+        }
+      },
+      "status": "downloaded"
+    },
+    {
+      "id": "6e89fc3d3c7d41b899a2a35a951d3ad6",
+      "slug": "my-duty",
+      "title": "我的安全履职 - 个人中心",
+      "width": "3080",
+      "height": "2136",
+      "files": {
+        "screenshot": {
+          "path": "D:/xrax/.worktrees/pc-miniprogram/stitch-assets/screens/my-duty--6e89fc3d3c7d41b899a2a35a951d3ad6.png",
+          "size": 51073
+        },
+        "html": {
+          "path": "D:/xrax/.worktrees/pc-miniprogram/stitch-assets/screens/my-duty--6e89fc3d3c7d41b899a2a35a951d3ad6.html",
+          "size": 26445
+        }
+      },
+      "status": "downloaded"
+    },
+    {
+      "id": "251ce97ee1df4f4ca0659a4013ac79fc",
+      "slug": "duty-overview",
+      "title": "安全履职总览 - 管理看板",
+      "width": "2560",
+      "height": "2334",
+      "files": {
+        "screenshot": {
+          "path": "D:/xrax/.worktrees/pc-miniprogram/stitch-assets/screens/duty-overview--251ce97ee1df4f4ca0659a4013ac79fc.png",
+          "size": 58150
+        },
+        "html": {
+          "path": "D:/xrax/.worktrees/pc-miniprogram/stitch-assets/screens/duty-overview--251ce97ee1df4f4ca0659a4013ac79fc.html",
+          "size": 25958
+        }
+      },
+      "status": "downloaded"
+    }
+  ],
+  "designSystem": {
+    "id": "asset-stub-assets_1fe2940ca72b4cddb02522120f6d8232",
+    "name": "assets/1fe2940ca72b4cddb02522120f6d8232",
+    "displayName": "Safety Glass",
+    "files": {
+      "markdown": "design-system.md",
+      "json": "design-system.json"
+    },
+    "note": "Stitch Design System resource; no screenshot/html screen artifact."
+  }
+}

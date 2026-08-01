@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Safety Duty Overview Dashboard - Xuran Safety</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;family=Manrope:wght@600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface": "#faf8ff",
+                        "surface-bg": "#F8F9FA",
+                        "error-container": "#ffdad6",
+                        "background": "#faf8ff",
+                        "surface-tint": "#1d59c1",
+                        "on-secondary-container": "#00714d",
+                        "surface-dim": "#d9d9e2",
+                        "surface-container-high": "#e7e7f1",
+                        "secondary-fixed": "#6ffbbe",
+                        "surface-container-highest": "#e1e2eb",
+                        "tertiary-fixed": "#ffdbcd",
+                        "inverse-on-surface": "#f0f0f9",
+                        "error": "#ba1a1a",
+                        "on-error": "#ffffff",
+                        "surface-bright": "#faf8ff",
+                        "on-background": "#191b22",
+                        "sidebar-bg": "rgba(255, 255, 255, 0.7)",
+                        "inverse-primary": "#b0c6ff",
+                        "on-secondary-fixed": "#002113",
+                        "primary-fixed-dim": "#b0c6ff",
+                        "outline": "#737784",
+                        "on-primary-fixed": "#001945",
+                        "on-primary-container": "#bcceff",
+                        "primary-container": "#0f52ba",
+                        "outline-variant": "#c3c6d5",
+                        "inverse-surface": "#2e3037",
+                        "on-error-container": "#93000a",
+                        "surface-variant": "#e1e2eb",
+                        "secondary-container": "#6cf8bb",
+                        "on-tertiary-fixed-variant": "#7d2d00",
+                        "surface-container-lowest": "#ffffff",
+                        "on-tertiary": "#ffffff",
+                        "on-primary-fixed-variant": "#00419c",
+                        "tertiary-fixed-dim": "#ffb596",
+                        "secondary-fixed-dim": "#4edea3",
+                        "tertiary": "#732900",
+                        "hazard-overdue": "#991B1B",
+                        "on-secondary-fixed-variant": "#005236",
+                        "on-primary": "#ffffff",
+                        "primary-fixed": "#d9e2ff",
+                        "on-tertiary-container": "#ffc0a7",
+                        "surface-container": "#ededf6",
+                        "on-surface": "#191b22",
+                        "tertiary-container": "#993900",
+                        "hazard-major": "#EF4444",
+                        "hazard-impending": "#F59E0B",
+                        "primary": "#003c90",
+                        "on-secondary": "#ffffff",
+                        "secondary": "#006c49",
+                        "surface-card": "#FFFFFF",
+                        "on-tertiary-fixed": "#360f00",
+                        "surface-container-low": "#f3f3fc",
+                        "on-surface-variant": "#434653"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "margin-desktop": "32px",
+                        "stack-gap": "12px",
+                        "card-padding": "24px",
+                        "margin-mobile": "16px",
+                        "sidebar-width": "260px",
+                        "sidebar-collapsed": "80px",
+                        "gutter": "24px"
+                    },
+                    "fontFamily": {
+                        "list-title": ["Inter"],
+                        "display-brand": ["Manrope"],
+                        "headline-lg": ["Manrope"],
+                        "body-md": ["Inter"],
+                        "caption": ["Inter"],
+                        "status-label": ["Inter"],
+                        "headline-lg-mobile": ["Manrope"],
+                        "section-header": ["Manrope"]
+                    },
+                    "fontSize": {
+                        "list-title": ["16px", { "lineHeight": "22px", "fontWeight": "600" }],
+                        "display-brand": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+                        "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "caption": ["12px", { "lineHeight": "16px", "fontWeight": "400" }],
+                        "status-label": ["11px", { "lineHeight": "12px", "letterSpacing": "0.05em", "fontWeight": "700" }],
+                        "headline-lg-mobile": ["24px", { "lineHeight": "32px", "fontWeight": "700" }],
+                        "section-header": ["18px", { "lineHeight": "24px", "fontWeight": "600" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body { background-color: #F8F9FA; }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0px 8px 24px rgba(0,0,0,0.04);
+        }
+        .status-light {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            display: inline-block;
+            box-shadow: inset 0 1px 3px rgba(255,255,255,0.5), 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .status-green { background: linear-gradient(135deg, #4ade80, #16a34a); }
+        .status-yellow { background: linear-gradient(135deg, #fde047, #ca8a04); }
+        .status-red { background: linear-gradient(135deg, #f87171, #dc2626); }
+    </style>
+</head>
+<body class="text-on-surface antialiased overflow-x-hidden min-h-screen">
+<!-- SideNavBar -->
+<nav class="hidden md:flex flex-col bg-sidebar-bg dark:bg-inverse-surface/70 w-sidebar-width h-screen fixed left-0 top-0 backdrop-blur-xl border-r border-outline-variant/30 shadow-sm z-50">
+<div class="flex flex-col h-full py-6">
+<div class="px-6 mb-8 flex items-center gap-3">
+<div class="w-10 h-10 rounded-lg bg-primary-container flex items-center justify-center text-on-primary-container font-bold text-xl">X</div>
+<div>
+<h1 class="font-display-brand text-display-brand text-primary dark:text-inverse-primary">Xuran Safety</h1>
+<p class="font-caption text-caption text-on-surface-variant">徐燃安巡</p>
+</div>
+</div>
+<div class="flex-1 flex flex-col gap-2">
+<a class="flex items-center gap-3 px-6 py-3 text-on-surface-variant hover:bg-surface-variant/50 transition-colors hover:bg-primary-fixed-dim/20 transition-all duration-200 ease-in-out active:scale-95" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-body-md text-body-md">Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-6 py-3 text-on-surface-variant hover:bg-surface-variant/50 transition-colors hover:bg-primary-fixed-dim/20 transition-all duration-200 ease-in-out active:scale-95" href="#">
+<span class="material-symbols-outlined">list_alt</span>
+<span class="font-body-md text-body-md">Hazard List</span>
+</a>
+<a class="flex items-center gap-3 px-6 py-3 bg-primary/10 text-primary border-l-4 border-primary font-semibold transition-all duration-200 ease-in-out active:scale-95" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">verified_user</span>
+<span class="font-body-md text-body-md">Safety Duty</span>
+</a>
+<a class="flex items-center gap-3 px-6 py-3 text-on-surface-variant hover:bg-surface-variant/50 transition-colors hover:bg-primary-fixed-dim/20 transition-all duration-200 ease-in-out active:scale-95" href="#">
+<span class="material-symbols-outlined">chat_bubble</span>
+<span class="font-body-md text-body-md">Messages</span>
+</a>
+<a class="flex items-center gap-3 px-6 py-3 text-on-surface-variant hover:bg-surface-variant/50 transition-colors hover:bg-primary-fixed-dim/20 transition-all duration-200 ease-in-out active:scale-95" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-body-md text-body-md">Settings</span>
+</a>
+</div>
+<div class="px-6 mt-auto flex flex-col gap-4">
+<button class="w-full bg-primary text-on-primary py-3 rounded-lg font-body-md text-body-md font-semibold hover:bg-primary/90 transition-colors shadow-sm flex items-center justify-center gap-2">
+<span class="material-symbols-outlined">add</span>
+                    New Hazard
+                </button>
+<a class="flex items-center gap-3 px-4 py-2 text-on-surface-variant hover:bg-surface-variant/50 transition-colors rounded-lg" href="#">
+<span class="material-symbols-outlined">help</span>
+<span class="font-body-md text-body-md">Help Center</span>
+</a>
+</div>
+</div>
+</nav>
+<!-- TopNavBar -->
+<header class="hidden md:flex justify-between items-center px-margin-desktop w-full bg-surface-bg/80 dark:bg-surface-dim/80 h-16 fixed top-0 right-0 md:left-sidebar-width z-40 backdrop-blur-md border-b border-outline-variant/20 transition-all focus-within:ring-2 focus-within:ring-primary/20" style="width: calc(100% - 260px);">
+<div class="flex-1 max-w-xl">
+<!-- Empty space for search if needed in future, currently layout dictates alignment -->
+</div>
+<div class="flex items-center gap-6">
+<button class="font-body-md text-body-md text-primary font-semibold hover:text-primary-container transition-colors px-4 py-2 rounded-lg border border-primary/20 hover:bg-primary/5">
+                Switch Role
+            </button>
+<div class="flex items-center gap-4">
+<button class="text-on-surface-variant hover:text-primary transition-colors relative">
+<span class="material-symbols-outlined">notifications</span>
+<span class="absolute top-0 right-0 w-2 h-2 bg-error rounded-full"></span>
+</button>
+<button class="text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined">account_circle</span>
+</button>
+</div>
+</div>
+</header>
+<!-- Main Content -->
+<main class="md:ml-sidebar-width pt-24 px-margin-mobile md:px-margin-desktop pb-24 min-h-screen">
+<div class="mb-8 flex flex-col md:flex-row md:items-end justify-between gap-4">
+<div>
+<h2 class="font-headline-lg-mobile md:font-headline-lg text-headline-lg-mobile md:text-headline-lg text-on-surface mb-2">Safety Duty Overview</h2>
+<p class="font-body-md text-body-md text-on-surface-variant">Company-wide statistics and employee compliance tracking (全员履职总览).</p>
+</div>
+<div class="flex items-center gap-3">
+<button class="flex items-center gap-2 px-4 py-2 bg-surface-card rounded-lg border border-outline-variant/30 font-body-md text-body-md text-on-surface hover:bg-surface-variant/50 transition-colors shadow-sm">
+<span class="material-symbols-outlined text-xl">download</span>
+                    Export Report
+                </button>
+<div class="bg-surface-card rounded-lg border border-outline-variant/30 p-1 flex items-center shadow-sm">
+<button class="px-4 py-1.5 rounded-md bg-primary/10 text-primary font-body-md text-body-md font-semibold">Q3 2023</button>
+<button class="px-4 py-1.5 rounded-md text-on-surface-variant hover:bg-surface-variant/50 font-body-md text-body-md transition-colors">Q2 2023</button>
+</div>
+</div>
+</div>
+<!-- Bento Grid Layout -->
+<div class="grid grid-cols-1 md:grid-cols-12 gap-gutter mb-gutter">
+<!-- High-level Stats (Col 1-8) -->
+<div class="md:col-span-8 grid grid-cols-1 sm:grid-cols-3 gap-gutter">
+<!-- Stat Card 1 -->
+<div class="glass-card rounded-xl p-card-padding flex flex-col justify-between">
+<div class="flex items-center justify-between mb-4">
+<span class="font-body-md text-body-md text-on-surface-variant">Total Duty Tasks</span>
+<span class="material-symbols-outlined text-primary/60">task</span>
+</div>
+<div>
+<div class="font-display-brand text-display-brand text-on-surface text-4xl mb-1">12,450</div>
+<div class="flex items-center gap-1 font-caption text-caption text-secondary">
+<span class="material-symbols-outlined text-sm">trending_up</span>
+<span>+5.2% vs last quarter</span>
+</div>
+</div>
+</div>
+<!-- Stat Card 2 -->
+<div class="glass-card rounded-xl p-card-padding flex flex-col justify-between border-b-4 border-secondary">
+<div class="flex items-center justify-between mb-4">
+<span class="font-body-md text-body-md text-on-surface-variant">Completion Rate</span>
+<span class="material-symbols-outlined text-secondary/60">check_circle</span>
+</div>
+<div>
+<div class="font-display-brand text-display-brand text-on-surface text-4xl mb-1">94.8%</div>
+<div class="w-full bg-surface-variant rounded-full h-1.5 mt-3">
+<div class="bg-secondary h-1.5 rounded-full" style="width: 94.8%"></div>
+</div>
+</div>
+</div>
+<!-- Stat Card 3 -->
+<div class="glass-card rounded-xl p-card-padding flex flex-col justify-between border-b-4 border-hazard-major">
+<div class="flex items-center justify-between mb-4">
+<span class="font-body-md text-body-md text-on-surface-variant">Overdue / Unfulfilled</span>
+<span class="material-symbols-outlined text-hazard-major/60">warning</span>
+</div>
+<div>
+<div class="font-display-brand text-display-brand text-on-surface text-4xl mb-1">647</div>
+<div class="flex items-center gap-1 font-caption text-caption text-hazard-major">
+<span class="material-symbols-outlined text-sm">trending_down</span>
+<span>Needs immediate attention</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Dept Ranking (Col 9-12) -->
+<div class="md:col-span-4 glass-card rounded-xl p-card-padding flex flex-col h-full">
+<div class="flex items-center justify-between mb-6">
+<h3 class="font-section-header text-section-header text-on-surface">Dept Ranking</h3>
+<span class="material-symbols-outlined text-on-surface-variant cursor-pointer hover:text-primary">more_horiz</span>
+</div>
+<div class="flex flex-col gap-stack-gap flex-1">
+<div class="flex items-center justify-between p-3 rounded-lg bg-surface-variant/30 hover:bg-surface-variant/50 transition-colors">
+<div class="flex items-center gap-3">
+<div class="w-6 text-center font-body-md text-body-md font-bold text-secondary">1</div>
+<span class="font-body-md text-body-md text-on-surface">Operations</span>
+</div>
+<span class="font-body-md text-body-md font-semibold text-secondary">99.1%</span>
+</div>
+<div class="flex items-center justify-between p-3 rounded-lg bg-surface-variant/30 hover:bg-surface-variant/50 transition-colors">
+<div class="flex items-center gap-3">
+<div class="w-6 text-center font-body-md text-body-md font-bold text-on-surface-variant">2</div>
+<span class="font-body-md text-body-md text-on-surface">Engineering</span>
+</div>
+<span class="font-body-md text-body-md font-semibold">97.5%</span>
+</div>
+<div class="flex items-center justify-between p-3 rounded-lg bg-surface-variant/30 hover:bg-surface-variant/50 transition-colors">
+<div class="flex items-center gap-3">
+<div class="w-6 text-center font-body-md text-body-md font-bold text-on-surface-variant">3</div>
+<span class="font-body-md text-body-md text-on-surface">Logistics</span>
+</div>
+<span class="font-body-md text-body-md font-semibold">94.2%</span>
+</div>
+<div class="flex items-center justify-between p-3 rounded-lg bg-error-container/30 border border-error/10 hover:bg-error-container/50 transition-colors mt-auto">
+<div class="flex items-center gap-3">
+<div class="w-6 text-center font-body-md text-body-md font-bold text-error">8</div>
+<span class="font-body-md text-body-md text-on-surface">Warehouse B</span>
+</div>
+<span class="font-body-md text-body-md font-semibold text-error">78.4%</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Data Table Section -->
+<div class="glass-card rounded-xl p-0 overflow-hidden">
+<div class="p-6 border-b border-outline-variant/30 flex flex-col md:flex-row md:items-center justify-between gap-4">
+<h3 class="font-section-header text-section-header text-on-surface">Employee Duty Roster</h3>
+<div class="flex items-center gap-3">
+<div class="relative">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant">search</span>
+<input class="w-full md:w-64 pl-10 pr-4 py-2 bg-surface-variant/30 border-none rounded-lg font-body-md text-body-md focus:bg-surface-card focus:ring-2 focus:ring-primary/50 transition-all placeholder:text-on-surface-variant/70" placeholder="Search employee..." type="text"/>
+</div>
+<button class="p-2 bg-surface-variant/30 rounded-lg text-on-surface-variant hover:bg-surface-variant/50 transition-colors">
+<span class="material-symbols-outlined">filter_list</span>
+</button>
+</div>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="border-b border-outline-variant/20 bg-surface-variant/10">
+<th class="py-4 px-6 font-list-title text-list-title text-on-surface-variant font-medium">Employee</th>
+<th class="py-4 px-6 font-list-title text-list-title text-on-surface-variant font-medium">Department</th>
+<th class="py-4 px-6 font-list-title text-list-title text-on-surface-variant font-medium">Role Level</th>
+<th class="py-4 px-6 font-list-title text-list-title text-on-surface-variant font-medium">Completion Rate</th>
+<th class="py-4 px-6 font-list-title text-list-title text-on-surface-variant font-medium">Status</th>
+<th class="py-4 px-6 font-list-title text-list-title text-on-surface-variant font-medium text-right">Actions</th>
+</tr>
+</thead>
+<tbody class="font-body-md text-body-md divide-y divide-outline-variant/10">
+<!-- Row 1 -->
+<tr class="hover:bg-surface-variant/10 transition-colors group">
+<td class="py-4 px-6">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-primary-container text-on-primary-container flex items-center justify-center font-bold text-xs">LZ</div>
+<div>
+<div class="font-medium text-on-surface">Li Wei (李伟)</div>
+<div class="font-caption text-caption text-on-surface-variant">ID: EMP-0012</div>
+</div>
+</div>
+</td>
+<td class="py-4 px-6 text-on-surface">Operations</td>
+<td class="py-4 px-6"><span class="px-2 py-1 bg-surface-variant/50 rounded text-xs font-medium text-on-surface">Manager</span></td>
+<td class="py-4 px-6">
+<div class="flex items-center gap-2">
+<span>100%</span>
+<div class="w-16 h-1.5 bg-surface-variant rounded-full overflow-hidden"><div class="bg-secondary h-full w-full"></div></div>
+</div>
+</td>
+<td class="py-4 px-6">
+<div class="flex items-center gap-2">
+<div class="status-light status-green"></div>
+<span class="text-secondary font-medium">Exemplary</span>
+</div>
+</td>
+<td class="py-4 px-6 text-right">
+<button class="text-primary hover:text-primary-container font-medium opacity-0 group-hover:opacity-100 transition-opacity">View Details</button>
+</td>
+</tr>
+<!-- Row 2 -->
+<tr class="hover:bg-surface-variant/10 transition-colors group">
+<td class="py-4 px-6">
+<div class="flex items-center gap-3">
+<img class="w-8 h-8 rounded-full object-cover" data-alt="A small, professional headshot photo of a young female engineer in a bright office setting, neutral background, soft light, modern corporate style." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCdxDtT6uBS0t1yUHzW_wtKNHUV9uHein2vmCIxM2tahGrld6aT4mzqvx1G1uPM6VSmFdtuUYLIljGVhAF526nsYzdzP-OGbGbsRojcXut7t2J9jeME217RJ7ndwZH8EJ4aCL4DD4yL5MSRrHOSZW2_uBO6a6GSOGq_daEk2cXJkXUDqg66ijzIIUXiIqIAEl1YDEltYkmqCLwVQCw-3e-PXFUZUlA6MdukcHKaNahoaApqYhk_PZRl"/>
+<div>
+<div class="font-medium text-on-surface">Zhang Min (张敏)</div>
+<div class="font-caption text-caption text-on-surface-variant">ID: EMP-0145</div>
+</div>
+</div>
+</td>
+<td class="py-4 px-6 text-on-surface">Engineering</td>
+<td class="py-4 px-6"><span class="px-2 py-1 bg-surface-variant/50 rounded text-xs font-medium text-on-surface">Staff</span></td>
+<td class="py-4 px-6">
+<div class="flex items-center gap-2">
+<span>85%</span>
+<div class="w-16 h-1.5 bg-surface-variant rounded-full overflow-hidden"><div class="bg-hazard-impending h-full" style="width: 85%"></div></div>
+</div>
+</td>
+<td class="py-4 px-6">
+<div class="flex items-center gap-2">
+<div class="status-light status-yellow"></div>
+<span class="text-hazard-impending font-medium">Pending Tasks</span>
+</div>
+</td>
+<td class="py-4 px-6 text-right">
+<button class="text-primary hover:text-primary-container font-medium opacity-0 group-hover:opacity-100 transition-opacity">View Details</button>
+</td>
+</tr>
+<!-- Row 3 -->
+<tr class="hover:bg-surface-variant/10 transition-colors group bg-error/5">
+<td class="py-4 px-6">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-surface-variant text-on-surface-variant flex items-center justify-center font-bold text-xs">WQ</div>
+<div>
+<div class="font-medium text-on-surface">Wang Qiang (王强)</div>
+<div class="font-caption text-caption text-on-surface-variant">ID: EMP-0882</div>
+</div>
+</div>
+</td>
+<td class="py-4 px-6 text-on-surface">Warehouse B</td>
+<td class="py-4 px-6"><span class="px-2 py-1 bg-surface-variant/50 rounded text-xs font-medium text-on-surface">Supervisor</span></td>
+<td class="py-4 px-6">
+<div class="flex items-center gap-2">
+<span>42%</span>
+<div class="w-16 h-1.5 bg-surface-variant rounded-full overflow-hidden"><div class="bg-error h-full" style="width: 42%"></div></div>
+</div>
+</td>
+<td class="py-4 px-6">
+<div class="flex items-center gap-2">
+<div class="status-light status-red"></div>
+<span class="text-error font-medium">Overdue (Critical)</span>
+</div>
+</td>
+<td class="py-4 px-6 text-right">
+<button class="text-error hover:text-on-error-container font-medium opacity-100 transition-opacity flex items-center justify-end gap-1 w-full">
+<span class="material-symbols-outlined text-sm">notifications_active</span> Nudge
+                                </button>
+</td>
+</tr>
+<!-- Row 4 -->
+<tr class="hover:bg-surface-variant/10 transition-colors group">
+<td class="py-4 px-6">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-primary-container text-on-primary-container flex items-center justify-center font-bold text-xs">CL</div>
+<div>
+<div class="font-medium text-on-surface">Chen Lei (陈雷)</div>
+<div class="font-caption text-caption text-on-surface-variant">ID: EMP-0231</div>
+</div>
+</div>
+</td>
+<td class="py-4 px-6 text-on-surface">Logistics</td>
+<td class="py-4 px-6"><span class="px-2 py-1 bg-surface-variant/50 rounded text-xs font-medium text-on-surface">Staff</span></td>
+<td class="py-4 px-6">
+<div class="flex items-center gap-2">
+<span>92%</span>
+<div class="w-16 h-1.5 bg-surface-variant rounded-full overflow-hidden"><div class="bg-secondary h-full" style="width: 92%"></div></div>
+</div>
+</td>
+<td class="py-4 px-6">
+<div class="flex items-center gap-2">
+<div class="status-light status-green"></div>
+<span class="text-secondary font-medium">On Track</span>
+</div>
+</td>
+<td class="py-4 px-6 text-right">
+<button class="text-primary hover:text-primary-container font-medium opacity-0 group-hover:opacity-100 transition-opacity">View Details</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="p-4 border-t border-outline-variant/20 flex items-center justify-between text-on-surface-variant font-caption text-caption">
+<span>Showing 1-4 of 1,245 employees</span>
+<div class="flex gap-2">
+<button class="px-2 py-1 rounded hover:bg-surface-variant/50 disabled:opacity-50" disabled="">&lt; Prev</button>
+<button class="px-2 py-1 rounded bg-primary/10 text-primary font-medium">1</button>
+<button class="px-2 py-1 rounded hover:bg-surface-variant/50">2</button>
+<button class="px-2 py-1 rounded hover:bg-surface-variant/50">3</button>
+<span>...</span>
+<button class="px-2 py-1 rounded hover:bg-surface-variant/50">Next &gt;</button>
+</div>
+</div>
+</div>
+</main>
+<!-- BottomNavBar (Mobile Only) -->
+<nav class="md:hidden fixed bottom-0 w-full bg-surface/90 backdrop-blur-md border-t border-outline-variant/20 z-50 pb-safe">
+<div class="flex justify-around items-center h-16 px-2">
+<a class="flex flex-col items-center justify-center w-full h-full text-on-surface-variant hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined mb-1">dashboard</span>
+<span class="text-[10px] font-medium">Dashboard</span>
+</a>
+<a class="flex flex-col items-center justify-center w-full h-full text-on-surface-variant hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined mb-1">list_alt</span>
+<span class="text-[10px] font-medium">Hazards</span>
+</a>
+<a class="flex flex-col items-center justify-center w-full h-full text-primary font-semibold relative" href="#">
+<span class="absolute -top-1 w-8 h-1 bg-primary rounded-b-full"></span>
+<span class="material-symbols-outlined mb-1" style="font-variation-settings: 'FILL' 1;">verified_user</span>
+<span class="text-[10px]">Duty</span>
+</a>
+<a class="flex flex-col items-center justify-center w-full h-full text-on-surface-variant hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined mb-1">settings</span>
+<span class="text-[10px] font-medium">Settings</span>
+</a>
+</div>
+</nav>
+</body></html>

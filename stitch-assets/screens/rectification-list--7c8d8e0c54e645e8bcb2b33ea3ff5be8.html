@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Hazard List - Xuran Safety</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;family=Manrope:wght@600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface": "#faf8ff",
+                        "surface-bg": "#F8F9FA",
+                        "error-container": "#ffdad6",
+                        "background": "#faf8ff",
+                        "surface-tint": "#1d59c1",
+                        "on-secondary-container": "#00714d",
+                        "surface-dim": "#d9d9e2",
+                        "surface-container-high": "#e7e7f1",
+                        "secondary-fixed": "#6ffbbe",
+                        "surface-container-highest": "#e1e2eb",
+                        "tertiary-fixed": "#ffdbcd",
+                        "inverse-on-surface": "#f0f0f9",
+                        "error": "#ba1a1a",
+                        "on-error": "#ffffff",
+                        "surface-bright": "#faf8ff",
+                        "on-background": "#191b22",
+                        "sidebar-bg": "rgba(255, 255, 255, 0.7)",
+                        "inverse-primary": "#b0c6ff",
+                        "on-secondary-fixed": "#002113",
+                        "primary-fixed-dim": "#b0c6ff",
+                        "outline": "#737784",
+                        "on-primary-fixed": "#001945",
+                        "on-primary-container": "#bcceff",
+                        "primary-container": "#0f52ba",
+                        "outline-variant": "#c3c6d5",
+                        "inverse-surface": "#2e3037",
+                        "on-error-container": "#93000a",
+                        "surface-variant": "#e1e2eb",
+                        "secondary-container": "#6cf8bb",
+                        "on-tertiary-fixed-variant": "#7d2d00",
+                        "surface-container-lowest": "#ffffff",
+                        "on-tertiary": "#ffffff",
+                        "on-primary-fixed-variant": "#00419c",
+                        "tertiary-fixed-dim": "#ffb596",
+                        "secondary-fixed-dim": "#4edea3",
+                        "tertiary": "#732900",
+                        "hazard-overdue": "#991B1B",
+                        "on-secondary-fixed-variant": "#005236",
+                        "on-primary": "#ffffff",
+                        "primary-fixed": "#d9e2ff",
+                        "on-tertiary-container": "#ffc0a7",
+                        "surface-container": "#ededf6",
+                        "on-surface": "#191b22",
+                        "tertiary-container": "#993900",
+                        "hazard-major": "#EF4444",
+                        "hazard-impending": "#F59E0B",
+                        "primary": "#003c90",
+                        "on-secondary": "#ffffff",
+                        "secondary": "#006c49",
+                        "surface-card": "#FFFFFF",
+                        "on-tertiary-fixed": "#360f00",
+                        "surface-container-low": "#f3f3fc",
+                        "on-surface-variant": "#434653"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "margin-desktop": "32px",
+                        "stack-gap": "12px",
+                        "card-padding": "24px",
+                        "margin-mobile": "16px",
+                        "sidebar-width": "260px",
+                        "sidebar-collapsed": "80px",
+                        "gutter": "24px"
+                    },
+                    "fontFamily": {
+                        "list-title": ["Inter"],
+                        "display-brand": ["Manrope"],
+                        "headline-lg": ["Manrope"],
+                        "body-md": ["Inter"],
+                        "caption": ["Inter"],
+                        "status-label": ["Inter"],
+                        "headline-lg-mobile": ["Manrope"],
+                        "section-header": ["Manrope"]
+                    },
+                    "fontSize": {
+                        "list-title": ["16px", { "lineHeight": "22px", "fontWeight": "600" }],
+                        "display-brand": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+                        "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "caption": ["12px", { "lineHeight": "16px", "fontWeight": "400" }],
+                        "status-label": ["11px", { "lineHeight": "12px", "letterSpacing": "0.05em", "fontWeight": "700" }],
+                        "headline-lg-mobile": ["24px", { "lineHeight": "32px", "fontWeight": "700" }],
+                        "section-header": ["18px", { "lineHeight": "24px", "fontWeight": "600" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body {
+            background-color: #F8F9FA;
+            color: #191b22;
+        }
+        
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        
+        .material-symbols-outlined.filled {
+            font-variation-settings: 'FILL' 1;
+        }
+        
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+    </style>
+</head>
+<body class="bg-surface-bg font-body-md antialiased min-h-screen">
+<!-- SideNavBar -->
+<nav class="hidden md:flex w-sidebar-width h-screen fixed left-0 top-0 bg-sidebar-bg dark:bg-inverse-surface/70 backdrop-blur-xl border-r border-outline-variant/30 shadow-sm flex-col py-6 z-50">
+<!-- Brand -->
+<div class="px-6 mb-8 flex items-center gap-3">
+<div class="w-10 h-10 rounded-lg bg-primary text-on-primary flex items-center justify-center font-display-brand font-bold text-xl">
+                X
+            </div>
+<div>
+<h1 class="font-display-brand text-display-brand text-primary dark:text-inverse-primary">Xuran Safety</h1>
+<p class="font-caption text-caption text-on-surface-variant">徐燃安巡</p>
+</div>
+</div>
+<!-- Navigation Links -->
+<div class="flex-1 px-4 space-y-1">
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-variant/50 transition-colors hover:bg-primary-fixed-dim/20 transition-all duration-200 ease-in-out active:scale-95 rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="font-body-md text-body-md">Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 bg-primary/10 text-primary border-l-4 border-primary font-semibold hover:bg-primary-fixed-dim/20 transition-all duration-200 ease-in-out active:scale-95 rounded-r-lg" href="#">
+<span class="material-symbols-outlined filled" data-icon="list_alt">list_alt</span>
+<span class="font-body-md text-body-md">Hazard List</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-variant/50 transition-colors hover:bg-primary-fixed-dim/20 transition-all duration-200 ease-in-out active:scale-95 rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="verified_user">verified_user</span>
+<span class="font-body-md text-body-md">Safety Duty</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-variant/50 transition-colors hover:bg-primary-fixed-dim/20 transition-all duration-200 ease-in-out active:scale-95 rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="chat_bubble">chat_bubble</span>
+<span class="font-body-md text-body-md">Messages</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-variant/50 transition-colors hover:bg-primary-fixed-dim/20 transition-all duration-200 ease-in-out active:scale-95 rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="font-body-md text-body-md">Settings</span>
+</a>
+</div>
+<!-- CTA & Footer -->
+<div class="px-4 mt-auto space-y-4">
+<button class="w-full bg-primary text-on-primary py-3 px-4 rounded-lg font-body-md font-semibold hover:bg-primary/90 transition-colors flex items-center justify-center gap-2 shadow-sm">
+<span class="material-symbols-outlined text-sm">add</span>
+                New Hazard
+            </button>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-variant/50 transition-colors hover:bg-primary-fixed-dim/20 transition-all duration-200 ease-in-out active:scale-95 rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="help">help</span>
+<span class="font-body-md text-body-md">Help Center</span>
+</a>
+</div>
+</nav>
+<!-- Main Content Area -->
+<main class="md:ml-sidebar-width min-h-screen flex flex-col">
+<!-- TopNavBar -->
+<header class="h-16 fixed top-0 right-0 left-sidebar-width z-40 bg-surface-bg/80 dark:bg-surface-dim/80 backdrop-blur-md border-b border-outline-variant/20 flex justify-between items-center px-margin-desktop w-full transition-all duration-200 focus-within:ring-2 focus-within:ring-primary/20">
+<!-- Search (Left) -->
+<div class="flex-1 max-w-md">
+<div class="relative group">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant group-focus-within:text-primary transition-colors">search</span>
+<input class="w-full bg-surface-variant/30 border-none rounded-full py-2 pl-10 pr-4 font-body-md text-on-surface focus:ring-2 focus:ring-primary focus:bg-surface-card transition-all outline-none" placeholder="Search hazards..." type="text"/>
+</div>
+</div>
+<!-- Actions (Right) -->
+<div class="flex items-center gap-4">
+<button class="text-primary font-section-header text-section-header hover:text-primary-container transition-colors">
+                    Switch Role
+                </button>
+<div class="flex items-center gap-2 border-l border-outline-variant/30 pl-4">
+<button class="p-2 text-on-surface-variant hover:text-primary hover:bg-surface-variant/50 rounded-full transition-colors relative">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+<span class="absolute top-2 right-2 w-2 h-2 bg-hazard-major rounded-full border border-surface-card"></span>
+</button>
+<button class="p-2 text-on-surface-variant hover:text-primary hover:bg-surface-variant/50 rounded-full transition-colors">
+<img class="w-8 h-8 rounded-full object-cover" data-alt="A small circular avatar portrait of a professional worker in a safety helmet, clean corporate lighting, modern minimalist style." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDC6nB36caI0h8DvES-cj_DdkOQKxg7Joxo0Ze_DIaYOFX7oA60rMkD5jH4y2_bZw7MdmL51EuTqT0gTXbkawH4bZpw8v3HDxn1S4sLW6vH0qj4v-bCtZSIqviJ9JI13NQ5FtAit7AtacklrMAM1uQ2jTnRLA-IkEYJ-ckxQhK3Blt0Qu8S_P08pnk7Wymug2tKZSCKrPsrZUDC-SpnyuMQuosyupvFoj8tim2Y4ENA2SQ0a74QCFNI"/>
+</button>
+</div>
+</div>
+</header>
+<!-- Page Content -->
+<div class="flex-1 pt-24 px-margin-mobile md:px-margin-desktop pb-12">
+<div class="mb-8 flex flex-col md:flex-row md:items-end justify-between gap-4">
+<div>
+<h2 class="font-headline-lg text-headline-lg text-on-surface">Hazard Records</h2>
+<p class="font-body-md text-on-surface-variant mt-1">Manage and track identified safety issues across all departments.</p>
+</div>
+<div class="flex gap-2">
+<button class="px-4 py-2 bg-surface-card border border-outline-variant rounded-lg font-body-md text-on-surface flex items-center gap-2 hover:bg-surface-variant/20 transition-colors shadow-sm">
+<span class="material-symbols-outlined text-sm">download</span>
+                        Export
+                    </button>
+</div>
+</div>
+<!-- Main Card Container -->
+<div class="bg-surface-card rounded-xl shadow-sm p-card-padding">
+<!-- Filters -->
+<div class="flex flex-wrap gap-4 mb-6 pb-6 border-b border-outline-variant/20">
+<div class="relative min-w-[160px]">
+<select class="w-full appearance-none bg-surface-variant/20 border border-outline-variant/50 rounded-lg py-2 pl-4 pr-10 font-body-md text-on-surface focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all cursor-pointer">
+<option value="">All Statuses</option>
+<option value="open">Open</option>
+<option value="in_progress">In Progress</option>
+<option value="resolved">Resolved</option>
+</select>
+<span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-on-surface-variant pointer-events-none">expand_more</span>
+</div>
+<div class="relative min-w-[160px]">
+<select class="w-full appearance-none bg-surface-variant/20 border border-outline-variant/50 rounded-lg py-2 pl-4 pr-10 font-body-md text-on-surface focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all cursor-pointer">
+<option value="">All Severities</option>
+<option value="critical">Critical</option>
+<option value="major">Major</option>
+<option value="minor">Minor</option>
+</select>
+<span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-on-surface-variant pointer-events-none">expand_more</span>
+</div>
+<div class="relative min-w-[160px]">
+<select class="w-full appearance-none bg-surface-variant/20 border border-outline-variant/50 rounded-lg py-2 pl-4 pr-10 font-body-md text-on-surface focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all cursor-pointer">
+<option value="">All Departments</option>
+<option value="engineering">Engineering</option>
+<option value="operations">Operations</option>
+<option value="maintenance">Maintenance</option>
+</select>
+<span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-on-surface-variant pointer-events-none">expand_more</span>
+</div>
+<div class="relative min-w-[200px] flex-1 max-w-xs">
+<div class="relative group">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant group-focus-within:text-primary transition-colors text-sm">calendar_today</span>
+<input class="w-full bg-surface-variant/20 border border-outline-variant/50 rounded-lg py-2 pl-10 pr-4 font-body-md text-on-surface focus:ring-2 focus:ring-primary focus:border-primary transition-all outline-none" placeholder="Select Date Range" type="text"/>
+</div>
+</div>
+<button class="px-4 py-2 text-primary font-body-md hover:bg-primary/5 rounded-lg transition-colors ml-auto flex items-center gap-2">
+<span class="material-symbols-outlined text-sm">filter_list_off</span>
+                        Clear Filters
+                    </button>
+</div>
+<!-- Data Table -->
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="border-b border-outline-variant/30 text-on-surface-variant font-caption text-caption uppercase tracking-wider">
+<th class="py-3 px-4 font-medium">Hazard ID</th>
+<th class="py-3 px-4 font-medium">Title &amp; Description</th>
+<th class="py-3 px-4 font-medium">Severity</th>
+<th class="py-3 px-4 font-medium">Status</th>
+<th class="py-3 px-4 font-medium">Dept / Assignee</th>
+<th class="py-3 px-4 font-medium">Deadline</th>
+<th class="py-3 px-4 font-medium text-right">Actions</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant/20">
+<!-- Row 1 -->
+<tr class="hover:bg-surface-variant/10 transition-colors group">
+<td class="py-4 px-4 font-body-md text-on-surface-variant">HZ-2023-089</td>
+<td class="py-4 px-4 max-w-xs">
+<p class="font-list-title text-list-title text-on-surface truncate">Exposed wiring near water pump</p>
+<p class="font-caption text-caption text-on-surface-variant truncate mt-1">Sector 4 pump room shows exposed live wires near main valve.</p>
+</td>
+<td class="py-4 px-4">
+<span class="inline-flex items-center px-2.5 py-0.5 rounded-full font-status-label text-status-label bg-hazard-major/10 text-hazard-major">
+<span class="w-1.5 h-1.5 rounded-full bg-hazard-major mr-1.5"></span>
+                                        Major
+                                    </span>
+</td>
+<td class="py-4 px-4">
+<span class="inline-flex items-center px-2.5 py-0.5 rounded border border-outline-variant/50 font-status-label text-status-label text-on-surface-variant bg-surface-variant/30">
+                                        Open
+                                    </span>
+</td>
+<td class="py-4 px-4">
+<div class="flex items-center gap-2">
+<img class="w-6 h-6 rounded-full object-cover" data-alt="A tiny 24px circular avatar portrait of a maintenance worker, simple clear lighting, neutral background." src="https://lh3.googleusercontent.com/aida-public/AB6AXuD004zUseCn7VmerwUY5npmX9kXASLXYxfv7q8gvRRlbeki4Vwv2JrNVVgbbqc5yRjWuhFIBFSplPv2l4AxXHWTXeuwAFud986-OpAyOouMYxT1LbqBd439QW0dg_IngaZZgld2XLD9EhXFEe9XIrOKc29QAU7R17HJfUwfBje_Se_xsbhe9UPfVRElxfhZ7WYtKkNI8mlP4rxnkuT3xKzpP1Wsq3E3O9wPxIqY60CQqKP9iS8H9d-S"/>
+<div>
+<p class="font-body-md text-on-surface text-sm">Maintenance</p>
+<p class="font-caption text-caption text-on-surface-variant">J. Doe</p>
+</div>
+</div>
+</td>
+<td class="py-4 px-4 font-body-md text-hazard-major font-medium">
+                                    Oct 25, 2023
+                                </td>
+<td class="py-4 px-4 text-right">
+<button class="p-2 text-on-surface-variant hover:text-primary hover:bg-primary/5 rounded-lg transition-colors opacity-0 group-hover:opacity-100 focus:opacity-100">
+<span class="material-symbols-outlined text-[20px]">more_vert</span>
+</button>
+</td>
+</tr>
+<!-- Row 2 -->
+<tr class="hover:bg-surface-variant/10 transition-colors group">
+<td class="py-4 px-4 font-body-md text-on-surface-variant">HZ-2023-088</td>
+<td class="py-4 px-4 max-w-xs">
+<p class="font-list-title text-list-title text-on-surface truncate">Blocked fire exit route</p>
+<p class="font-caption text-caption text-on-surface-variant truncate mt-1">Pallets stacked in hallway B blocking emergency exit path.</p>
+</td>
+<td class="py-4 px-4">
+<span class="inline-flex items-center px-2.5 py-0.5 rounded-full font-status-label text-status-label bg-hazard-overdue/10 text-hazard-overdue">
+<span class="w-1.5 h-1.5 rounded-full bg-hazard-overdue mr-1.5"></span>
+                                        Critical
+                                    </span>
+</td>
+<td class="py-4 px-4">
+<span class="inline-flex items-center px-2.5 py-0.5 rounded border border-primary/30 font-status-label text-status-label text-primary bg-primary/5">
+                                        In Progress
+                                    </span>
+</td>
+<td class="py-4 px-4">
+<div class="flex items-center gap-2">
+<div class="w-6 h-6 rounded-full bg-surface-variant flex items-center justify-center font-caption text-xs text-on-surface-variant">O</div>
+<div>
+<p class="font-body-md text-on-surface text-sm">Operations</p>
+<p class="font-caption text-caption text-on-surface-variant">S. Smith</p>
+</div>
+</div>
+</td>
+<td class="py-4 px-4 font-body-md text-on-surface-variant">
+                                    Oct 26, 2023
+                                </td>
+<td class="py-4 px-4 text-right">
+<button class="p-2 text-on-surface-variant hover:text-primary hover:bg-primary/5 rounded-lg transition-colors opacity-0 group-hover:opacity-100 focus:opacity-100">
+<span class="material-symbols-outlined text-[20px]">more_vert</span>
+</button>
+</td>
+</tr>
+<!-- Row 3 -->
+<tr class="hover:bg-surface-variant/10 transition-colors group">
+<td class="py-4 px-4 font-body-md text-on-surface-variant">HZ-2023-087</td>
+<td class="py-4 px-4 max-w-xs">
+<p class="font-list-title text-list-title text-on-surface truncate">Slippery floor in loading dock</p>
+<p class="font-caption text-caption text-on-surface-variant truncate mt-1">Oil spill near dock 3 needs immediate cleaning.</p>
+</td>
+<td class="py-4 px-4">
+<span class="inline-flex items-center px-2.5 py-0.5 rounded-full font-status-label text-status-label bg-hazard-impending/10 text-hazard-impending">
+<span class="w-1.5 h-1.5 rounded-full bg-hazard-impending mr-1.5"></span>
+                                        Minor
+                                    </span>
+</td>
+<td class="py-4 px-4">
+<span class="inline-flex items-center px-2.5 py-0.5 rounded border border-secondary/30 font-status-label text-status-label text-secondary bg-secondary/5">
+                                        Resolved
+                                    </span>
+</td>
+<td class="py-4 px-4">
+<div class="flex items-center gap-2">
+<div class="w-6 h-6 rounded-full bg-surface-variant flex items-center justify-center font-caption text-xs text-on-surface-variant">F</div>
+<div>
+<p class="font-body-md text-on-surface text-sm">Facilities</p>
+<p class="font-caption text-caption text-on-surface-variant">M. Johnson</p>
+</div>
+</div>
+</td>
+<td class="py-4 px-4 font-body-md text-on-surface-variant">
+                                    Oct 22, 2023
+                                </td>
+<td class="py-4 px-4 text-right">
+<button class="p-2 text-on-surface-variant hover:text-primary hover:bg-primary/5 rounded-lg transition-colors opacity-0 group-hover:opacity-100 focus:opacity-100">
+<span class="material-symbols-outlined text-[20px]">more_vert</span>
+</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Pagination -->
+<div class="flex items-center justify-between mt-6 pt-4 border-t border-outline-variant/20">
+<p class="font-caption text-caption text-on-surface-variant">Showing 1 to 3 of 45 results</p>
+<div class="flex items-center gap-1">
+<button class="p-1 rounded text-on-surface-variant hover:bg-surface-variant/30 disabled:opacity-50" disabled="">
+<span class="material-symbols-outlined text-sm">chevron_left</span>
+</button>
+<button class="w-8 h-8 rounded bg-primary/10 text-primary font-body-md font-medium flex items-center justify-center">1</button>
+<button class="w-8 h-8 rounded hover:bg-surface-variant/30 text-on-surface font-body-md flex items-center justify-center transition-colors">2</button>
+<button class="w-8 h-8 rounded hover:bg-surface-variant/30 text-on-surface font-body-md flex items-center justify-center transition-colors">3</button>
+<span class="text-on-surface-variant px-1">...</span>
+<button class="p-1 rounded text-on-surface-variant hover:bg-surface-variant/30 transition-colors">
+<span class="material-symbols-outlined text-sm">chevron_right</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</main>
+</body></html>

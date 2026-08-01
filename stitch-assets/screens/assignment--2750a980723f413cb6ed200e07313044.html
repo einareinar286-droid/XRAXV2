@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Assignment Panel</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;family=Manrope:wght@600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface": "#faf8ff",
+                        "surface-bg": "#F8F9FA",
+                        "error-container": "#ffdad6",
+                        "background": "#faf8ff",
+                        "surface-tint": "#1d59c1",
+                        "on-secondary-container": "#00714d",
+                        "surface-dim": "#d9d9e2",
+                        "surface-container-high": "#e7e7f1",
+                        "secondary-fixed": "#6ffbbe",
+                        "surface-container-highest": "#e1e2eb",
+                        "tertiary-fixed": "#ffdbcd",
+                        "inverse-on-surface": "#f0f0f9",
+                        "error": "#ba1a1a",
+                        "on-error": "#ffffff",
+                        "surface-bright": "#faf8ff",
+                        "on-background": "#191b22",
+                        "sidebar-bg": "rgba(255, 255, 255, 0.7)",
+                        "inverse-primary": "#b0c6ff",
+                        "on-secondary-fixed": "#002113",
+                        "primary-fixed-dim": "#b0c6ff",
+                        "outline": "#737784",
+                        "on-primary-fixed": "#001945",
+                        "on-primary-container": "#bcceff",
+                        "primary-container": "#0f52ba",
+                        "outline-variant": "#c3c6d5",
+                        "inverse-surface": "#2e3037",
+                        "on-error-container": "#93000a",
+                        "surface-variant": "#e1e2eb",
+                        "secondary-container": "#6cf8bb",
+                        "on-tertiary-fixed-variant": "#7d2d00",
+                        "surface-container-lowest": "#ffffff",
+                        "on-tertiary": "#ffffff",
+                        "on-primary-fixed-variant": "#00419c",
+                        "tertiary-fixed-dim": "#ffb596",
+                        "secondary-fixed-dim": "#4edea3",
+                        "tertiary": "#732900",
+                        "hazard-overdue": "#991B1B",
+                        "on-secondary-fixed-variant": "#005236",
+                        "on-primary": "#ffffff",
+                        "primary-fixed": "#d9e2ff",
+                        "on-tertiary-container": "#ffc0a7",
+                        "surface-container": "#ededf6",
+                        "on-surface": "#191b22",
+                        "tertiary-container": "#993900",
+                        "hazard-major": "#EF4444",
+                        "hazard-impending": "#F59E0B",
+                        "primary": "#003c90",
+                        "on-secondary": "#ffffff",
+                        "secondary": "#006c49",
+                        "surface-card": "#FFFFFF",
+                        "on-tertiary-fixed": "#360f00",
+                        "surface-container-low": "#f3f3fc",
+                        "on-surface-variant": "#434653"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "margin-desktop": "32px",
+                        "stack-gap": "12px",
+                        "card-padding": "24px",
+                        "margin-mobile": "16px",
+                        "sidebar-width": "260px",
+                        "sidebar-collapsed": "80px",
+                        "gutter": "24px"
+                    },
+                    "fontFamily": {
+                        "list-title": ["Inter"],
+                        "display-brand": ["Manrope"],
+                        "headline-lg": ["Manrope"],
+                        "body-md": ["Inter"],
+                        "caption": ["Inter"],
+                        "status-label": ["Inter"],
+                        "headline-lg-mobile": ["Manrope"],
+                        "section-header": ["Manrope"]
+                    },
+                    "fontSize": {
+                        "list-title": ["16px", { "lineHeight": "22px", "fontWeight": "600" }],
+                        "display-brand": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+                        "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "caption": ["12px", { "lineHeight": "16px", "fontWeight": "400" }],
+                        "status-label": ["11px", { "lineHeight": "12px", "letterSpacing": "0.05em", "fontWeight": "700" }],
+                        "headline-lg-mobile": ["24px", { "lineHeight": "32px", "fontWeight": "700" }],
+                        "section-header": ["18px", { "lineHeight": "24px", "fontWeight": "600" }]
+                    }
+                },
+            },
+        }
+    </script>
+<style type="text/tailwindcss">
+        @layer utilities {
+            .glass-panel {
+                @apply bg-surface-card/80 backdrop-blur-xl border border-surface-container-highest shadow-[0_8px_32px_-4px_rgba(0,0,0,0.05)];
+            }
+        }
+        
+        .toggle-checkbox:checked {
+            @apply right-0 border-primary bg-primary;
+        }
+        .toggle-checkbox:checked + .toggle-label {
+            @apply bg-primary;
+        }
+    </style>
+</head>
+<body class="bg-surface-bg text-on-surface font-body-md antialiased overflow-hidden">
+<!-- Top Navigation Bar -->
+<header class="h-16 fixed top-0 right-0 left-sidebar-width z-40 backdrop-blur-md border-b border-outline-variant/20 bg-surface-bg/80 dark:bg-surface-dim/80 flex justify-between items-center px-margin-desktop w-full md:flex hidden">
+<div class="flex items-center w-full max-w-md focus-within:ring-2 focus-within:ring-primary/20 rounded-full bg-surface-container-high/50 px-4 py-2">
+<span class="material-symbols-outlined text-outline mr-2">search</span>
+<input class="bg-transparent border-none outline-none w-full text-on-surface text-body-md focus:ring-0 p-0 placeholder:text-outline/70" placeholder="Search..." type="text"/>
+</div>
+<div class="flex items-center gap-4">
+<button class="text-on-surface-variant hover:text-primary transition-colors p-2 rounded-full hover:bg-surface-container/50">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">notifications</span>
+</button>
+<div class="h-8 w-8 rounded-full bg-primary-container text-on-primary-container flex items-center justify-center font-bold font-list-title shadow-sm">
+                JS
+            </div>
+<button class="text-primary font-semibold hover:bg-primary/5 px-4 py-2 rounded-lg transition-colors border border-primary/20">
+                Switch Role
+            </button>
+</div>
+</header>
+<!-- Side Navigation Bar -->
+<aside class="w-sidebar-width h-screen fixed left-0 top-0 backdrop-blur-xl border-r border-outline-variant/30 shadow-sm bg-sidebar-bg dark:bg-inverse-surface/70 flex flex-col h-full py-6 z-50 md:flex hidden">
+<div class="px-6 mb-8 flex items-center gap-3">
+<div class="w-10 h-10 rounded-xl bg-primary flex items-center justify-center shadow-lg shadow-primary/20">
+<span class="material-symbols-outlined text-on-primary" style="font-variation-settings: 'FILL' 1;">security</span>
+</div>
+<div>
+<h1 class="font-display-brand text-display-brand text-primary dark:text-inverse-primary leading-tight">Xuran Safety</h1>
+<p class="font-caption text-caption text-outline text-xs mt-0.5">徐燃安巡</p>
+</div>
+</div>
+<nav class="flex-1 px-4 space-y-1">
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-variant/50 transition-colors hover:bg-primary-fixed-dim/20 transition-all duration-200 ease-in-out active:scale-95 rounded-lg" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-body-md">Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 bg-primary/10 text-primary border-l-4 border-primary font-semibold hover:bg-primary-fixed-dim/20 transition-all duration-200 ease-in-out active:scale-95 rounded-r-lg" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">list_alt</span>
+<span class="font-body-md font-semibold">Hazard List</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-variant/50 transition-colors hover:bg-primary-fixed-dim/20 transition-all duration-200 ease-in-out active:scale-95 rounded-lg" href="#">
+<span class="material-symbols-outlined">verified_user</span>
+<span class="font-body-md">Safety Duty</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-variant/50 transition-colors hover:bg-primary-fixed-dim/20 transition-all duration-200 ease-in-out active:scale-95 rounded-lg" href="#">
+<span class="material-symbols-outlined">chat_bubble</span>
+<span class="font-body-md">Messages</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-variant/50 transition-colors hover:bg-primary-fixed-dim/20 transition-all duration-200 ease-in-out active:scale-95 rounded-lg" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-body-md">Settings</span>
+</a>
+</nav>
+<div class="px-6 mt-auto">
+<button class="w-full bg-primary text-on-primary py-3 rounded-xl font-semibold shadow-md shadow-primary/20 hover:bg-primary/90 transition-all active:scale-95 flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-sm">add</span>
+                New Hazard
+            </button>
+<a class="flex items-center justify-center gap-2 mt-4 text-outline hover:text-on-surface transition-colors font-caption" href="#">
+<span class="material-symbols-outlined text-sm">help</span>
+                Help Center
+            </a>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="md:ml-sidebar-width pt-16 md:p-margin-desktop p-margin-mobile h-screen overflow-y-auto relative flex items-center justify-center">
+<!-- Abstract Background Decoration -->
+<div class="absolute top-0 right-0 w-96 h-96 bg-primary/5 rounded-full blur-3xl -z-10 pointer-events-none transform translate-x-1/2 -translate-y-1/2"></div>
+<div class="absolute bottom-0 left-0 w-80 h-80 bg-secondary/5 rounded-full blur-3xl -z-10 pointer-events-none transform -translate-x-1/3 translate-y-1/3"></div>
+<!-- Assignment Modal Panel -->
+<div class="glass-panel w-full max-w-2xl rounded-2xl p-card-padding relative overflow-hidden">
+<!-- Decorative Accent Bar -->
+<div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary via-primary/50 to-transparent"></div>
+<div class="flex items-start justify-between mb-8">
+<div>
+<h2 class="font-headline-lg text-headline-lg text-on-surface mb-1">安监交办</h2>
+<p class="font-body-md text-on-surface-variant">Assign hazard rectification details</p>
+</div>
+<button class="text-outline hover:text-error transition-colors p-2 rounded-full hover:bg-error-container/20">
+<span class="material-symbols-outlined">close</span>
+</button>
+</div>
+<form class="space-y-6">
+<!-- Grid Layout for Inputs -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<!-- Responsible Department -->
+<div class="space-y-2">
+<label class="block font-list-title text-list-title text-on-surface">Responsible Department</label>
+<div class="relative">
+<select class="w-full bg-[#F1F3F5] border-none text-on-surface rounded-xl px-4 py-3 font-body-md focus:bg-surface-card focus:ring-2 focus:ring-primary appearance-none transition-all pr-10">
+<option value="marketing">Marketing Dept</option>
+<option value="operations">Operations Dept</option>
+<option value="engineering">Engineering</option>
+<option value="hr">Human Resources</option>
+</select>
+<span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-outline pointer-events-none">expand_more</span>
+</div>
+</div>
+<!-- Responsible Person -->
+<div class="space-y-2">
+<label class="block font-list-title text-list-title text-on-surface">Responsible Person</label>
+<div class="relative flex items-center bg-[#F1F3F5] rounded-xl focus-within:bg-surface-card focus-within:ring-2 focus-within:ring-primary transition-all p-1 pl-3">
+<span class="material-symbols-outlined text-outline mr-2 text-[20px]">person</span>
+<input class="w-full bg-transparent border-none focus:ring-0 p-2 font-body-md text-on-surface placeholder:text-outline/60 outline-none" placeholder="Search employee..." type="text" value="Jane Doe"/>
+<button class="ml-auto text-primary hover:bg-primary/10 p-1.5 rounded-lg transition-colors" type="button">
+<span class="material-symbols-outlined text-[18px]">search</span>
+</button>
+</div>
+</div>
+<!-- Rectification Deadline -->
+<div class="space-y-2 md:col-span-2">
+<label class="block font-list-title text-list-title text-on-surface">Rectification Deadline</label>
+<div class="relative">
+<input class="w-full bg-[#F1F3F5] border-none text-on-surface rounded-xl px-4 py-3 font-body-md focus:bg-surface-card focus:ring-2 focus:ring-primary transition-all" type="date"/>
+</div>
+</div>
+<!-- Suggestion / Remarks -->
+<div class="space-y-2 md:col-span-2">
+<label class="block font-list-title text-list-title text-on-surface">Suggestion</label>
+<textarea class="w-full bg-[#F1F3F5] border-none text-on-surface rounded-xl px-4 py-3 font-body-md focus:bg-surface-card focus:ring-2 focus:ring-primary transition-all resize-none" placeholder="Enter detailed suggestions or requirements for rectification..." rows="4"></textarea>
+</div>
+</div>
+<!-- Footer Actions & Toggle -->
+<div class="pt-6 border-t border-outline-variant/30 flex flex-col sm:flex-row items-center justify-between gap-4">
+<!-- Public Summary Toggle -->
+<div class="flex items-center gap-3">
+<div class="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in">
+<input class="toggle-checkbox absolute block w-5 h-5 rounded-full bg-white border-4 border-surface-container-highest appearance-none cursor-pointer transition-transform duration-200 ease-in-out z-10" id="public_toggle" name="toggle" type="checkbox"/>
+<label class="toggle-label block overflow-hidden h-5 rounded-full bg-surface-container-highest cursor-pointer" for="public_toggle"></label>
+</div>
+<div>
+<span class="block font-list-title text-list-title text-on-surface">Public Summary</span>
+<span class="block font-caption text-caption text-outline">Visible to all departments</span>
+</div>
+</div>
+<!-- Action Buttons -->
+<div class="flex items-center gap-3 w-full sm:w-auto">
+<button class="flex-1 sm:flex-none px-6 py-2.5 rounded-xl font-list-title text-on-surface-variant hover:bg-surface-variant/50 transition-colors border border-transparent" type="button">
+                            Cancel
+                        </button>
+<button class="flex-1 sm:flex-none px-6 py-2.5 rounded-xl font-list-title bg-primary text-on-primary shadow-md shadow-primary/20 hover:bg-primary/90 hover:-translate-y-0.5 transition-all active:scale-95 flex items-center justify-center gap-2" type="submit">
+<span class="material-symbols-outlined text-sm">send</span>
+                            Confirm Assignment
+                        </button>
+</div>
+</div>
+</form>
+</div>
+</main>
+<!-- Mobile Bottom Navigation (Hidden on Desktop) -->
+<nav class="md:hidden fixed bottom-0 left-0 w-full bg-surface-card/90 backdrop-blur-lg border-t border-outline-variant/20 flex justify-around items-center h-16 z-50 px-2 pb-safe">
+<a class="flex flex-col items-center justify-center w-16 h-full text-on-surface-variant hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined text-[24px]">dashboard</span>
+<span class="text-[10px] mt-1 font-medium">Dashboard</span>
+</a>
+<a class="flex flex-col items-center justify-center w-16 h-full text-primary font-bold relative" href="#">
+<div class="absolute top-0 w-8 h-1 bg-primary rounded-b-full"></div>
+<span class="material-symbols-outlined text-[24px]" style="font-variation-settings: 'FILL' 1;">list_alt</span>
+<span class="text-[10px] mt-1 font-medium">Hazards</span>
+</a>
+<a class="flex flex-col items-center justify-center w-16 h-full text-on-surface-variant hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined text-[24px]">verified_user</span>
+<span class="text-[10px] mt-1 font-medium">Duty</span>
+</a>
+<a class="flex flex-col items-center justify-center w-16 h-full text-on-surface-variant hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined text-[24px]">person</span>
+<span class="text-[10px] mt-1 font-medium">Profile</span>
+</a>
+</nav>
+<script>
+        // Simple toggle logic for the custom checkbox
+        const toggleCheckbox = document.getElementById('public_toggle');
+        toggleCheckbox.addEventListener('change', function() {
+            if(this.checked) {
+                this.style.transform = 'translateX(100%)';
+            } else {
+                this.style.transform = 'translateX(0)';
+            }
+        });
+    </script>
+</body></html>
