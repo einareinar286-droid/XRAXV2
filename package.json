@@ -1,9 +1,10 @@
 {
-  "name": "xuran-anxun",
-  "version": "0.1.0",
+  "name": "xraxv2",
+  "version": "0.2.0",
   "private": true,
   "description": "徐燃安巡：微信小程序优先的燃气安全隐患闭环演示",
   "scripts": {
+    "test": "node --test tests/issues/*.test.mjs",
     "dev:mp-weixin": "uni -p mp-weixin",
     "build:mp-weixin": "uni build -p mp-weixin",
     "dev:h5": "uni",

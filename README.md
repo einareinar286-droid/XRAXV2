@@ -1,35 +1,50 @@
-# 徐燃安巡 · 核心能力演示
+# 徐燃安巡 XRAXV2
 
-本工程是微信小程序优先的 uni-app Vue 3 演示版本，用于验证燃气安全隐患的“上报 - 交办 - 整改 - 复核 - 闭环”主流程。
+徐燃安巡是微信小程序优先的 uni-app Vue 3 项目。`0.2.0`（M1）把原前端内存演示升级为可测试、可替换后端的隐患 Mock 闭环，同时保留原安全履职模块。
 
-## 立即查看
+> [!WARNING]
+> 当前是 Mock 演示，不具备生产级登录鉴权、真实 uniCloud 隐患部署或私有云附件存储。请勿用于真实生产数据，也不要把演示角色切换视为安全边界。
 
-1. 打开微信开发者工具。
-2. 导入 `D:\xrax\dist\build\mp-weixin`。
-3. 进入“我的”，切换演示身份：安全监察部、市场营销部或高管查看。
-4. 进入“随手拍”创建一条隐患，再分别以市场营销部和安全监察部身份完成整改、复核闭环。
+## M1 能力
 
-演示工程不包含真实人员、业务台账、微信 AppID、地图 Key、企业通知凭据或 AI Key。正式发布前在 `src/manifest.json` 中填入公司小程序 AppID，并由服务器侧配置地图、消息和 AI 密钥。
+- 正向闭环：`REPORTED → ASSIGNED → RECTIFICATION_SUBMITTED → CLOSED`。
+- 退回整改：`RECTIFICATION_SUBMITTED → REJECTED → RECTIFICATION_SUBMITTED`。
+- 管理员留痕重开：`CLOSED → REPORTED`，随后重新交办。
+- 四类 Mock 身份：安全巡检/复核员、安全监察管理员、市场整改员、高管只读用户。
+- 纯 JavaScript 领域内核：状态机、权限策略、输入校验、统一错误码、乐观锁、请求幂等和追加式审计。
+- 附件只保存演示元数据；未授权用户不能读取隐患、附件元数据或审计时间线。
+- 首页异步加载、空态、失败重试、分页；写操作防连点并在版本冲突时刷新。
 
-## 已验证的核心能力
+稳定服务接口位于 `src/services/issues/index.mjs`：
 
-- 隐患随手拍：文字、相册/相机取图、当前定位、地图选点。
-- 重大隐患：红色高亮，进入待办前列。
-- 闭环：市场营销部提交整改佐证，安全监察部复核闭环，高管只读查看。
-- 权限演示：三种角色只显示各自允许处理的事项。
-- 隐私基线：关闭 uni 统计；代码不含密钥；样例人员全部匿名。
+```text
+getCurrentUser()      listIssues(filters)
+getIssue(id)          reportIssue(payload)
+assignIssue(id, payload)
+submitRectification(id, payload)
+reviewIssue(id, payload)
+listAuditEvents(id)
+```
 
-## 本演示未接入的生产能力
+## 本地验证
 
-- 账号密码、服务端权限、操作审计、真实文件存储。
-- 微信订阅消息、钉钉工作通知、地图服务 Key。
-- AI 审核、履职周期任务、线下抽查、检查表模板和送气工画像页面。
-
-这些功能需在下一阶段接入 uniCloud/公司服务端后实现，敏感密钥只保存在服务端环境变量。
-
-## 构建命令
+需要 Node.js 22 与 pnpm：
 
 ```powershell
-cd D:\xrax
+pnpm install --frozen-lockfile
+pnpm test
 pnpm run build:mp-weixin
+pnpm run build:h5
+git diff --check
 ```
+
+微信开发者工具可导入构建后的 `dist/build/mp-weixin`。本仓库未配置真实微信 AppID。
+
+## M1 不包含
+
+- 真实账号、生产级鉴权与组织数据。
+- 真实 uniCloud 隐患服务、私有附件和订阅消息。
+- AI 审核、真机性能或 60 FPS 结论。
+- 生产环境地图、通知、AI 密钥或其他凭据。
+
+后续接入真实后端时，应保持页面只调用稳定服务接口，并由服务端从可信会话解析操作者身份；不得直接复用 Mock 身份切换作为生产实现。

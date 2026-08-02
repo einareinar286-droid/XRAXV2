@@ -20,6 +20,23 @@ export function chooseEvidenceImages() {
   })
 }
 
+export function normalizeEvidenceAttachments(result) {
+  const tempFiles = Array.isArray(result?.tempFiles) ? result.tempFiles : []
+  const paths = Array.isArray(result?.tempFilePaths) ? result.tempFilePaths : []
+  return paths.map((path, index) => {
+    const source = tempFiles[index] || {}
+    const extension = String(path).split('.').pop()?.toLowerCase()
+    const mimeType = extension === 'png' ? 'image/png' : extension === 'webp' ? 'image/webp' : 'image/jpeg'
+    return {
+      id: `mock-attachment-${Date.now()}-${index}`,
+      name: String(path).split(/[\\/]/).pop() || `evidence-${index + 1}.jpg`,
+      mimeType,
+      size: Number(source.size) || 0,
+      previewUrl: path
+    }
+  })
+}
+
 // 生产环境仅向自建云函数上传，AI 服务密钥保存在云端环境变量中，绝不写入小程序。
 export async function requestAiReview() {
   return { supported: false, message: '演示版未接入 AI。生产版将由云函数调用受控 AI 审核接口。' }

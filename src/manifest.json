@@ -2,8 +2,8 @@
   "name": "徐燃安巡",
   "appid": "__UNI__XURAN_ANXUN_DEMO",
   "description": "徐州中燃能源有限公司安全隐患闭环管理",
-  "versionName": "0.1.0",
-  "versionCode": "100",
+  "versionName": "0.2.0",
+  "versionCode": "200",
   "vueVersion": "3",
   "uniStatistics": {
     "enable": false
