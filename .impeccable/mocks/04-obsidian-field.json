@@ -1,0 +1,7 @@
+{
+  "title": "深曜石",
+  "surface": "移动端待办首页",
+  "focus": "深矿物底色、祖母绿状态光路与重大隐患优先级",
+  "approved": false,
+  "implementation_note": "生产端只保留静态矿物纹理、分层渐变和 transform/opacity 状态反馈，不使用全屏模糊、WebGL 或持续粒子。"
+}
