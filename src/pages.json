@@ -1,0 +1,50 @@
+{
+  "pages": [
+    {
+      "path": "pages/index/index",
+      "style": { "navigationStyle": "custom", "enablePullDownRefresh": true }
+    },
+    {
+      "path": "pages/issue/create",
+      "style": { "navigationBarTitleText": "上报安全隐患" }
+    },
+    {
+      "path": "pages/issue/detail",
+      "style": { "navigationBarTitleText": "隐患闭环详情" }
+    },
+    {
+      "path": "pages/duty/index",
+      "style": { "navigationBarTitleText": "安全履职" }
+    },
+    {
+      "path": "pages/duty/record",
+      "style": { "navigationBarTitleText": "履职填报" }
+    },
+    {
+      "path": "pages/admin/duty",
+      "style": { "navigationBarTitleText": "履职总览" }
+    },
+    {
+      "path": "pages/profile/index",
+      "style": { "navigationBarTitleText": "我的" }
+    }
+  ],
+  "tabBar": {
+    "color": "#7C8490",
+    "selectedColor": "#006E55",
+    "backgroundColor": "#FFFFFF",
+    "borderStyle": "white",
+    "list": [
+      { "pagePath": "pages/index/index", "text": "待办" },
+      { "pagePath": "pages/issue/create", "text": "随手拍" },
+      { "pagePath": "pages/duty/index", "text": "履职" },
+      { "pagePath": "pages/profile/index", "text": "我的" }
+    ]
+  },
+  "globalStyle": {
+    "navigationBarBackgroundColor": "#F4F7F6",
+    "navigationBarTextStyle": "black",
+    "backgroundColor": "#F4F7F6",
+    "backgroundTextStyle": "dark"
+  }
+}

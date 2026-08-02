@@ -1,0 +1,27 @@
+{
+  "name": "xraxv2",
+  "version": "0.2.0",
+  "private": true,
+  "description": "徐燃安巡：微信小程序优先的燃气安全隐患闭环演示",
+  "scripts": {
+    "test": "node --test tests/issues/*.test.mjs",
+    "dev:mp-weixin": "uni -p mp-weixin",
+    "build:mp-weixin": "uni build -p mp-weixin",
+    "dev:h5": "uni",
+    "build:h5": "uni build"
+  },
+  "dependencies": {
+    "@dcloudio/uni-app": "3.0.0-alpha-5020220260725001",
+    "@dcloudio/uni-components": "3.0.0-alpha-5020220260725001",
+    "@dcloudio/uni-h5": "3.0.0-alpha-5020220260725001",
+    "@dcloudio/uni-mp-weixin": "3.0.0-alpha-5020220260725001",
+    "@dcloudio/uni-ui": "^1.5.12",
+    "vue": "3.4.21"
+  },
+  "devDependencies": {
+    "@dcloudio/types": "3.4.31",
+    "@dcloudio/vite-plugin-uni": "3.0.0-alpha-5020220260725001",
+    "sass": "^1.90.0",
+    "vite": "5.2.8"
+  }
+}

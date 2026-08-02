@@ -1,0 +1,13 @@
+{
+  "bsonType": "object",
+  "description": "Append-only duty operation audit. Server access only.",
+  "permission": { "read": false, "create": false, "update": false, "delete": false },
+  "required": ["instanceId", "action", "actorUid", "createdAt"],
+  "properties": {
+    "instanceId": { "bsonType": "string" },
+    "action": { "bsonType": "string" },
+    "actorUid": { "bsonType": "string" },
+    "createdAt": { "bsonType": "timestamp" },
+    "payload": { "bsonType": "object" }
+  }
+}

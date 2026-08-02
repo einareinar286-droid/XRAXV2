@@ -1,0 +1,35 @@
+{
+  "name": "徐燃安巡",
+  "appid": "__UNI__XURAN_ANXUN_DEMO",
+  "description": "徐州中燃能源有限公司安全隐患闭环管理",
+  "versionName": "0.2.0",
+  "versionCode": "200",
+  "vueVersion": "3",
+  "uniStatistics": {
+    "enable": false
+  },
+  "transformPx": false,
+  "mp-weixin": {
+    "appid": "",
+    "setting": {
+      "urlCheck": true,
+      "es6": true,
+      "postcss": true,
+      "minified": true
+    },
+    "usingComponents": true
+  },
+  "app-plus": {
+    "usingComponents": true,
+    "distribute": {
+      "android": {
+        "permissions": ["android.permission.ACCESS_FINE_LOCATION", "android.permission.ACCESS_COARSE_LOCATION"]
+      },
+      "ios": {
+        "privacyDescription": {
+          "NSLocationWhenInUseUsageDescription": "用于记录现场隐患位置，便于整改闭环。"
+        }
+      }
+    }
+  }
+}

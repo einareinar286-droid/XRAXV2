@@ -1,0 +1,14 @@
+node_modules/
+.pnpm-store/
+dist/
+unpackage/
+coverage/
+.env
+.env.*
+!.env.example
+.DS_Store
+
+# Local Codex collaboration files are never part of the public release.
+AGENTS.md
+docs/*子项目提示词.md
+docs/三模块开发规格与提示词.md
