@@ -14,4 +14,11 @@ page {
 }
 
 button::after { border: none; }
+
+@media screen and (min-width: 1200px) {
+  .uni-tabbar,
+  uni-tabbar {
+    display: none !important;
+  }
+}
 </style>

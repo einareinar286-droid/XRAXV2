@@ -1,5 +1,7 @@
 <template>
-  <view class="page-shell">
+  <view>
+    <AdaptiveNavigation active="WORKBENCH" />
+    <view class="page-shell">
     <view class="masthead">
       <view class="brand-lockup"><view class="brand-mark"><view class="brand-mark-core" /></view><view><text class="brand-name">徐燃安巡</text><text class="brand-subtitle">LPG 安全隐患闭环</text></view></view>
       <text class="role-chip">{{ issueStore.currentUser ? issueRoleText(issueStore.currentUser.role) : '加载身份中' }} · Mock</text>
@@ -31,6 +33,7 @@
     <view v-if="issueStore.loading && !actionableIssues.length" class="message-state">正在加载隐患…</view>
     <view v-else-if="!issueStore.error && !actionableIssues.length" class="message-state"><text>当前角色没有待处置事项</text><text class="message-copy">需要上报新隐患时，可前往“随手拍”。</text></view>
     <button v-if="issueStore.hasMore" class="load-more" :loading="issueStore.loading" @click="loadMore">加载更多</button>
+    </view>
   </view>
 </template>
 
@@ -40,6 +43,7 @@ import { onPullDownRefresh, onShow } from '@dcloudio/uni-app'
 import { issueRoleText, issueStatusText } from '../../services/issues/index.mjs'
 import { getIssueStageSummary } from '../../domain/issues/presentation.mjs'
 import { issueStore } from '../../stores/issues'
+import AdaptiveNavigation from '../../components/navigation/AdaptiveNavigation.vue'
 
 const visibleIssues = computed(() => issueStore.items)
 const actionableIssues = computed(() => visibleIssues.value.filter((item) => item.status !== 'CLOSED'))
