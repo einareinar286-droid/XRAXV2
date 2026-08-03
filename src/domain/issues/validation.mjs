@@ -1,7 +1,17 @@
 import { ISSUE_CATEGORIES, ISSUE_SEVERITIES } from './constants.mjs'
 import { issueError } from './errors.mjs'
 
-const ALLOWED_ATTACHMENT_TYPES = new Set(['image/jpeg', 'image/png', 'image/webp'])
+const ALLOWED_ATTACHMENT_TYPES = new Set([
+  'application/msword',
+  'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+  'application/vnd.ms-excel',
+  'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+  'application/pdf',
+  'text/plain',
+  'image/jpeg',
+  'image/png',
+  'image/webp'
+])
 const MAX_ATTACHMENT_SIZE = 10 * 1024 * 1024
 const LOCAL_PREVIEW_URL = /^(blob:|wxfile:\/\/|mock-private:\/\/|file:\/\/|https?:\/\/tmp\/|\/|[a-z]:[\\/])/i
 
@@ -14,6 +24,33 @@ function requiredText(value, field, maxLength) {
   const normalized = value.trim()
   if (normalized.length > maxLength) invalid(field, `${field} 长度不能超过 ${maxLength}`)
   return normalized
+}
+
+function optionalText(value, field, maxLength) {
+  if (value == null || value === '') return ''
+  return requiredText(value, field, maxLength)
+}
+
+function validateLocation(payload) {
+  const location = optionalText(payload.location, 'location', 200)
+  const locationSource = payload.locationSource || (location ? 'MANUAL' : 'NONE')
+  if (!['AUTO', 'MANUAL', 'NONE'].includes(locationSource)) invalid('locationSource', 'locationSource 无效')
+  if (locationSource === 'MANUAL' && !location) invalid('location', '手填地点不能为空')
+  if (locationSource === 'NONE' && location) invalid('locationSource', 'locationSource 与地点不一致')
+  if (locationSource !== 'AUTO') return { location, locationSource, coordinates: null }
+
+  const coordinates = payload.coordinates
+  if (!coordinates || !Number.isFinite(coordinates.latitude) || !Number.isFinite(coordinates.longitude)) {
+    invalid('coordinates', '自动定位需要有效坐标')
+  }
+  if (coordinates.latitude < -90 || coordinates.latitude > 90 || coordinates.longitude < -180 || coordinates.longitude > 180) {
+    invalid('coordinates', '坐标超出有效范围')
+  }
+  return {
+    location,
+    locationSource,
+    coordinates: { latitude: coordinates.latitude, longitude: coordinates.longitude }
+  }
 }
 
 export function validateAttachments(value = []) {
@@ -48,7 +85,7 @@ export function validateReportPayload(payload) {
   if (!payload || typeof payload !== 'object') invalid('payload', '上报内容无效')
   const title = requiredText(payload.title, 'title', 60)
   const description = requiredText(payload.description, 'description', 1000)
-  const location = requiredText(payload.location, 'location', 200)
+  const locationData = validateLocation(payload)
   if (!ISSUE_CATEGORIES.includes(payload.category)) invalid('category', '隐患类别无效')
   if (!ISSUE_SEVERITIES.includes(payload.severity)) invalid('severity', '严重程度无效')
   if (typeof payload.isMajor !== 'boolean') invalid('isMajor', '重大隐患标记必须为布尔值')
@@ -58,7 +95,7 @@ export function validateReportPayload(payload) {
     severity: payload.severity,
     isMajor: payload.isMajor,
     description,
-    location,
+    ...locationData,
     attachments: validateAttachments(payload.attachments)
   }
 }

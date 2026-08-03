@@ -2,6 +2,7 @@ import test from 'node:test'
 import assert from 'node:assert/strict'
 
 import { createMockIssueAdapter } from '../../src/services/issues/mock-adapter.mjs'
+import { validateAttachments } from '../../src/domain/issues/validation.mjs'
 
 function reportPayload(overrides = {}) {
   return {
@@ -16,6 +17,67 @@ function reportPayload(overrides = {}) {
     ...overrides
   }
 }
+
+test('allows an employee to submit a snapshot without location', async () => {
+  const adapter = createMockIssueAdapter({ idFactory: () => 'XR-EMPLOYEE-NO-LOCATION' })
+  adapter.setMockRole('EMPLOYEE')
+
+  const issue = await adapter.reportIssue(reportPayload({
+    location: '',
+    locationSource: 'NONE',
+    coordinates: null
+  }))
+
+  assert.equal(issue.status, 'REPORTED')
+  assert.equal(issue.location, '')
+  assert.equal(issue.locationSource, 'NONE')
+  assert.equal(issue.coordinates, null)
+})
+
+test('allows only safety or super admin to assign market rectification', async () => {
+  const adapter = createMockIssueAdapter({ idFactory: () => 'XR-EMPLOYEE-ASSIGN' })
+  adapter.setMockRole('EMPLOYEE')
+  const issue = await adapter.reportIssue(reportPayload({ location: '', locationSource: 'NONE', coordinates: null }))
+
+  await assert.rejects(
+    () => adapter.assignIssue(issue.id, {
+      assigneeUid: 'marketing-001',
+      assigneeDepartment: '市场营销部',
+      deadline: '2026-08-09',
+      version: issue.version,
+      requestId: 'employee-assign-attempt'
+    }),
+    (error) => error.code === 'FORBIDDEN'
+  )
+
+  adapter.setMockRole('SAFETY_OFFICER')
+  const assigned = await adapter.assignIssue(issue.id, {
+    assigneeUid: 'marketing-001',
+    assigneeDepartment: '市场营销部',
+    deadline: '2026-08-09',
+    version: issue.version,
+    requestId: 'safety-assign-allowed'
+  })
+  assert.equal(assigned.status, 'ASSIGNED')
+})
+
+test('accepts document, spreadsheet, text, image and PDF attachment metadata', () => {
+  const mimeTypes = [
+    'application/msword',
+    'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+    'application/vnd.ms-excel',
+    'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    'text/plain',
+    'image/jpeg',
+    'application/pdf'
+  ]
+
+  for (const [index, mimeType] of mimeTypes.entries()) {
+    const attachments = validateAttachments([{ id: `allowed-${index}`, name: `evidence-${index}`, mimeType, size: 100 }])
+    assert.equal(attachments.length, 1)
+  }
+  assert.throws(() => validateAttachments([{ id: 'blocked', name: 'blocked.exe', mimeType: 'application/octet-stream', size: 100 }]))
+})
 
 test('completes report, assignment, rectification and close with one audit event per transition', async () => {
   const adapter = createMockIssueAdapter({
@@ -37,7 +99,7 @@ test('completes report, assignment, rectification and close with one audit event
   assert.equal(assigned.status, 'ASSIGNED')
   assert.equal(assigned.version, 2)
 
-  adapter.setMockRole('MARKETING_RECTIFIER')
+  adapter.setMockRole('MARKETING_OFFICER')
   const submitted = await adapter.submitRectification(reported.id, {
     note: '已更换为不可调节减压阀并完成复查。',
     attachments: [],
@@ -47,7 +109,7 @@ test('completes report, assignment, rectification and close with one audit event
   assert.equal(submitted.status, 'RECTIFICATION_SUBMITTED')
   assert.equal(submitted.version, 3)
 
-  adapter.setMockRole('SAFETY_INSPECTOR')
+  adapter.setMockRole('SAFETY_OFFICER')
   const closed = await adapter.reviewIssue(reported.id, {
     decision: 'CLOSE',
     note: '现场复核风险已消除。',
@@ -79,7 +141,7 @@ test('returns rejected rectification to marketing and accepts a corrected resubm
     version: reported.version,
     requestId: 'req-assign-002'
   })
-  adapter.setMockRole('MARKETING_RECTIFIER')
+  adapter.setMockRole('MARKETING_OFFICER')
   const firstSubmission = await adapter.submitRectification(reported.id, {
     note: '已处理。',
     attachments: [],
@@ -87,7 +149,7 @@ test('returns rejected rectification to marketing and accepts a corrected resubm
     requestId: 'req-rectify-002'
   })
 
-  adapter.setMockRole('SAFETY_INSPECTOR')
+  adapter.setMockRole('SAFETY_OFFICER')
   const rejected = await adapter.reviewIssue(reported.id, {
     decision: 'REJECT',
     note: '佐证不足，请补充更换后照片。',
@@ -96,7 +158,7 @@ test('returns rejected rectification to marketing and accepts a corrected resubm
   })
   assert.equal(rejected.status, 'REJECTED')
 
-  adapter.setMockRole('MARKETING_RECTIFIER')
+  adapter.setMockRole('MARKETING_OFFICER')
   const resubmitted = await adapter.submitRectification(reported.id, {
     note: '已补充更换后的现场佐证。',
     attachments: [],
@@ -119,7 +181,7 @@ test('denies marketing access before an issue is assigned to the user or departm
   const adapter = createMockIssueAdapter({ idFactory: () => 'XR-20260802-003' })
   const reported = await adapter.reportIssue(reportPayload())
 
-  adapter.setMockRole('MARKETING_RECTIFIER')
+  adapter.setMockRole('MARKETING_OFFICER')
 
   await assert.rejects(
     () => adapter.getIssue(reported.id),
@@ -186,7 +248,7 @@ test('reports the current version when a stale page attempts to write', async ()
   })
   assert.equal(assigned.version, 2)
 
-  adapter.setMockRole('MARKETING_RECTIFIER')
+  adapter.setMockRole('MARKETING_OFFICER')
   await assert.rejects(
     () => adapter.submitRectification(reported.id, {
       note: '来自旧页面的整改提交。',
@@ -249,7 +311,7 @@ test('validates assignment, rectification and review write contracts', async (t)
       version: reported.version,
       requestId: 'req-assign-validation'
     })
-    adapter.setMockRole('MARKETING_RECTIFIER')
+    adapter.setMockRole('MARKETING_OFFICER')
     await assert.rejects(
       () => adapter.submitRectification(reported.id, {
         note: '   ',
@@ -271,14 +333,14 @@ test('validates assignment, rectification and review write contracts', async (t)
       version: reported.version,
       requestId: 'req-assign-review-validation'
     })
-    adapter.setMockRole('MARKETING_RECTIFIER')
+    adapter.setMockRole('MARKETING_OFFICER')
     const submitted = await adapter.submitRectification(reported.id, {
       note: '已整改。',
       attachments: [],
       version: assigned.version,
       requestId: 'req-submit-review-validation'
     })
-    adapter.setMockRole('SAFETY_INSPECTOR')
+    adapter.setMockRole('SAFETY_OFFICER')
     await assert.rejects(
       () => adapter.reviewIssue(reported.id, {
         decision: 'REJECT',
@@ -301,14 +363,14 @@ test('keeps closed issues immutable and allows only the safety admin to reopen w
     version: reported.version,
     requestId: 'req-assign-009'
   })
-  adapter.setMockRole('MARKETING_RECTIFIER')
+  adapter.setMockRole('MARKETING_OFFICER')
   const submitted = await adapter.submitRectification(reported.id, {
     note: '已完成整改。',
     attachments: [],
     version: assigned.version,
     requestId: 'req-submit-009'
   })
-  adapter.setMockRole('SAFETY_INSPECTOR')
+  adapter.setMockRole('SAFETY_OFFICER')
   const closed = await adapter.reviewIssue(reported.id, {
     decision: 'CLOSE',
     note: '确认闭环。',
@@ -316,7 +378,7 @@ test('keeps closed issues immutable and allows only the safety admin to reopen w
     requestId: 'req-close-009'
   })
 
-  adapter.setMockRole('MARKETING_RECTIFIER')
+  adapter.setMockRole('MARKETING_OFFICER')
   await assert.rejects(
     () => adapter.submitRectification(reported.id, {
       note: '闭环后试图再次修改。',
@@ -327,7 +389,7 @@ test('keeps closed issues immutable and allows only the safety admin to reopen w
     (error) => error.code === 'CLOSED_IMMUTABLE'
   )
 
-  adapter.setMockRole('SAFETY_INSPECTOR')
+  adapter.setMockRole('SAFETY_OFFICER')
   await assert.rejects(
     () => adapter.reviewIssue(reported.id, {
       decision: 'REOPEN',
@@ -338,7 +400,7 @@ test('keeps closed issues immutable and allows only the safety admin to reopen w
     (error) => error.code === 'FORBIDDEN'
   )
 
-  adapter.setMockRole('SAFETY_ADMIN')
+  adapter.setMockRole('SUPER_ADMIN')
   const reopened = await adapter.reviewIssue(reported.id, {
     decision: 'REOPEN',
     note: '复查发现风险再次出现，按制度重开。',
@@ -383,8 +445,8 @@ test('clones seeded issue data so callers cannot mutate adapter state', async ()
   assert.deepEqual(secondRead.departmentScope, ['安全监察部', '市场营销部'])
 })
 
-test('rejects every executive write operation', async () => {
-  const ids = ['XR-EXEC-001', 'XR-EXEC-002']
+test('allows employees to report their own snapshots but denies assignment, rectification and review', async () => {
+  const ids = ['XR-EMPLOYEE-001', 'XR-EMPLOYEE-002', 'XR-EMPLOYEE-003']
   const adapter = createMockIssueAdapter({ idFactory: () => ids.shift() })
   const reported = await adapter.reportIssue(reportPayload())
   const assigned = await adapter.assignIssue(reported.id, {
@@ -394,16 +456,17 @@ test('rejects every executive write operation', async () => {
     version: reported.version,
     requestId: 'req-exec-assign-setup'
   })
-  adapter.setMockRole('MARKETING_RECTIFIER')
+  adapter.setMockRole('MARKETING_OFFICER')
   const submitted = await adapter.submitRectification(reported.id, {
     note: '整改完成。', attachments: [], version: assigned.version, requestId: 'req-exec-submit-setup'
   })
-  adapter.setMockRole('SAFETY_INSPECTOR')
+  adapter.setMockRole('SAFETY_OFFICER')
   const unassigned = await adapter.reportIssue(reportPayload({ title: '未交办事项' }))
-  adapter.setMockRole('EXECUTIVE_READONLY')
+  adapter.setMockRole('EMPLOYEE')
+  const ownSnapshot = await adapter.reportIssue(reportPayload({ title: '员工随手拍' }))
+  assert.equal(ownSnapshot.reporter.uid, 'employee-001')
 
   const writes = [
-    () => adapter.reportIssue(reportPayload()),
     () => adapter.assignIssue(unassigned.id, {
       assigneeUid: 'marketing-001', assigneeDepartment: '市场营销部', deadline: '2026-08-09', version: unassigned.version, requestId: 'req-exec-assign'
     }),
@@ -424,7 +487,7 @@ test('ignores forged client identity and withholds attachment metadata outside t
   const reported = await adapter.reportIssue(reportPayload({
     attachments: [{ id: 'photo-001', name: 'evidence.jpg', mimeType: 'image/jpeg', size: 1024, previewUrl: 'mock-private://photo-001' }]
   }))
-  adapter.setMockRole('MARKETING_RECTIFIER')
+  adapter.setMockRole('MARKETING_OFFICER')
 
   await assert.rejects(
     () => adapter.assignIssue(reported.id, {
@@ -434,7 +497,7 @@ test('ignores forged client identity and withholds attachment metadata outside t
       version: reported.version,
       requestId: 'req-forged-assign',
       actorUid: 'safety-admin-001',
-      actorRole: 'SAFETY_ADMIN',
+      actorRole: 'SUPER_ADMIN',
       department: '安全监察部'
     }),
     (error) => error.code === 'FORBIDDEN'
@@ -451,7 +514,7 @@ test('keeps sensitive notes and attachment locations out of audit summaries', as
   const assigned = await adapter.assignIssue(reported.id, {
     assigneeUid: 'marketing-001', assigneeDepartment: '市场营销部', deadline: '2026-08-09', version: reported.version, requestId: 'req-audit-assign'
   })
-  adapter.setMockRole('MARKETING_RECTIFIER')
+  adapter.setMockRole('MARKETING_OFFICER')
   await adapter.submitRectification(reported.id, {
     note: '敏感整改说明不应进入审计摘要。',
     attachments: [{ id: 'rect-secret', name: 'rectified.png', mimeType: 'image/png', size: 2048, previewUrl: 'mock-private://rectified-secret' }],
@@ -464,7 +527,7 @@ test('keeps sensitive notes and attachment locations out of audit summaries', as
   assert.equal(serialized.includes('敏感整改说明'), false)
 })
 
-test('re-authorizes safety writes against the issue department scope', async () => {
+test('allows safety to handle hazards reported by any department', async () => {
   const base = {
     category: '安全管理', severity: 'HIGH', isMajor: false,
     description: '跨部门范围测试隐患。', location: '其他区域', attachments: [],
@@ -477,28 +540,24 @@ test('re-authorizes safety writes against the issue department scope', async () 
     { ...base, id: 'XR-SCOPE-REVIEW', title: '跨范围待复核隐患', status: 'RECTIFICATION_SUBMITTED', version: 3 }
   ] })
 
-  await assert.rejects(
-    () => adapter.assignIssue('XR-SCOPE-REPORTED', {
-      assigneeUid: 'marketing-001', assigneeDepartment: '市场营销部', deadline: '2026-08-09', version: 1, requestId: 'req-cross-scope-assign'
-    }),
-    (error) => error.code === 'FORBIDDEN'
-  )
-  await assert.rejects(
-    () => adapter.reviewIssue('XR-SCOPE-REVIEW', {
-      decision: 'CLOSE', note: '', version: 3, requestId: 'req-cross-scope-review'
-    }),
-    (error) => error.code === 'FORBIDDEN'
-  )
+  const assigned = await adapter.assignIssue('XR-SCOPE-REPORTED', {
+    assigneeUid: 'marketing-001', assigneeDepartment: '市场营销部', deadline: '2026-08-09', version: 1, requestId: 'req-cross-scope-assign'
+  })
+  assert.equal(assigned.status, 'ASSIGNED')
+  const closed = await adapter.reviewIssue('XR-SCOPE-REVIEW', {
+    decision: 'CLOSE', note: '安全确认闭环。', version: 3, requestId: 'req-cross-scope-review'
+  })
+  assert.equal(closed.status, 'CLOSED')
 })
 
 test('derives issue scope from the trusted Mock session and never treats entity wildcard as global', async () => {
   const adapter = createMockIssueAdapter({ idFactory: () => 'XR-TRUSTED-SCOPE' })
   const reported = await adapter.reportIssue(reportPayload({ departmentScope: ['*', '其他部门'] }))
-  assert.deepEqual(reported.departmentScope, ['安全监察部', '市场营销部'])
+  assert.deepEqual(reported.departmentScope, ['安全监察部'])
 
   const wildcardSeed = { ...reported, id: 'XR-ENTITY-WILDCARD', departmentScope: ['*'] }
   const seeded = createMockIssueAdapter({ seedIssues: [wildcardSeed] })
-  seeded.setMockRole('EXECUTIVE_READONLY')
+  seeded.setMockRole('EMPLOYEE')
   assert.equal((await seeded.listIssues()).total, 0)
   await assert.rejects(() => seeded.getIssue(wildcardSeed.id), (error) => error.code === 'FORBIDDEN')
 })

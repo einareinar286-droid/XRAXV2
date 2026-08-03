@@ -17,21 +17,19 @@ test('exposes the stable issue service contract in Mock mode', async () => {
   for (const method of methods) assert.equal(typeof issueService[method], 'function', method)
 
   assert.equal(issueService.isMockIssueMode, true)
-  assert.equal((await issueService.getCurrentUser()).role, 'SAFETY_INSPECTOR')
+  assert.equal((await issueService.getCurrentUser()).role, 'SAFETY_OFFICER')
   assert.ok((await issueService.listIssues()).total >= 2)
 })
 
-test('changes only the Mock session identity without accepting caller identity in writes', async () => {
-  issueService.setMockRole('EXECUTIVE_READONLY')
+test('uses the trusted Mock session identity instead of forged client identity in writes', async () => {
+  issueService.setMockRole('EMPLOYEE')
   const current = await issueService.getCurrentUser()
-  assert.equal(current.role, 'EXECUTIVE_READONLY')
+  assert.equal(current.role, 'EMPLOYEE')
 
-  await assert.rejects(
-    () => issueService.reportIssue(reportPayloadWithForgedIdentity()),
-    (error) => error.code === 'FORBIDDEN'
-  )
+  const reported = await issueService.reportIssue(reportPayloadWithForgedIdentity())
+  assert.equal(reported.reporter.uid, current.uid)
 
-  issueService.setMockRole('SAFETY_INSPECTOR')
+  issueService.setMockRole('SAFETY_OFFICER')
 })
 
 function reportPayloadWithForgedIdentity() {
@@ -45,7 +43,7 @@ function reportPayloadWithForgedIdentity() {
     attachments: [],
     departmentScope: ['安全监察部', '市场营销部'],
     actorUid: 'forged-admin',
-    actorRole: 'SAFETY_ADMIN',
+    actorRole: 'SUPER_ADMIN',
     department: '安全监察部'
   }
 }

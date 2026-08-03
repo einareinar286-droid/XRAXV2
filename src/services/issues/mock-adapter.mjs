@@ -9,41 +9,39 @@ import {
 } from '../../domain/issues/validation.mjs'
 
 const USERS = {
-  SAFETY_INSPECTOR: {
-    uid: 'safety-001',
-    displayName: '安全巡检员',
-    role: 'SAFETY_INSPECTOR',
-    department: '安全监察部',
-    departmentScope: ['安全监察部', '市场营销部'],
-    isMock: true
-  },
-  SAFETY_ADMIN: {
-    uid: 'safety-admin-001',
-    displayName: '安全管理员',
-    role: 'SAFETY_ADMIN',
+  SUPER_ADMIN: {
+    uid: 'super-admin-001',
+    displayName: '超级管理员',
+    role: 'SUPER_ADMIN',
     department: '安全监察部',
     departmentScope: ['*'],
     isMock: true
   },
-  MARKETING_RECTIFIER: {
+  SAFETY_OFFICER: {
+    uid: 'safety-001',
+    displayName: '安全监察员',
+    role: 'SAFETY_OFFICER',
+    department: '安全监察部',
+    departmentScope: ['*'],
+    isMock: true
+  },
+  MARKETING_OFFICER: {
     uid: 'marketing-001',
-    displayName: '市场整改员',
-    role: 'MARKETING_RECTIFIER',
+    displayName: '市场营销员',
+    role: 'MARKETING_OFFICER',
     department: '市场营销部',
     departmentScope: ['市场营销部'],
     isMock: true
   },
-  EXECUTIVE_READONLY: {
-    uid: 'executive-001',
-    displayName: '高管只读用户',
-    role: 'EXECUTIVE_READONLY',
-    department: '公司管理层',
-    departmentScope: ['安全监察部', '市场营销部'],
+  EMPLOYEE: {
+    uid: 'employee-001',
+    displayName: '普通员工',
+    role: 'EMPLOYEE',
+    department: '生产运营部',
+    departmentScope: ['生产运营部'],
     isMock: true
   }
 }
-
-const ISSUE_DEPARTMENT_SCOPE = Object.freeze(['安全监察部', '市场营销部'])
 
 function clone(value) {
   return structuredClone(value)
@@ -71,7 +69,7 @@ export function createMockIssueAdapter({
   const issues = clone(seedIssues)
   const auditEvents = clone(seedAuditEvents)
   const completedRequests = new Map()
-  let currentUser = clone(USERS.SAFETY_INSPECTOR)
+  let currentUser = clone(USERS.SAFETY_OFFICER)
   let auditSequence = auditEvents.length
 
   function findIssue(id) {
@@ -172,7 +170,6 @@ export function createMockIssueAdapter({
     },
 
     async reportIssue(payload) {
-      if (!['SAFETY_INSPECTOR', 'SAFETY_ADMIN'].includes(currentUser.role)) throw issueError('FORBIDDEN', '当前角色不能上报隐患')
       const valid = validateReportPayload(payload)
       const timestamp = now()
       const issue = {
@@ -183,6 +180,8 @@ export function createMockIssueAdapter({
         isMajor: valid.isMajor,
         description: valid.description,
         location: valid.location,
+        locationSource: valid.locationSource,
+        coordinates: valid.coordinates,
         attachments: valid.attachments,
         status: 'REPORTED',
         reporter: {
@@ -191,7 +190,7 @@ export function createMockIssueAdapter({
           department: currentUser.department
         },
         assignee: null,
-        departmentScope: [...ISSUE_DEPARTMENT_SCOPE],
+        departmentScope: [currentUser.department],
         deadline: null,
         rectification: null,
         createdAt: timestamp,
@@ -208,7 +207,7 @@ export function createMockIssueAdapter({
     },
 
     async assignIssue(id, payload) {
-      if (!['SAFETY_INSPECTOR', 'SAFETY_ADMIN'].includes(currentUser.role)) throw issueError('FORBIDDEN', '当前角色不能交办隐患')
+      if (!['SAFETY_OFFICER', 'SUPER_ADMIN'].includes(currentUser.role)) throw issueError('FORBIDDEN', '当前角色不能交办隐患')
       const valid = validateAssignmentPayload(payload)
       return idempotent('ASSIGN', id, valid, ['assigneeUid', 'assigneeDepartment', 'deadline', 'version'], () => {
         const issue = findIssue(id)
@@ -217,7 +216,7 @@ export function createMockIssueAdapter({
         assertIssueTransition(issue.status, 'ASSIGNED', currentUser.role)
         issue.assignee = {
           uid: valid.assigneeUid,
-          displayName: USERS.MARKETING_RECTIFIER.displayName,
+          displayName: USERS.MARKETING_OFFICER.displayName,
           department: valid.assigneeDepartment
         }
         issue.deadline = valid.deadline
@@ -230,7 +229,7 @@ export function createMockIssueAdapter({
     },
 
     async submitRectification(id, payload) {
-      if (currentUser.role !== 'MARKETING_RECTIFIER') throw issueError('FORBIDDEN', '当前角色不能提交整改')
+      if (currentUser.role !== 'MARKETING_OFFICER') throw issueError('FORBIDDEN', '当前角色不能提交整改')
       const valid = validateRectificationPayload(payload)
       return idempotent('SUBMIT_RECTIFICATION', id, valid, ['note', 'attachments', 'version'], () => {
         const issue = findIssue(id)
@@ -254,7 +253,7 @@ export function createMockIssueAdapter({
     },
 
     async reviewIssue(id, payload) {
-      if (!['SAFETY_INSPECTOR', 'SAFETY_ADMIN'].includes(currentUser.role)) throw issueError('FORBIDDEN', '当前角色不能复核隐患')
+      if (!['SAFETY_OFFICER', 'SUPER_ADMIN'].includes(currentUser.role)) throw issueError('FORBIDDEN', '当前角色不能复核隐患')
       const valid = validateReviewPayload(payload)
       return idempotent('REVIEW', id, valid, ['decision', 'note', 'version'], () => {
         const issue = findIssue(id)
