@@ -2,50 +2,68 @@
   <view class="detail-page">
     <view v-if="loading" class="state-card">正在加载隐患详情…</view>
     <view v-else-if="error" class="state-card error"><text>{{ error }}</text><button @click="loadIssue">重新加载</button></view>
+
     <template v-else-if="issue">
-      <view class="mock-banner">M1 Mock 演示 · 身份与数据仅保存在当前演示会话，不代表生产级鉴权或私有云存储。</view>
-      <view class="issue-summary" :class="{ major: issue.isMajor }">
-        <view class="topline"><view class="status" :class="statusClass(issue.status)">{{ issueStatusText(issue.status) }}</view><view v-if="issue.isMajor" class="major-tag">重大隐患</view></view>
-        <view class="title">{{ issue.title }}</view><view class="id">{{ issue.id }} · v{{ issue.version }}</view>
-        <view class="summary-line">上报：{{ issue.reporter.displayName }}（{{ issue.reporter.department }}）</view>
-        <view class="summary-line">交办：{{ issue.assignee ? `${issue.assignee.displayName}（${issue.assignee.department}）` : '尚未交办' }}</view>
-        <view class="summary-line">期限：{{ issue.deadline || '尚未设置' }}</view>
-        <view class="summary-line">位置：{{ issue.location }}</view>
-        <view class="description">{{ issue.description }}</view>
-        <view v-if="issue.attachments.length" class="evidence-row"><image v-for="item in issue.attachments" :key="item.id" :src="item.previewUrl" mode="aspectFill" /></view>
+      <view class="detail-workbench">
+        <view class="lifecycle-rail"><IssueLifecyclePath :status="issue.status" :deadline="issue.deadline" :is-major="issue.isMajor" /></view>
+
+        <view class="task-main">
+          <view class="mock-banner"><text class="mock-banner-title">M1 Mock 演示</text><text>身份与数据仅保存在当前演示会话，不代表生产级鉴权或私有云存储。</text></view>
+
+          <view class="issue-summary" :class="{ major: issue.isMajor }">
+            <view class="summary-topline"><view class="status" :class="statusClass(issue.status)">{{ issueStatusText(issue.status) }}</view><view v-if="issue.isMajor" class="major-tag">重大隐患</view><text class="issue-version">{{ issue.id }} · v{{ issue.version }}</text></view>
+            <view class="title">{{ issue.title }}</view>
+            <view class="summary-facts">
+              <view class="summary-fact"><text class="fact-label">上报人员</text><text class="fact-value">{{ issue.reporter.displayName }}</text><text class="fact-note">{{ issue.reporter.department }}</text></view>
+              <view class="summary-fact"><text class="fact-label">责任部门</text><text class="fact-value">{{ issue.assignee?.department || '等待安全监察交办' }}</text><text class="fact-note">{{ issue.assignee?.displayName || '受办人待确定' }}</text></view>
+              <view class="summary-fact"><text class="fact-label">整改期限</text><text class="fact-value">{{ issue.deadline || '尚未设置' }}</text><text class="fact-note">{{ issue.deadline ? '请按期处理' : '交办后设定' }}</text></view>
+              <view class="summary-fact"><text class="fact-label">现场位置</text><text class="fact-value">{{ issue.location }}</text><text class="fact-note">隐患发现位置</text></view>
+            </view>
+            <view class="description"><text class="description-label">现场描述</text><text>{{ issue.description }}</text></view>
+          </view>
+
+          <view v-if="canAssign" class="action-card">
+            <view class="card-heading"><text class="card-title">交办整改</text><text class="card-copy">确认责任部门和整改期限后，交办给市场营销部。</text></view>
+            <picker mode="date" :value="assignment.deadline" @change="assignment.deadline=$event.detail.value"><view class="picker"><text>整改期限</text><text>{{ assignment.deadline }}</text></view></picker>
+            <button class="primary" :loading="submitting" :disabled="submitting" @click="assign">交办市场营销部</button>
+          </view>
+
+          <view v-if="canRectify" class="action-card">
+            <view class="card-heading"><text class="card-title">{{ issue.status === 'REJECTED' ? '重新提交整改佐证' : '提交整改佐证' }}</text><text class="card-copy">填写措施并上传现场照片，提交后进入安全监察复核。</text></view>
+            <textarea v-model="rectification.note" maxlength="1000" placeholder="填写整改措施、现场情况和无法完成的原因" />
+            <view class="upload-row"><view v-for="item in rectification.attachments" :key="item.id" class="thumb"><image :src="item.previewUrl" mode="aspectFill" /></view><view v-if="rectification.attachments.length < 6" class="add-photo" @click="addPhotos"><view class="add-photo-mark" /><text>上传照片</text></view></view>
+            <button class="primary" :loading="submitting" :disabled="submitting || !rectification.note.trim()" @click="submit">提交安监复核</button>
+          </view>
+
+          <view v-if="canReview" class="action-card review-card">
+            <view class="card-heading"><text class="card-title">安监复核</text><text class="card-copy">退回整改必须填写原因；确认隐患消除后可执行闭环。</text></view>
+            <textarea v-model="reviewNote" maxlength="1000" placeholder="退回时必须填写原因；闭环说明可选" />
+            <view class="button-row"><button class="secondary danger" :disabled="submitting || !reviewNote.trim()" @click="review('REJECT')">退回整改</button><button class="primary compact" :loading="submitting" :disabled="submitting" @click="review('CLOSE')">确认闭环</button></view>
+          </view>
+
+          <view v-if="canReopen" class="action-card">
+            <view class="card-heading"><text class="card-title">管理员留痕重开</text><text class="card-copy">重开后将回到待交办状态，并保留完整审计记录。</text></view>
+            <textarea v-model="reviewNote" maxlength="1000" placeholder="必须填写重开原因" />
+            <button class="secondary danger full" :loading="submitting" :disabled="submitting || !reviewNote.trim()" @click="review('REOPEN')">重开并返回待交办</button>
+          </view>
+        </view>
+
+        <view class="evidence-audit">
+          <view class="side-card">
+            <view class="side-card-heading"><text class="side-card-title">证据材料</text><text class="side-card-count">{{ evidenceAttachments.length }} 项</text></view>
+            <view v-if="evidenceAttachments.length" class="evidence-grid"><image v-for="item in evidenceAttachments" :key="item.id" :src="item.previewUrl" mode="aspectFill" /></view>
+            <view v-else class="side-empty">当前隐患尚未附带现场照片</view>
+          </view>
+
+          <view v-if="currentUser?.role === 'EXECUTIVE_READONLY'" class="readonly-note">当前为只读模式：可查看授权范围内的进度和证据，不能执行任何写操作。</view>
+
+          <view class="side-card audit-card">
+            <view class="side-card-heading"><text class="side-card-title">处理记录</text><text class="side-card-count">追加审计</text></view>
+            <view v-if="!events.length" class="side-empty">暂无审计事件</view>
+            <view v-else class="timeline"><view v-for="event in events" :key="event.id" class="timeline-row"><view class="dot" /><view class="timeline-copy"><text class="step-name">{{ actionText(event.action) }}</text><text class="step-copy">{{ issueRoleText(event.actorRole) }} · {{ formatTime(event.occurredAt) }}</text><text class="step-copy">{{ statusChangeText(event) }}</text></view></view></view>
+          </view>
+        </view>
       </view>
-
-      <view v-if="canAssign" class="action-card">
-        <view class="card-title">交办整改</view>
-        <view class="action-copy">受办人固定为 Mock 身份“市场整改员”，服务层仍会校验部门与当前操作者。</view>
-        <picker mode="date" :value="assignment.deadline" @change="assignment.deadline=$event.detail.value"><view class="picker">整改期限 <text>{{ assignment.deadline }}</text></view></picker>
-        <button class="primary" :loading="submitting" :disabled="submitting" @click="assign">交办市场营销部</button>
-      </view>
-
-      <view v-if="canRectify" class="action-card">
-        <view class="card-title">{{ issue.status==='REJECTED' ? '重新提交整改佐证' : '提交整改佐证' }}</view>
-        <textarea v-model="rectification.note" maxlength="1000" placeholder="填写整改措施、现场情况和无法完成的原因" />
-        <view class="upload-row"><view v-for="item in rectification.attachments" :key="item.id" class="thumb"><image :src="item.previewUrl" mode="aspectFill" /></view><view v-if="rectification.attachments.length<6" class="add-photo" @click="addPhotos">＋<text>上传照片</text></view></view>
-        <button class="primary" :loading="submitting" :disabled="submitting||!rectification.note.trim()" @click="submit">提交安监复核</button>
-      </view>
-
-      <view v-if="canReview" class="action-card review-card">
-        <view class="card-title">安监复核</view>
-        <textarea v-model="reviewNote" maxlength="1000" placeholder="退回时必须填写原因；闭环说明可选" />
-        <view class="button-row"><button class="secondary danger" :disabled="submitting||!reviewNote.trim()" @click="review('REJECT')">退回整改</button><button class="primary compact" :loading="submitting" :disabled="submitting" @click="review('CLOSE')">确认闭环</button></view>
-      </view>
-
-      <view v-if="canReopen" class="action-card">
-        <view class="card-title">管理员留痕重开</view>
-        <textarea v-model="reviewNote" maxlength="1000" placeholder="必须填写重开原因" />
-        <button class="secondary danger full" :loading="submitting" :disabled="submitting||!reviewNote.trim()" @click="review('REOPEN')">重开并返回待交办</button>
-      </view>
-
-      <view v-if="currentUser?.role==='EXECUTIVE_READONLY'" class="readonly-note">高管身份为只读模式，可查看受办范围内的进度，不能调用任何写接口。</view>
-
-      <view class="timeline-title">追加式审计时间线</view>
-      <view v-if="!events.length" class="state-card">暂无审计事件</view>
-      <view v-else class="timeline"><view v-for="event in events" :key="event.id" class="timeline-row"><view class="dot" /><view><view class="step-name">{{ actionText(event.action) }}</view><view class="step-copy">{{ issueRoleText(event.actorRole) }} · {{ formatTime(event.occurredAt) }}</view><view class="step-copy">{{ statusChangeText(event) }}</view></view></view></view>
     </template>
   </view>
 </template>
@@ -53,17 +71,19 @@
 <script setup>
 import { computed, reactive, ref } from 'vue'
 import { onLoad, onShow } from '@dcloudio/uni-app'
+import IssueLifecyclePath from '../../components/issues/IssueLifecyclePath.vue'
 import { assignIssue, createRequestId, getCurrentUser, getIssue, issueRoleText, issueStatusText, listAuditEvents, reviewIssue, submitRectification } from '../../services/issues/index.mjs'
 import { chooseEvidenceImages, normalizeEvidenceAttachments } from '../../services/platform'
 
-let issueId=''
-const issue=ref(null),currentUser=ref(null),events=ref([]),loading=ref(true),error=ref(''),submitting=ref(false),reviewNote=ref('')
-const assignment=reactive({deadline:defaultDeadline()})
-const rectification=reactive({note:'',attachments:[]})
-const canAssign=computed(()=>['SAFETY_INSPECTOR','SAFETY_ADMIN'].includes(currentUser.value?.role)&&issue.value?.status==='REPORTED')
-const canRectify=computed(()=>currentUser.value?.role==='MARKETING_RECTIFIER'&&['ASSIGNED','REJECTED'].includes(issue.value?.status))
-const canReview=computed(()=>['SAFETY_INSPECTOR','SAFETY_ADMIN'].includes(currentUser.value?.role)&&issue.value?.status==='RECTIFICATION_SUBMITTED')
-const canReopen=computed(()=>currentUser.value?.role==='SAFETY_ADMIN'&&issue.value?.status==='CLOSED')
+let issueId = ''
+const issue = ref(null), currentUser = ref(null), events = ref([]), loading = ref(true), error = ref(''), submitting = ref(false), reviewNote = ref('')
+const assignment = reactive({ deadline: defaultDeadline() })
+const rectification = reactive({ note: '', attachments: [] })
+const evidenceAttachments = computed(() => [...(issue.value?.attachments || []), ...(issue.value?.rectification?.attachments || [])])
+const canAssign = computed(() => ['SAFETY_INSPECTOR', 'SAFETY_ADMIN'].includes(currentUser.value?.role) && issue.value?.status === 'REPORTED')
+const canRectify = computed(() => currentUser.value?.role === 'MARKETING_RECTIFIER' && ['ASSIGNED', 'REJECTED'].includes(issue.value?.status))
+const canReview = computed(() => ['SAFETY_INSPECTOR', 'SAFETY_ADMIN'].includes(currentUser.value?.role) && issue.value?.status === 'RECTIFICATION_SUBMITTED')
+const canReopen = computed(() => currentUser.value?.role === 'SAFETY_ADMIN' && issue.value?.status === 'CLOSED')
 
 function defaultDeadline(){const date=new Date();date.setDate(date.getDate()+7);const year=date.getFullYear();const month=String(date.getMonth()+1).padStart(2,'0');const day=String(date.getDate()).padStart(2,'0');return `${year}-${month}-${day}`}
 function statusClass(status){return({REPORTED:'reported',ASSIGNED:'todo',RECTIFICATION_SUBMITTED:'review',REJECTED:'rejected',CLOSED:'closed'})[status]}
@@ -81,5 +101,7 @@ onShow(loadIssue)
 </script>
 
 <style lang="scss" scoped>
-.detail-page{padding:28rpx 28rpx 64rpx}.mock-banner,.readonly-note{padding:22rpx 24rpx;border-radius:16rpx;background:#fff8df;color:#765d14;font-size:22rpx;line-height:1.6;margin-bottom:18rpx}.issue-summary{background:#fff;border:1rpx solid #e0e8e3;border-radius:24rpx;padding:28rpx}.issue-summary.major{border-color:#f0beb9;box-shadow:inset 8rpx 0 #d83a2e}.topline{display:flex;gap:12rpx;align-items:center}.status,.major-tag{font-size:21rpx;padding:7rpx 12rpx;border-radius:8rpx}.reported{background:#f1edff;color:#6550a4}.todo{background:#fff2e9;color:#a65400}.review{background:#e8f0ff;color:#245eb4}.rejected{background:#fff0ee;color:#c93228}.closed{background:#e9f5ed;color:#267444}.major-tag{background:#fff0ee;color:#c93228}.title{font-size:35rpx;font-weight:700;line-height:1.4;margin:22rpx 0 8rpx}.id,.summary-line,.step-copy,.action-copy{font-size:22rpx;color:#77837c;line-height:1.65}.summary-line{margin-top:6rpx}.description{font-size:25rpx;line-height:1.75;margin-top:20rpx;padding-top:18rpx;border-top:1rpx solid #edf1ef}.evidence-row,.upload-row{display:flex;gap:14rpx;flex-wrap:wrap;margin-top:18rpx}.evidence-row image,.thumb,.add-photo{width:120rpx;height:120rpx;border-radius:14rpx;overflow:hidden}.thumb image{width:100%;height:100%}.action-card{background:#fff;border:1rpx solid #dce6e1;border-radius:24rpx;padding:28rpx;margin-top:18rpx}.card-title{font-size:29rpx;font-weight:700;margin-bottom:16rpx}.action-copy{margin-bottom:16rpx}.picker{display:flex;justify-content:space-between;background:#f5f8f6;padding:20rpx;border-radius:14rpx;margin-bottom:18rpx;font-size:24rpx}textarea{width:100%;height:130rpx;background:#f5f8f6;border-radius:14rpx;padding:18rpx;box-sizing:border-box;font-size:25rpx}.add-photo{border:1rpx dashed #9ba9a1;color:#006e55;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:42rpx}.add-photo text{font-size:19rpx}.primary,.secondary{border-radius:16rpx;font-size:27rpx;height:88rpx;line-height:88rpx;margin-top:18rpx}.primary{background:#006e55;color:#fff}.primary[disabled],.secondary[disabled]{opacity:.45}.secondary{background:#fff;border:1rpx solid #cfd9d4;color:#405047}.secondary.danger{border-color:#e3b0ac;color:#b8322a}.secondary.full{width:100%}.button-row{display:grid;grid-template-columns:1fr 1fr;gap:16rpx}.button-row button{width:100%}.timeline-title{font-size:32rpx;font-weight:700;margin:42rpx 0 18rpx}.timeline{padding-left:8rpx}.timeline-row{display:flex;gap:20rpx;position:relative;padding-bottom:34rpx}.timeline-row:not(:last-child)::before{content:'';position:absolute;left:11rpx;top:24rpx;width:2rpx;height:calc(100% - 3rpx);background:#d9e1dd}.dot{width:20rpx;height:20rpx;margin-top:7rpx;border:4rpx solid #006e55;border-radius:50%;background:#006e55;z-index:1}.step-name{font-size:27rpx;font-weight:650;margin-bottom:4rpx}.readonly-note{background:#eef3f1;color:#52625a;margin:18rpx 0 0}.state-card{text-align:center;padding:80rpx 28rpx;color:#7d8983;background:#fff;border-radius:20rpx}.state-card.error{color:#a7372f}.state-card button{margin-top:18rpx;background:#e7f2ed;color:#006e55;font-size:24rpx}
+.detail-page{padding:28rpx 28rpx 64rpx;background:$xr-canvas;min-height:100vh}.detail-workbench{display:grid;gap:18rpx}.lifecycle-rail,.task-main,.evidence-audit{min-width:0}.task-main,.evidence-audit{display:flex;flex-direction:column;gap:18rpx}.mock-banner{padding:20rpx 22rpx;border:1rpx solid #e8d99f;border-radius:18rpx;background:#fff8df;color:#765d14;font-size:22rpx;line-height:1.6}.mock-banner-title{display:block;font-size:24rpx;font-weight:700;margin-bottom:2rpx}.issue-summary,.action-card,.side-card{background:$xr-surface;border:1rpx solid $xr-line;border-radius:24rpx;padding:28rpx;box-sizing:border-box}.issue-summary.major{border-color:#eaa59f}.summary-topline{display:flex;gap:12rpx;align-items:center}.status,.major-tag{font-size:21rpx;padding:7rpx 12rpx;border-radius:9rpx}.reported{background:#f1edff;color:#6550a4}.todo{background:#fff2e9;color:#a65400}.review{background:#e8f0ff;color:#245eb4}.rejected{background:#fff0ee;color:#c93228}.closed{background:#e9f5ed;color:#267444}.major-tag{background:#fff0ee;color:$xr-red;font-weight:700}.issue-version{margin-left:auto;color:$xr-muted;font-size:20rpx}.title{font-size:38rpx;line-height:1.4;font-weight:750;color:$xr-text;margin:22rpx 0}.summary-facts{display:grid;grid-template-columns:1fr 1fr;border-top:1rpx solid $xr-line;border-left:1rpx solid $xr-line}.summary-fact{padding:18rpx;border-right:1rpx solid $xr-line;border-bottom:1rpx solid $xr-line;min-width:0}.fact-label,.fact-note{display:block;font-size:20rpx;color:$xr-muted;line-height:1.45}.fact-value{display:block;margin:5rpx 0;font-size:24rpx;line-height:1.4;font-weight:650;color:$xr-text;word-break:break-word}.description{margin-top:22rpx;padding-top:20rpx;border-top:1rpx solid $xr-line;font-size:25rpx;line-height:1.75;color:$xr-text}.description-label{display:block;margin-bottom:8rpx;font-size:21rpx;color:$xr-muted}.card-heading{margin-bottom:18rpx}.card-title{display:block;font-size:30rpx;font-weight:700;color:$xr-text}.card-copy{display:block;margin-top:6rpx;font-size:22rpx;line-height:1.6;color:$xr-muted}.picker{display:flex;justify-content:space-between;padding:20rpx;border-radius:14rpx;background:#f2f6f3;font-size:24rpx;color:$xr-text}textarea{width:100%;height:142rpx;padding:18rpx;box-sizing:border-box;border-radius:14rpx;background:#f2f6f3;font-size:25rpx;color:$xr-text}.upload-row{display:flex;flex-wrap:wrap;gap:14rpx;margin-top:16rpx}.thumb,.add-photo{width:120rpx;height:120rpx;border-radius:14rpx;overflow:hidden}.thumb image{width:100%;height:100%}.add-photo{display:flex;flex-direction:column;align-items:center;justify-content:center;border:1rpx dashed $xr-line-strong;color:$xr-green;font-size:20rpx}.add-photo-mark{width:28rpx;height:28rpx;border:3rpx solid currentColor;border-radius:8rpx;position:relative;margin-bottom:8rpx}.add-photo-mark::after,.add-photo-mark::before{content:'';position:absolute;left:50%;top:50%;background:currentColor;transform:translate(-50%,-50%)}.add-photo-mark::after{width:14rpx;height:3rpx}.add-photo-mark::before{width:3rpx;height:14rpx}.primary,.secondary{height:88rpx;line-height:88rpx;margin-top:18rpx;border-radius:16rpx;font-size:27rpx}.primary{background:$xr-green;color:#fff}.primary[disabled],.secondary[disabled]{opacity:.45}.secondary{background:#fff;border:1rpx solid $xr-line-strong;color:$xr-text}.secondary.danger{border-color:#e3b0ac;color:#b8322a}.secondary.full{width:100%}.button-row{display:grid;grid-template-columns:1fr 1fr;gap:16rpx}.button-row button{width:100%}.side-card-heading{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:18rpx}.side-card-title{font-size:29rpx;font-weight:700;color:$xr-text}.side-card-count{font-size:21rpx;color:$xr-muted}.evidence-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10rpx}.evidence-grid image{width:100%;aspect-ratio:1;border-radius:12rpx;background:#edf2ef}.side-empty{padding:32rpx 10rpx;text-align:center;color:$xr-muted;font-size:22rpx}.readonly-note{padding:20rpx 22rpx;border-radius:18rpx;background:#edf3f0;color:#52625a;font-size:22rpx;line-height:1.6}.timeline-row{display:flex;gap:16rpx;position:relative;padding-bottom:26rpx}.timeline-row:not(:last-child)::before{content:'';position:absolute;left:9rpx;top:24rpx;width:2rpx;height:calc(100% - 2rpx);background:$xr-line}.dot{flex:0 0 auto;width:18rpx;height:18rpx;margin-top:7rpx;border-radius:50%;background:$xr-green;box-shadow:0 0 0 5rpx #e3f2ec}.timeline-copy{min-width:0}.step-name{display:block;font-size:25rpx;font-weight:700;color:$xr-text}.step-copy{display:block;margin-top:4rpx;font-size:21rpx;line-height:1.5;color:$xr-muted}.state-card{text-align:center;padding:80rpx 28rpx;color:$xr-muted;background:$xr-surface;border-radius:20rpx}.state-card.error{color:#a7372f}.state-card button{margin-top:18rpx;background:#e7f2ed;color:$xr-green;font-size:24rpx}@media (min-width:1200px){.detail-page{padding:32px;min-height:100vh;background:#0b1512}.detail-workbench{grid-template-columns:240px minmax(0,1fr) 340px;gap:18px;max-width:1520px;margin:0 auto}.lifecycle-rail{position:sticky;top:24px;align-self:start}.mock-banner{padding:16px 18px;font-size:13px;background:#272414;border-color:#675a2f;color:#e3d28c}.mock-banner-title{font-size:14px}.issue-summary,.action-card,.side-card{padding:24px;border-color:#2d4039;background:$xr-panel}.title,.card-title,.side-card-title,.fact-value,.description,.step-name{color:$xr-text-inverse}.issue-version,.fact-label,.fact-note,.description-label,.card-copy,.side-card-count,.side-empty,.step-copy{color:#a8b5af}.summary-facts,.summary-fact{border-color:#2d4039}.picker,textarea{background:#0e1b18;color:$xr-text-inverse}.primary{background:#08785f}.secondary{background:transparent;border-color:#53665f;color:$xr-text-inverse}.evidence-grid image{background:#0e1b18}.readonly-note{background:#1c2c27;color:#bfd0c8}.timeline-row:not(:last-child)::before{background:#3b5048}.dot{box-shadow:0 0 0 5px #173b30}.status,.major-tag{font-size:12px}.issue-version{font-size:12px}.title{font-size:30px}.summary-fact{padding:14px}.fact-label,.fact-note,.description-label{font-size:12px}.fact-value{font-size:15px}.description{font-size:15px}.card-title,.side-card-title{font-size:18px}.card-copy,.side-card-count,.side-empty,.step-copy{font-size:13px}.picker{padding:14px;font-size:14px}.primary,.secondary{height:46px;line-height:46px;font-size:15px}.timeline-row{gap:14px}.step-name{font-size:15px}.dot{width:14px;height:14px}.evidence-audit{position:sticky;top:24px;align-self:start}.issue-summary.major{border-color:#924840}.lifecycle-rail :deep(.lifecycle-path){background:#111d19;border-color:#2d4039}.lifecycle-rail :deep(.path-title),.lifecycle-rail :deep(.path-summary-value){color:$xr-text-inverse}.lifecycle-rail :deep(.path-label),.lifecycle-rail :deep(.path-current),.lifecycle-rail :deep(.path-summary-label),.lifecycle-rail :deep(.path-deadline),.lifecycle-rail :deep(.path-hint){color:#a8b5af}.lifecycle-rail :deep(.path-summary){background:#172b24}.lifecycle-rail :deep(.path-node){background:#111d19}}
+@media (prefers-reduced-motion:no-preference){.issue-summary,.action-card,.side-card{animation:panel-in 220ms ease-out both}@keyframes panel-in{from{opacity:.7;transform:translateY(8rpx)}to{opacity:1;transform:translateY(0)}}}
+@media (prefers-reduced-motion:reduce){.issue-summary,.action-card,.side-card{animation:none}}
 </style>
