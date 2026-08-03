@@ -59,12 +59,14 @@ test('allows an employee to submit only their own duty and requires safety revie
   let dashboard = await adapter.getDutyDashboard({ asOf: '2026-08-12T00:00:00.000Z' })
   assert.equal(dashboard.company.completionRate, 0)
   assert.equal(dashboard.assessmentItems.length, 1)
+  assert.deepEqual(dashboard.reviewItems.map((item) => item.id), ['duty-001'])
 
   const approved = await adapter.reviewDuty('duty-001', { decision: 'APPROVE', note: '审核通过。' })
   assert.equal(approved.status, 'APPROVED')
   dashboard = await adapter.getDutyDashboard({ asOf: '2026-08-12T00:00:00.000Z' })
   assert.equal(dashboard.company.completionRate, 100)
   assert.equal(dashboard.assessmentItems.length, 0)
+  assert.deepEqual(dashboard.reviewItems, [])
 })
 
 test('does not let a department reviewer overwrite another department duty', async () => {

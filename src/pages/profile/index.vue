@@ -3,24 +3,26 @@
     <view class="identity"><view class="avatar">{{ currentUser?.displayName?.slice(0,1) || '安' }}</view><view><view class="name">{{ currentUser?.displayName || '加载中' }}</view><view class="sub">{{ issueRoleText(currentUser?.role) }} · {{ currentUser?.department }}</view></view></view>
     <view v-if="isMockIssueMode" class="mock-warning"><view class="warning-title">Mock 演示模式</view><view>身份切换只用于验证权限和流程，不是生产级登录；附件也未上传至私有云存储。</view></view>
     <view v-if="isMockIssueMode" class="section"><view class="section-title">切换 Mock 身份</view><view v-for="item in roles" :key="item.id" class="role-row" :class="{ active:item.id===currentUser?.role }" @click="switchRole(item.id)"><view><view class="role-name">{{ item.name }}</view><view class="role-copy">{{ item.copy }}</view></view><view class="check">{{ item.id===currentUser?.role?'✓':'' }}</view></view></view>
-    <view v-if="currentUser?.role==='SAFETY_ADMIN'" class="section entry" @click="openDutyAdmin"><view><view class="section-title">安全履职总览</view><view class="role-copy">原履职模块入口保持不变，仅安全监察管理员可进入。</view></view><view class="arrow">→</view></view>
-    <view class="section"><view class="section-title">M1 边界说明</view><view class="guide">本版本只提供可测试的前端 Mock 闭环。角色、部门和操作者由当前 Mock 会话决定，页面传入的伪造身份不会生效；真实账号、uniCloud 隐患部署、私有附件和生产级鉴权不在 M1 范围。</view></view>
+    <view v-if="canViewDutyDashboard" class="section entry" @click="openDutyAdmin"><view><view class="section-title">履职仪表盘</view><view class="role-copy">履职率必须 100%；未完成、退回、逾期及逾期补交均进入考核清单。</view></view><view class="arrow">→</view></view>
+    <view class="section"><view class="section-title">Mock 演示边界</view><view class="guide">当前版本用于本地功能验证：未接入真实账号、短信、微信 AppID、私有云附件或生产部署。真实人员数据不在本项目中保存。</view></view>
   </view>
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import { onShow } from '@dcloudio/uni-app'
 import { getCurrentUser, isMockIssueMode, issueRoleText, setMockRole } from '../../services/issues/index.mjs'
+import { setMockRole as setDutyMockRole } from '../../services/duty'
 const currentUser=ref(null)
+const canViewDutyDashboard=computed(()=>['SUPER_ADMIN','SAFETY_OFFICER','MARKETING_OFFICER'].includes(currentUser.value?.role))
 const roles=[
-  {id:'SAFETY_INSPECTOR',name:'安全巡检/复核员',copy:'上报、交办、复核与退回；不能重开已闭环隐患'},
-  {id:'SAFETY_ADMIN',name:'安全监察管理员',copy:'拥有安全侧权限，并可留痕重开已闭环隐患'},
-  {id:'MARKETING_RECTIFIER',name:'市场整改员',copy:'只读取受办范围并提交整改佐证'},
-  {id:'EXECUTIVE_READONLY',name:'高管只读用户',copy:'只读查看范围内进度，所有写接口均被拒绝'}
+  {id:'SUPER_ADMIN',name:'超级管理员',copy:'拥有全公司查看、管理与留痕重开权限'},
+  {id:'SAFETY_OFFICER',name:'安全监察部',copy:'全员隐患上报可查看、可交办市场整改并确认闭环；履职仅审核本部门'},
+  {id:'MARKETING_OFFICER',name:'市场营销部',copy:'提交受办隐患整改，审核本部门履职'},
+  {id:'EMPLOYEE',name:'员工',copy:'可随手拍上报隐患、填写本人履职；不能改写其他人员记录'}
 ]
 async function refreshUser(){currentUser.value=await getCurrentUser()}
-function switchRole(role){currentUser.value=setMockRole(role);uni.showToast({title:'Mock 身份已切换',icon:'none'})}
+function switchRole(role){currentUser.value=setMockRole(role);setDutyMockRole(role);uni.showToast({title:'Mock 身份已切换',icon:'none'})}
 function openDutyAdmin(){uni.navigateTo({url:'/pages/admin/duty'})}
 onShow(refreshUser)
 </script>

@@ -2,9 +2,7 @@
   <view class="form-page">
     <view class="form-head"><view class="brand-lockup"><view class="brand-mark"><view class="brand-mark-core" /></view><view><text class="brand-name">徐燃安巡</text><text class="brand-subtitle">现场隐患上报</text></view></view><text class="mock-chip">Mock</text></view>
     <view class="notice"><text class="notice-title">上报后进入待交办</text><text>当前身份与数据仅用于演示，不等同于生产级授权。</text></view>
-    <view v-if="currentUser && !canReport" class="unauthorized">当前身份为 {{ currentUser.displayName }}，无权上报隐患。请在“我的”切换 Mock 身份。</view>
-
-    <template v-else>
+    <template v-if="canReport">
       <view class="capture-panel" @click="addPhotos"><view class="capture-frame"><view class="capture-camera"><view class="capture-lens" /></view></view><text class="capture-title">随手拍上报</text><text class="capture-copy">先记录现场证据，再补充风险和位置</text><text class="capture-action">{{ form.attachments.length ? `已选 ${form.attachments.length} 张，继续添加` : '拍照或从相册选择' }}</text></view>
 
       <view class="form-card">
@@ -20,11 +18,11 @@
         </view>
 
         <view class="form-section"><view class="section-heading"><view class="section-mark location"><view /></view><view><text class="section-title">地点与证据</text><text class="section-copy">补充现场位置和照片佐证，最多 6 张</text></view></view>
-          <text class="field-label">现场位置</text><view class="location-box"><text>{{ form.location || '未选择位置' }}</text><view class="location-actions"><button @click.stop="currentLocation">当前位置</button><button @click.stop="pickLocation">地图选点</button></view></view>
+          <text class="field-label">现场位置（可选）</text><view class="location-box"><text>{{ form.location || '不填写也可提交' }}</text><view class="location-actions"><button @click.stop="currentLocation">当前位置</button><button @click.stop="pickLocation">地图选点</button></view></view>
           <text class="field-label">现场照片</text><view class="upload-row"><view v-for="item in form.attachments" :key="item.id" class="thumb"><image :src="item.previewUrl" mode="aspectFill" /></view><view v-if="form.attachments.length < 6" class="add-photo" @click="addPhotos"><view class="add-photo-mark" /><text>上传照片</text></view></view>
         </view>
       </view>
-      <view class="submit-area"><text class="submit-hint">带 * 的信息请完整填写，以便后续流转处理。</text><button class="primary" :loading="submitting" :disabled="submitting || !form.title || !form.description || !form.location" @click="submit">上报隐患并进入待交办</button></view>
+      <view class="submit-area"><text class="submit-hint">标题和现场描述为必填；定位为可选，未授权定位也不影响上报。</text><button class="primary" :loading="submitting" :disabled="submitting || !form.title || !form.description" @click="submit">上报隐患并进入待交办</button></view>
     </template>
   </view>
 </template>
@@ -38,13 +36,13 @@ import { chooseEvidenceImages, chooseMapLocation, getCurrentLocation, normalizeE
 const categories = ['用户用气安全', '配送作业', '厂站设备', '管网设施', '安全管理']
 const severities = ['LOW','MEDIUM','HIGH','CRITICAL']
 const severityLabels = severities.map(issueSeverityText)
-const form = reactive({ title:'', description:'', category:categories[0], severity:'MEDIUM', isMajor:false, location:'', attachments:[] })
+const form = reactive({ title:'', description:'', category:categories[0], severity:'MEDIUM', isMajor:false, location:'', locationSource:'NONE', coordinates:null, attachments:[] })
 const currentUser = ref(null), submitting = ref(false)
-const canReport = computed(() => ['SAFETY_INSPECTOR','SAFETY_ADMIN'].includes(currentUser.value?.role))
+const canReport = computed(() => Boolean(currentUser.value))
 const severityText = computed(() => issueSeverityText(form.severity))
 async function addPhotos(){try{const res=await chooseEvidenceImages();form.attachments.push(...normalizeEvidenceAttachments(res).slice(0,6-form.attachments.length))}catch{}}
-async function currentLocation(){try{const res=await getCurrentLocation();form.location=`当前位置：${res.latitude.toFixed(6)}, ${res.longitude.toFixed(6)}`}catch{uni.showToast({title:'未取得定位权限',icon:'none'})}}
-async function pickLocation(){try{const res=await chooseMapLocation();form.location=res.address||res.name}catch{}}
+async function currentLocation(){try{const res=await getCurrentLocation();form.location=`当前位置：${res.latitude.toFixed(6)}, ${res.longitude.toFixed(6)}`;form.locationSource='AUTO';form.coordinates={latitude:res.latitude,longitude:res.longitude}}catch{uni.showToast({title:'未取得定位权限，可跳过定位继续上报',icon:'none'})}}
+async function pickLocation(){try{const res=await chooseMapLocation();form.location=res.address||res.name||'';form.locationSource=form.location?'MANUAL':'NONE';form.coordinates=null}catch{}}
 async function submit(){if(submitting.value)return;submitting.value=true;try{const issue=await reportIssue({...form});uni.showToast({title:'隐患已上报',icon:'success'});setTimeout(()=>uni.navigateTo({url:`/pages/issue/detail?id=${issue.id}`}),500)}catch(error){uni.showToast({title:error.message||'上报失败',icon:'none'})}finally{submitting.value=false}}
 onShow(async()=>{currentUser.value=await getCurrentUser()})
 </script>

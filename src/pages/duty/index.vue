@@ -1,15 +1,28 @@
 <template>
-  <view class="page"><view class="header"><view><view class="eyebrow">安全履职</view><view class="title">我的周期任务</view></view><view class="period">真实周期</view></view><view class="rule"><text>本期 {{ stats.total }} 项</text><text>已完成 {{ stats.done }} 项</text><text>逾期 {{ stats.overdue }} 项</text></view><scroll-view class="filters" scroll-x><view v-for="item in filters" :key="item.value" class="filter" :class="{active: selected===item.value}" @click="selected=item.value;load()">{{ item.label }}</view></scroll-view><view v-for="task in tasks" :key="task.id" class="task" :class="task.status.toLowerCase()" @click="open(task.id)"><view class="top"><view class="status">{{ dutyStatusText(task.status) }}</view><view class="due">截止 {{ task.dueDate }}</view></view><view class="task-name">{{ task.actionName }}</view><view class="meta">{{ task.category }} · {{ frequencyText(task.frequency) }}</view><view class="cycle">本周期 {{ task.periodStart }} 至 {{ task.periodEnd }}</view></view><view v-if="!tasks.length" class="empty">当前筛选没有履职任务</view></view>
+  <view class="page">
+    <view class="heading"><text class="title">我的履职</text><text class="copy">只有按时提交并审核通过才计入履职率；退回、逾期和未提交均会进入考核。</text></view>
+    <view v-if="loading" class="state">正在加载本期任务…</view>
+    <view v-else-if="error" class="state error"><text>{{ error }}</text><button @click="load">重新加载</button></view>
+    <template v-else>
+      <view v-for="task in tasks" :key="task.id" class="task" @click="open(task.id)"><view class="task-top"><text class="status" :class="task.status.toLowerCase()">{{ dutyStatusText(task.status) }}</text><text class="due">截止 {{ task.dueDate }}</text></view><text class="task-title">{{ task.title }}</text><text class="task-meta">{{ task.category || '履职任务' }} · {{ task.frequency || '本期' }}</text><text v-if="task.status==='RETURNED'" class="return-note">审核退回，请补充后重新提交</text><text v-else-if="task.status==='SUBMITTED'" class="return-note pending">已提交，等待审核</text></view>
+      <view v-if="!tasks.length" class="state">本期暂无分配给你的履职任务</view>
+    </template>
+  </view>
 </template>
 
 <script setup>
-import { computed, ref, onMounted } from 'vue'
+import { ref } from 'vue'
+import { onShow } from '@dcloudio/uni-app'
 import { dutyStatusText, listMyDuties } from '../../services/duty'
-const tasks=ref([]),selected=ref(''),filters=[{label:'全部',value:''},{label:'待填写',value:'PENDING'},{label:'已逾期',value:'OVERDUE'},{label:'已完成',value:'DONE'}]
-const stats=computed(()=>({total:tasks.value.length,done:tasks.value.filter(x=>x.status==='DONE').length,overdue:tasks.value.filter(x=>x.status==='OVERDUE').length}))
-async function load(){tasks.value=await listMyDuties({status:selected.value})} function open(id){uni.navigateTo({url:`/pages/duty/record?id=${id}`})} function frequencyText(v){return ({weekly:'每周',biweekly:'每两周',monthly:'每月',quarterly:'每季度',semiannual:'每半年',annual:'每年'})[v]||v} onMounted(load)
+
+const tasks = ref([])
+const loading = ref(true)
+const error = ref('')
+async function load(){loading.value=true;error.value='';try{tasks.value=await listMyDuties()}catch(err){error.value=err.message||'履职任务加载失败'}finally{loading.value=false}}
+function open(id){uni.navigateTo({url:`/pages/duty/record?id=${id}`})}
+onShow(load)
 </script>
 
 <style lang="scss" scoped>
-.page{padding:28rpx}.header{display:flex;justify-content:space-between;align-items:flex-end;margin:12rpx 0 24rpx}.eyebrow{font-size:21rpx;letter-spacing:3rpx;color:#728079}.title{font-size:42rpx;font-weight:750;margin-top:4rpx}.period{font-size:21rpx;color:#006e55;background:#e4f2ed;padding:10rpx 16rpx;border-radius:99rpx}.rule{display:flex;justify-content:space-between;background:#003d31;color:#fff;border-radius:20rpx;padding:26rpx;font-size:24rpx}.filters{white-space:nowrap;margin:24rpx 0}.filter{display:inline-block;margin-right:14rpx;background:#eaf0ed;color:#64716a;padding:12rpx 20rpx;border-radius:99rpx;font-size:23rpx}.filter.active{background:#006e55;color:#fff}.task{background:#fff;border:1rpx solid #e0e8e3;border-radius:20rpx;padding:24rpx;margin-bottom:16rpx}.task.overdue{border-left:8rpx solid #d83a2e}.top{display:flex;justify-content:space-between}.status{font-size:21rpx;color:#006e55;background:#e7f2ed;padding:5rpx 10rpx;border-radius:7rpx}.overdue .status{color:#c73128;background:#fff0ee}.due,.meta,.cycle{font-size:21rpx;color:#77837c}.task-name{font-size:29rpx;font-weight:650;margin:18rpx 0 8rpx}.cycle{margin-top:14rpx}.empty{text-align:center;color:#87938d;padding:100rpx 0}
+.page{min-height:100vh;padding:30rpx 28rpx 64rpx;background:$xr-canvas}.heading{margin:14rpx 0 24rpx}.title{display:block;font-size:42rpx;font-weight:760;color:$xr-text}.copy{display:block;margin-top:8rpx;font-size:22rpx;line-height:1.6;color:$xr-muted}.task{margin-top:16rpx;padding:25rpx;border-radius:20rpx;background:$xr-surface;border:1rpx solid $xr-line}.task-top{display:flex;justify-content:space-between;align-items:center;gap:16rpx}.status{padding:6rpx 10rpx;border-radius:8rpx;background:#edf3f0;color:$xr-green;font-size:20rpx}.status.submitted{background:#e8f0ff;color:#245eb4}.status.returned{background:#fff0ee;color:$xr-red}.due,.task-meta{font-size:20rpx;color:$xr-muted}.task-title{display:block;margin:18rpx 0 7rpx;font-size:29rpx;font-weight:700;color:$xr-text}.return-note{display:block;margin-top:14rpx;font-size:21rpx;color:$xr-red}.return-note.pending{color:#245eb4}.state{padding:72rpx 24rpx;text-align:center;color:$xr-muted}.state.error{color:$xr-red}.state button{margin-top:18rpx;background:#e7f2ed;color:$xr-green;font-size:23rpx}@media (min-width:1200px){.page{max-width:820px;margin:0 auto;padding:36px 32px}.title{font-size:30px}.copy,.due,.task-meta,.return-note{font-size:13px}.task{padding:22px}.task-title{font-size:19px}.status{font-size:12px}}
 </style>

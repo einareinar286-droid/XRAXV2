@@ -61,6 +61,9 @@ export function createMockDutyAdapter({ now = () => new Date().toISOString(), se
     return {
       company: metrics,
       departments: byDepartment,
+      reviewItems: scopedTasks
+        .filter((task) => task.status === 'SUBMITTED')
+        .map(clone),
       assessmentItems: scopedTasks
         .filter((task) => metrics.assessmentTaskIds.includes(task.id))
         .map((task) => ({ ...clone(task), assessmentReason: getDutyAssessmentReason(task) }))
@@ -79,7 +82,7 @@ export function createMockDutyAdapter({ now = () => new Date().toISOString(), se
     },
 
     async listMyDuties() {
-      return clone(visibleTasks())
+      return clone(tasks.filter((task) => task.ownerUid === currentUser.uid))
     },
 
     async submitDuty(id, payload) {

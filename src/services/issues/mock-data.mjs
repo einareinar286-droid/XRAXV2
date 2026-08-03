@@ -73,7 +73,7 @@ function audit(id, entityId, action, fromStatus, toStatus, actor, occurredAt) {
     fromStatus,
     toStatus,
     actorUid: actor.uid,
-    actorRole: actor.department === '市场营销部' ? 'MARKETING_RECTIFIER' : 'SAFETY_INSPECTOR',
+    actorRole: actor.department === '市场营销部' ? 'MARKETING_OFFICER' : 'SAFETY_OFFICER',
     occurredAt,
     requestId: `seed:${id}`,
     payloadSummary: {}

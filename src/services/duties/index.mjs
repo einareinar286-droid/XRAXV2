@@ -3,6 +3,13 @@ import { seedDutyTasks } from './mock-data.mjs'
 
 const adapter = createMockDutyAdapter({ seedTasks: seedDutyTasks })
 
+if (typeof uni !== 'undefined') {
+  const savedRole = uni.getStorageSync('xr-mock-issue-role')
+  if (savedRole) {
+    try { adapter.setMockRole(savedRole) } catch { uni.removeStorageSync('xr-mock-issue-role') }
+  }
+}
+
 export const isMockDutyMode = true
 export const getCurrentUser = (...args) => adapter.getCurrentUser(...args)
 export const listMyDuties = (...args) => adapter.listMyDuties(...args)

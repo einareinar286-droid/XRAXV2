@@ -5,7 +5,7 @@ export const demoStore = reactive({
   role: 'safety',
   issues: [],
   setRole(role) {
-    const mapped = ({ safety: 'SAFETY_INSPECTOR', marketing: 'MARKETING_RECTIFIER', executive: 'EXECUTIVE_READONLY' })[role]
+    const mapped = ({ admin: 'SUPER_ADMIN', safety: 'SAFETY_OFFICER', marketing: 'MARKETING_OFFICER', employee: 'EMPLOYEE' })[role]
     if (!mapped) return
     this.role = role
     setMockRole(mapped)
