@@ -2,7 +2,7 @@
   <view>
     <AdaptiveNavigation active="DUTY" />
     <view class="page">
-    <view class="heading"><text class="title">我的履职</text><text class="copy">只有按时提交并审核通过才计入履职率；退回、逾期和未提交均会进入考核。</text></view>
+    <view class="heading"><text class="title">我的安全履职</text><text class="copy">只有按时提交并审核通过才计入履职率；退回、逾期和未提交均会进入考核。</text></view>
     <view v-if="loading" class="state">正在加载本期任务…</view>
     <view v-else-if="error" class="state error"><text>{{ error }}</text><button @click="load">重新加载</button></view>
     <template v-else>

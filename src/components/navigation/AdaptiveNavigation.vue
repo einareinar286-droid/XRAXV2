@@ -36,6 +36,7 @@ const currentUser = ref(null)
 const items = computed(() => {
   const base = [
     { id: 'WORKBENCH', label: '工作台', path: '/pages/index/index', tab: true },
+    { id: 'DUTY', label: '安全履职', path: '/pages/duty/index' },
     { id: 'REPORT', label: '随手拍', path: '/pages/issue/create', tab: true },
     { id: 'DRIVER_PROFILE', label: '送气工画像', disabled: true },
     { id: 'PROFILE', label: '我的', path: '/pages/profile/index', tab: true }
@@ -44,8 +45,9 @@ const items = computed(() => {
   return [
     base[0],
     { id: 'ASSIGN', label: '隐患交办', path: '/pages/admin/issue-assign' },
+    base[1],
     { id: 'DUTY_DASHBOARD', label: '履职仪表盘', path: '/pages/admin/duty' },
-    ...base.slice(1)
+    ...base.slice(2)
   ]
 })
 
