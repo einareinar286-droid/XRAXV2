@@ -8,8 +8,24 @@ test('renders a traceable people duty section in the administrator dashboard', a
   const source = await readFile(pagePath, 'utf8')
 
   assert.match(source, /全员履职明细/)
-  assert.match(source, /dashboard\.people/)
+  assert.match(source, /v-for="person in people"/)
   assert.match(source, /应履职/)
   assert.match(source, /按时通过/)
   assert.match(source, /AdaptiveNavigation active="DUTY_DASHBOARD"/)
+})
+
+test('renders department, duty status and keyword filters backed by listDutyPeople', async () => {
+  const source = await readFile(pagePath, 'utf8')
+
+  // 筛选控件：部门、履职状态、关键词
+  assert.match(source, /listDutyPeople/)
+  assert.match(source, /peopleQuery/)
+  assert.match(source, /dutyStatus/)
+  assert.match(source, /keyword/)
+  assert.match(source, /重置/)
+
+  // 履职状态三档值域
+  assert.match(source, /COMPLETED/)
+  assert.match(source, /ASSESSMENT/)
+  assert.match(source, /NOT_APPLICABLE/)
 })
