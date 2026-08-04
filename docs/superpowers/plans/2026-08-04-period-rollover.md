@@ -2,7 +2,7 @@
 
 > 给实施者：必须使用 `superpowers:executing-plans`，逐项执行并在每个检查点停下复核。
 
-**目标：** 履职任务按周期（每日/每周/每两周/每月/每季度/每半年/每年）自动轮换：到期后生成下一周期新任务，旧任务保留为历史并进入考核统计；填报人=登录账号；任务逐条展示不拼接。节假日前（HOLIDAY_EVE）周期暂缓，仅预留枚举。
+**目标：** 履职任务按周期（每日/每周/每两周/每月/每季度/每半年/每年）自动轮换：到期后生成下一周期新任务，旧任务保留为历史并进入考核统计；填报人=登录账号；任务逐条展示不拼接。节假日前周期经 EE 确认后移除，本轮不实现。
 
 **数据边界：** 全程匿名 Mock。`clipboard-*.xlsx` 两份参考表（665 行花名册、471 行履职明细，含真实姓名与手机号）仅在本机读取用于提取业务结构（部门/岗位/动作名称/频率/说明模板）；提取结果以匿名常量写入 `mock-data.mjs`；姓名、手机号、附件一律不进入代码、Git、构建产物或 Cloudflare。
 
@@ -10,7 +10,7 @@
 
 ## 交付与验收口径
 
-- `PERIOD_TYPES` 枚举含 `DAILY/WEEKLY/BIWEEKLY/MONTHLY/QUARTERLY/SEMIANNUAL/ANNUAL/HOLIDAY_EVE`；`nextDueDate(periodType, dueDate)` 按 rolling 推进（从当前截止日计算下一截止日），MONTHLY/QUARTERLY/SEMIANNUAL 做月末/年末安全（1-31 -> 2-28）；`HOLIDAY_EVE` 调用返回 `NOT_IMPLEMENTED`。
+- `PERIOD_TYPES` 枚举含 `DAILY/WEEKLY/BIWEEKLY/MONTHLY/QUARTERLY/SEMIANNUAL/ANNUAL` 七种可用周期；`nextDueDate(periodType, dueDate)` 按 rolling 推进（从当前截止日计算下一截止日），MONTHLY/QUARTERLY/SEMIANNUAL 做月末/年末安全（1-31 -> 2-28）。节假日前周期不在本期范围。
 - 到期判定：`dueDate < asOf`（当天未过不算到期）。轮换只在到期时触发，完成不触发。
 - 轮换生成新任务：新 id、`status: 'PENDING'`、截止日推进、周期区间连续（`[旧截止日+1, 新截止日]`）；旧任务标记 `cycleRolledOver: true` 保留，仍按既有 `metrics` 规则进入考核（未按时通过）。
 - 同一任务不得重复轮换；未到期不轮换；无 `periodType` 的既有任务行为不变（向后兼容）。
@@ -23,7 +23,7 @@
 
 **文件：** 新建 `src/domain/duties/periods.mjs`、新建 `tests/duties/periods.test.mjs`
 
-- 测试：DAILY/WEEKLY/BIWEEKLY/MONTHLY/QUARTERLY/SEMIANNUAL/ANNUAL 各推进一周期；MONTHLY 月末（2026-01-31 -> 2026-02-28）、QUARTERLY 月末（2026-03-31 -> 2026-06-30）、ANNUAL 年末（2026-12-31 -> 2027-12-31）；HOLIDAY_EVE 抛 `NOT_IMPLEMENTED`；非法周期抛 `INVALID_PERIOD`。
+- 测试：DAILY/WEEKLY/BIWEEKLY/MONTHLY/QUARTERLY/SEMIANNUAL/ANNUAL 各推进一周期；MONTHLY 月末（2026-01-31 -> 2026-02-28）、QUARTERLY 月末（2026-03-31 -> 2026-06-30）、ANNUAL 年末（2026-12-31 -> 2027-12-31）；非法周期抛 `INVALID_PERIOD`。
 - 实现：UTC 日期运算（避免本地时区偏移），输出 `YYYY-MM-DD`。
 
 **检查点：** `node --test tests/duties/periods.test.mjs` 通过。
@@ -53,7 +53,7 @@
 **文件：** 修改 `docs/开发日志.md`
 
 - 执行 `pnpm test`、`pnpm run build:h5`、`pnpm run build:mp-weixin`、`git diff --check`；敏感扫描确认无真实姓名/手机号/Excel。
-- 记录周期轮换交付、匿名数据边界证据与下一步（M3B 真实账号映射、节假日前周期、G3 周期筛选）。
+- 记录周期轮换交付、匿名数据边界证据与下一步（M3B 真实账号映射、G3 周期筛选）。
 - 在 `feature/leader-workbench` 提交并推送；不更新 Cloudflare。
 
 **检查点：** 全部门禁通过；发布集合仅含代码、匿名测试与文档。

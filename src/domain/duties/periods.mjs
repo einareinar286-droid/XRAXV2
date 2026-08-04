@@ -5,8 +5,7 @@ export const PERIOD_TYPES = Object.freeze({
   MONTHLY: 'MONTHLY',
   QUARTERLY: 'QUARTERLY',
   SEMIANNUAL: 'SEMIANNUAL',
-  ANNUAL: 'ANNUAL',
-  HOLIDAY_EVE: 'HOLIDAY_EVE'
+  ANNUAL: 'ANNUAL'
 })
 
 export const PERIOD_TYPE_LABELS = Object.freeze({
@@ -16,8 +15,7 @@ export const PERIOD_TYPE_LABELS = Object.freeze({
   [PERIOD_TYPES.MONTHLY]: '每月',
   [PERIOD_TYPES.QUARTERLY]: '每季度',
   [PERIOD_TYPES.SEMIANNUAL]: '每半年',
-  [PERIOD_TYPES.ANNUAL]: '每年',
-  [PERIOD_TYPES.HOLIDAY_EVE]: '节假日前'
+  [PERIOD_TYPES.ANNUAL]: '每年'
 })
 
 function periodError(code, message) {
@@ -47,9 +45,6 @@ const MONTH_STEPS = Object.freeze({
 
 export function nextDueDate(periodType, dueDate) {
   if (!PERIOD_TYPES[periodType]) throw periodError('INVALID_PERIOD', `未知的履职周期：${periodType}`)
-  if (periodType === PERIOD_TYPES.HOLIDAY_EVE) {
-    throw periodError('NOT_IMPLEMENTED', '节假日前周期暂未实现，需要节假日日历依据')
-  }
   const { year, month, day } = parseDate(dueDate)
 
   if (periodType === PERIOD_TYPES.DAILY) {

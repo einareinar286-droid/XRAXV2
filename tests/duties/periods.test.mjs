@@ -27,14 +27,6 @@ test('keeps month-end and year-end boundaries safe', () => {
   assert.equal(nextDueDate(PERIOD_TYPES.ANNUAL, '2026-12-31'), '2027-12-31')
 })
 
-test('reserves the holiday-eve period as not implemented', () => {
-  assert.equal(PERIOD_TYPE_LABELS[PERIOD_TYPES.HOLIDAY_EVE], '节假日前')
-  assert.throws(
-    () => nextDueDate(PERIOD_TYPES.HOLIDAY_EVE, '2026-08-04'),
-    (error) => error.code === 'NOT_IMPLEMENTED'
-  )
-})
-
 test('rejects unknown period types', () => {
   assert.throws(
     () => nextDueDate('EVERY_DECADE', '2026-08-04'),
