@@ -16,6 +16,7 @@ export const listMyDuties = (...args) => adapter.listMyDuties(...args)
 export const submitDuty = (...args) => adapter.submitDuty(...args)
 export const reviewDuty = (...args) => adapter.reviewDuty(...args)
 export const getDutyDashboard = (...args) => adapter.getDutyDashboard(...args)
+export const listDutyPeople = (...args) => adapter.listDutyPeople(...args)
 export const setMockRole = (...args) => adapter.setMockRole(...args)
 
 export function dutyStatusText(status) {

@@ -1,5 +1,7 @@
 import { validateAttachments } from '../../domain/issues/validation.mjs'
-import { calculateDutyMetrics, getDutyAssessmentReason } from '../../domain/duties/metrics.mjs'
+import { createDutyDashboard } from '../../domain/duties/dashboard.mjs'
+import { canReviewDuty, canViewCompanyDutyDashboard, canViewDutyPeople } from '../../domain/duties/access-policy.mjs'
+import { defaultOperationLogAdapter } from '../operation-logs/mock-adapter.mjs'
 
 const USERS = Object.freeze({
   SUPER_ADMIN: { uid: 'super-admin-001', displayName: '超级管理员', role: 'SUPER_ADMIN', department: '安全监察部' },
@@ -29,8 +31,15 @@ function validateReview(payload) {
   return { decision: payload.decision, note }
 }
 
-export function createMockDutyAdapter({ now = () => new Date().toISOString(), seedTasks = [] } = {}) {
+export function createMockDutyAdapter({ now = () => new Date().toISOString(), seedTasks = [], seedEmployees, operationLog = defaultOperationLogAdapter } = {}) {
   const tasks = clone(seedTasks)
+  const employees = clone(seedEmployees || [...new Map(tasks.map((task, index) => [task.ownerUid, {
+    employeeId: `EMP-${String(index + 1).padStart(6, '0')}`,
+    uid: task.ownerUid,
+    displayName: task.ownerName || '匿名员工',
+    department: task.department,
+    position: '员工'
+  }])).values()])
   let currentUser = clone(USERS.SAFETY_OFFICER)
 
   function findTask(id) {
@@ -40,34 +49,28 @@ export function createMockDutyAdapter({ now = () => new Date().toISOString(), se
   }
 
   function canManageTask(task) {
-    return currentUser.role === 'SUPER_ADMIN'
-      || (['SAFETY_OFFICER', 'MARKETING_OFFICER'].includes(currentUser.role) && task.department === currentUser.department)
+    return canReviewDuty(currentUser, task)
   }
 
   function visibleTasks() {
-    if (currentUser.role === 'SUPER_ADMIN') return tasks
-    if (currentUser.role === 'SAFETY_OFFICER' || currentUser.role === 'MARKETING_OFFICER') {
-      return tasks.filter((task) => task.department === currentUser.department)
-    }
+    if (canViewCompanyDutyDashboard(currentUser)) return tasks
     return tasks.filter((task) => task.ownerUid === currentUser.uid)
   }
 
   function buildDashboard(asOf) {
-    const scopedTasks = visibleTasks()
-    const byDepartment = [...new Set(scopedTasks.map((task) => task.department))]
-      .sort()
-      .map((department) => ({ department, ...calculateDutyMetrics(scopedTasks.filter((task) => task.department === department), { asOf }) }))
-    const metrics = calculateDutyMetrics(scopedTasks, { asOf })
-    return {
-      company: metrics,
-      departments: byDepartment,
-      reviewItems: scopedTasks
-        .filter((task) => task.status === 'SUBMITTED')
-        .map(clone),
-      assessmentItems: scopedTasks
-        .filter((task) => metrics.assessmentTaskIds.includes(task.id))
-        .map((task) => ({ ...clone(task), assessmentReason: getDutyAssessmentReason(task) }))
-    }
+    return createDutyDashboard({ duties: visibleTasks(), employees, asOf })
+  }
+
+  function appendOperation(action, task, note) {
+    operationLog.append({
+      occurredAt: now(),
+      actor: currentUser,
+      action,
+      targetType: 'Duty',
+      targetId: task.id,
+      result: 'SUCCESS',
+      note
+    })
   }
 
   return {
@@ -94,6 +97,7 @@ export function createMockDutyAdapter({ now = () => new Date().toISOString(), se
       task.evidence = { note: valid.note, attachments: clone(valid.attachments) }
       task.submittedAt = now()
       task.review = null
+      appendOperation('DUTY_SUBMIT', task, '待提交 -> 待审核')
       return clone(task)
     },
 
@@ -104,14 +108,24 @@ export function createMockDutyAdapter({ now = () => new Date().toISOString(), se
       const valid = validateReview(payload)
       task.status = valid.decision === 'APPROVE' ? 'APPROVED' : 'RETURNED'
       task.review = { decision: valid.decision, note: valid.note, reviewerUid: currentUser.uid, reviewedAt: now() }
+      appendOperation(valid.decision === 'APPROVE' ? 'DUTY_APPROVE' : 'DUTY_RETURN', task, valid.decision === 'APPROVE' ? '待审核 -> 已通过' : '待审核 -> 已退回')
       return clone(task)
     },
 
     async getDutyDashboard({ asOf } = {}) {
-      if (!['SUPER_ADMIN', 'SAFETY_OFFICER', 'MARKETING_OFFICER'].includes(currentUser.role)) {
+      if (!canViewCompanyDutyDashboard(currentUser)) {
         throw dutyError('FORBIDDEN', '当前角色不能查看履职仪表盘')
       }
       return clone(buildDashboard(asOf))
+    },
+
+    async listDutyPeople({ department, dutyStatus, keyword } = {}) {
+      if (!canViewDutyPeople(currentUser)) throw dutyError('FORBIDDEN', '当前角色不能查看全员履职明细')
+      const normalizedKeyword = typeof keyword === 'string' ? keyword.trim() : ''
+      return clone(buildDashboard().people
+        .filter((person) => !department || person.department === department)
+        .filter((person) => !dutyStatus || person.dutyStatus === dutyStatus)
+        .filter((person) => !normalizedKeyword || [person.displayName, person.department, person.position].some((value) => value?.includes(normalizedKeyword))))
     }
   }
 }

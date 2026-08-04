@@ -25,6 +25,10 @@
       "style": { "navigationBarTitleText": "履职总览" }
     },
     {
+      "path": "pages/admin/operation-logs",
+      "style": { "navigationBarTitleText": "操作日志" }
+    },
+    {
       "path": "pages/profile/index",
       "style": { "navigationBarTitleText": "我的" }
     }

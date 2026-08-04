@@ -9,11 +9,12 @@
         v-for="item in items"
         :key="item.id"
         class="navigation-item"
-        :class="{ active: item.id === active }"
-        @click="go(item.path)"
+        :class="{ active: item.id === active, disabled: item.disabled }"
+        @click="go(item)"
       >
         <text>{{ item.label }}</text>
-        <view v-if="item.id === active" class="active-mark" />
+        <text v-if="item.disabled" class="planned-mark">规划中</text>
+        <view v-else-if="item.id === active" class="active-mark" />
       </view>
     </view>
     <view class="navigation-footer">演示环境 · 未接入真实业务数据</view>
@@ -32,11 +33,16 @@ const items = [
   { id: 'WORKBENCH', label: '工作台', path: '/pages/index/index' },
   { id: 'DUTY', label: '履职', path: '/pages/duty/index' },
   { id: 'REPORT', label: '随手拍', path: '/pages/issue/create' },
+  { id: 'DRIVER_PROFILE', label: '送气工画像', disabled: true },
   { id: 'PROFILE', label: '我的', path: '/pages/profile/index' }
 ]
 
-function go(path) {
-  uni.switchTab({ url: path })
+function go(item) {
+  if (item.disabled) {
+    uni.showToast({ title: '送气工画像规划中', icon: 'none' })
+    return
+  }
+  uni.switchTab({ url: item.path })
 }
 </script>
 
@@ -76,7 +82,9 @@ function go(path) {
     transition: background .2s ease, color .2s ease;
   }
   .navigation-item.active { background: rgba(255, 255, 255, .15); color: #fff; font-weight: 700; }
+  .navigation-item.disabled { color: rgba(255, 255, 255, .38); }
   .active-mark { width: 6px; height: 6px; border-radius: 50%; background: #90e0c8; box-shadow: 0 0 0 5px rgba(144, 224, 200, .14); }
+  .planned-mark { font-size: 11px; color: rgba(255, 255, 255, .42); }
   .navigation-footer { margin-top: auto; padding: 16px 14px 0; border-top: 1px solid rgba(255, 255, 255, .16); font-size: 11px; line-height: 1.65; color: rgba(255, 255, 255, .55); }
 }
 </style>

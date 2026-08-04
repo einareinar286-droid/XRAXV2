@@ -35,7 +35,7 @@ test('marks an empty duty scope as not applicable instead of reporting a mislead
   })
 })
 
-test('allows an employee to submit only their own duty and requires safety review before it counts as completed', async () => {
+test('allows an employee to submit only their own duty and requires super administrator review before it counts as completed', async () => {
   const adapter = createMockDutyAdapter({
     now: () => '2026-08-09T08:00:00.000Z',
     seedTasks: [{
@@ -55,7 +55,7 @@ test('allows an employee to submit only their own duty and requires safety revie
   const submitted = await adapter.submitDuty('duty-001', { note: '已完成本周检查。', attachments: [] })
   assert.equal(submitted.status, 'SUBMITTED')
 
-  adapter.setMockRole('SAFETY_OFFICER')
+  adapter.setMockRole('SUPER_ADMIN')
   let dashboard = await adapter.getDutyDashboard({ asOf: '2026-08-12T00:00:00.000Z' })
   assert.equal(dashboard.company.completionRate, 0)
   assert.equal(dashboard.assessmentItems.length, 1)
@@ -69,13 +69,14 @@ test('allows an employee to submit only their own duty and requires safety revie
   assert.deepEqual(dashboard.reviewItems, [])
 })
 
-test('does not let a department reviewer overwrite another department duty', async () => {
+test('does not let an ordinary employee review another persons duty', async () => {
   const adapter = createMockDutyAdapter({
     seedTasks: [{
       id: 'duty-other-dept', title: '市场检查', department: '市场营销部', ownerUid: 'other-001', ownerName: '市场员工',
       dueDate: '2026-08-10', status: 'SUBMITTED', evidence: [], submittedAt: '2026-08-09T08:00:00.000Z', review: null
     }]
   })
+  adapter.setMockRole('EMPLOYEE')
 
   await assert.rejects(
     () => adapter.reviewDuty('duty-other-dept', { decision: 'APPROVE', note: '越权审核。' }),
@@ -83,7 +84,7 @@ test('does not let a department reviewer overwrite another department duty', asy
   )
 })
 
-test('allows the marketing reviewer to review duties in their own department', async () => {
+test('does not let a marketing employee review other employees duties', async () => {
   const adapter = createMockDutyAdapter({
     seedTasks: [{
       id: 'duty-marketing', title: '市场安全检查', department: '市场营销部', ownerUid: 'other-001', ownerName: '市场员工',
@@ -91,6 +92,54 @@ test('allows the marketing reviewer to review duties in their own department', a
     }]
   })
   adapter.setMockRole('MARKETING_OFFICER')
-  const approved = await adapter.reviewDuty('duty-marketing', { decision: 'APPROVE', note: '部门审核通过。' })
+  await assert.rejects(
+    () => adapter.reviewDuty('duty-marketing', { decision: 'APPROVE', note: '越权审核。' }),
+    (error) => error.code === 'FORBIDDEN'
+  )
+})
+
+test('does not let safety change a duty submitted by another employee', async () => {
+  const adapter = createMockDutyAdapter({
+    seedTasks: [{
+      id: 'duty-marketing', title: '市场安全检查', department: '市场营销部', ownerUid: 'other-001', ownerName: '市场员工',
+      dueDate: '2026-08-10', status: 'SUBMITTED', evidence: [], submittedAt: '2026-08-09T08:00:00.000Z', review: null
+    }]
+  })
+
+  await assert.rejects(
+    () => adapter.reviewDuty('duty-marketing', { decision: 'APPROVE', note: '安监越权审核。' }),
+    (error) => error.code === 'FORBIDDEN'
+  )
+  adapter.setMockRole('SUPER_ADMIN')
+  const approved = await adapter.reviewDuty('duty-marketing', { decision: 'APPROVE', note: '管理员审核通过。' })
   assert.equal(approved.status, 'APPROVED')
+})
+
+test('returns company people only to safety and super administrators', async () => {
+  const adapter = createMockDutyAdapter({
+    seedTasks: [{
+      id: 'duty-marketing', title: '市场安全检查', department: '市场营销部', ownerUid: 'marketing-001', ownerName: '市场营销员',
+      dueDate: '2026-08-10', status: 'PENDING', evidence: [], submittedAt: null, review: null
+    }]
+  })
+
+  assert.equal((await adapter.listDutyPeople()).length, 1)
+  adapter.setMockRole('MARKETING_OFFICER')
+  await assert.rejects(() => adapter.listDutyPeople(), (error) => error.code === 'FORBIDDEN')
+})
+
+test('appends a duty log only after a successful state change', async () => {
+  const records = []
+  const adapter = createMockDutyAdapter({
+    operationLog: { append: (record) => records.push(record) },
+    seedTasks: [{
+      id: 'duty-log-001', title: '演示检查', department: '安全监察部', ownerUid: 'employee-001', ownerName: '普通员工',
+      dueDate: '2026-08-10', status: 'PENDING', evidence: [], submittedAt: null, review: null
+    }]
+  })
+  adapter.setMockRole('EMPLOYEE')
+  await adapter.submitDuty('duty-log-001', { note: '已完成。', attachments: [] })
+  await assert.rejects(() => adapter.submitDuty('duty-log-001', { note: '重复提交。', attachments: [] }))
+
+  assert.deepEqual(records.map((record) => [record.action, record.targetId, record.result]), [['DUTY_SUBMIT', 'duty-log-001', 'SUCCESS']])
 })

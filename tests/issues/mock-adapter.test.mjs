@@ -578,3 +578,14 @@ test('rejects public attachment addresses and stores only canonical metadata', a
     id: 'local-001', name: 'local.jpg', mimeType: 'image/jpeg', size: 100, previewUrl: 'mock-private://local-001'
   })
 })
+
+test('appends an issue log only after the issue report succeeds', async () => {
+  const records = []
+  const adapter = createMockIssueAdapter({
+    idFactory: () => 'XR-LOG-001',
+    operationLog: { append: (record) => records.push(record) }
+  })
+  const reported = await adapter.reportIssue(reportPayload())
+  assert.equal(reported.id, 'XR-LOG-001')
+  assert.deepEqual(records.map((record) => [record.action, record.targetId, record.result]), [['ISSUE_REPORT', 'XR-LOG-001', 'SUCCESS']])
+})

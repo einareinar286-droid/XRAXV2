@@ -7,6 +7,7 @@ import {
   validateReportPayload,
   validateReviewPayload
 } from '../../domain/issues/validation.mjs'
+import { defaultOperationLogAdapter } from '../operation-logs/mock-adapter.mjs'
 
 const USERS = {
   SUPER_ADMIN: {
@@ -64,7 +65,8 @@ export function createMockIssueAdapter({
   now = () => new Date().toISOString(),
   idFactory = () => `XR-${Date.now()}`,
   seedIssues = [],
-  seedAuditEvents = []
+  seedAuditEvents = [],
+  operationLog = defaultOperationLogAdapter
 } = {}) {
   const issues = clone(seedIssues)
   const auditEvents = clone(seedAuditEvents)
@@ -102,6 +104,24 @@ export function createMockIssueAdapter({
       requestId,
       payloadSummary
     })
+    const operationAction = ({
+      REPORT: 'ISSUE_REPORT',
+      ASSIGN: 'ISSUE_ASSIGN',
+      SUBMIT_RECTIFICATION: 'ISSUE_RECTIFY',
+      CLOSE: 'ISSUE_CLOSE',
+      REOPEN: 'ISSUE_REOPEN'
+    })[action]
+    if (operationAction) {
+      operationLog.append({
+        occurredAt: now(),
+        actor: currentUser,
+        action: operationAction,
+        targetType: 'Issue',
+        targetId: issue.id,
+        result: 'SUCCESS',
+        note: `${fromStatus || '无状态'} -> ${toStatus}`
+      })
+    }
   }
 
   function transition(issue, toStatus, action, requestId, payloadSummary = {}) {

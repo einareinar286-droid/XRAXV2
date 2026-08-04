@@ -6,6 +6,7 @@
     <view v-if="isMockIssueMode" class="mock-warning"><view class="warning-title">Mock 演示模式</view><view>身份切换只用于验证权限和流程，不是生产级登录；附件也未上传至私有云存储。</view></view>
     <view v-if="canSwitchMockRole" class="section"><view class="section-title">切换 Mock 身份</view><view v-for="item in roles" :key="item.id" class="role-row" :class="{ active:item.id===currentUser?.role }" @click="switchRole(item.id)"><view><view class="role-name">{{ item.name }}</view><view class="role-copy">{{ item.copy }}</view></view><view class="check">{{ item.id===currentUser?.role?'✓':'' }}</view></view></view>
     <view v-if="canViewDutyDashboard" class="section entry" @click="openDutyAdmin"><view><view class="section-title">履职仪表盘</view><view class="role-copy">履职率必须 100%；未完成、退回、逾期及逾期补交均进入考核清单。</view></view><view class="arrow">→</view></view>
+    <view v-if="canViewDutyDashboard" class="section entry" @click="openOperationLogs"><view><view class="section-title">操作日志</view><view class="role-copy">查看关键操作的时间、操作人、对象与结果；日志不保存密码和完整附件地址。</view></view><view class="arrow">→</view></view>
     <view class="section"><view class="section-title">Mock 演示边界</view><view class="guide">当前版本用于本地功能验证：未接入真实账号、短信、微信 AppID、私有云附件或生产部署。真实人员数据不在本项目中保存。</view></view>
     </view>
   </view>
@@ -19,17 +20,18 @@ import { setMockRole as setDutyMockRole } from '../../services/duty'
 import { isMockRoleSwitcherEnabled } from '../../services/mock-mode.mjs'
 import AdaptiveNavigation from '../../components/navigation/AdaptiveNavigation.vue'
 const currentUser=ref(null)
-const canViewDutyDashboard=computed(()=>['SUPER_ADMIN','SAFETY_OFFICER','MARKETING_OFFICER'].includes(currentUser.value?.role))
+const canViewDutyDashboard=computed(()=>['SUPER_ADMIN','SAFETY_OFFICER'].includes(currentUser.value?.role))
 const canSwitchMockRole=computed(()=>isMockIssueMode && isMockRoleSwitcherEnabled() && currentUser.value?.role==='SUPER_ADMIN')
 const roles=[
   {id:'SUPER_ADMIN',name:'超级管理员',copy:'拥有全公司查看、管理与留痕重开权限'},
-  {id:'SAFETY_OFFICER',name:'安全监察部',copy:'全员隐患上报可查看、可交办市场整改并确认闭环；履职仅审核本部门'},
-  {id:'MARKETING_OFFICER',name:'市场营销部',copy:'提交受办隐患整改，审核本部门履职'},
+  {id:'SAFETY_OFFICER',name:'安全监察部',copy:'全员隐患上报可查看、可交办市场整改并确认闭环；可查看和审核全员履职'},
+  {id:'MARKETING_OFFICER',name:'市场营销部',copy:'提交受办隐患整改；履职只可填写和查看本人'},
   {id:'EMPLOYEE',name:'员工',copy:'可随手拍上报隐患、填写本人履职；不能改写其他人员记录'}
 ]
 async function refreshUser(){currentUser.value=await getCurrentUser()}
 function switchRole(role){currentUser.value=setMockRole(role);setDutyMockRole(role);uni.showToast({title:'Mock 身份已切换',icon:'none'})}
 function openDutyAdmin(){uni.navigateTo({url:'/pages/admin/duty'})}
+function openOperationLogs(){uni.navigateTo({url:'/pages/admin/operation-logs'})}
 onShow(refreshUser)
 </script>
 

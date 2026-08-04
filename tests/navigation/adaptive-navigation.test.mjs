@@ -14,3 +14,11 @@ test('defines the four tab destinations in leader-first order', async () => {
   assert.match(source, /active/)
   assert.match(source, /uni\.switchTab/)
 })
+
+test('reserves a disabled desktop navigation slot for the future driver profile', async () => {
+  const source = await readFile(componentPath, 'utf8')
+
+  assert.match(source, /label:\s*'送气工画像'/)
+  assert.match(source, /disabled:\s*true/)
+  assert.match(source, /规划中/)
+})

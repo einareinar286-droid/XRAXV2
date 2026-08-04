@@ -4,6 +4,7 @@ export {
   getDutyDashboard,
   isMockDutyMode,
   listMyDuties,
+  listDutyPeople,
   reviewDuty,
   setMockRole,
   submitDuty
