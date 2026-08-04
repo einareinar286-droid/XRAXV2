@@ -16,8 +16,8 @@ function uniqueDepartments(employees, duties) {
   ].filter(Boolean))].sort()
 }
 
-export function createDutyDashboard({ duties = [], employees = [], asOf } = {}) {
-  const allDuties = clone(duties)
+export function createDutyDashboard({ duties = [], employees = [], asOf, periodType } = {}) {
+  const allDuties = clone(periodType ? duties.filter((duty) => duty.periodType === periodType) : duties)
   const allEmployees = clone(employees)
   const company = calculateDutyMetrics(allDuties, { asOf })
   const people = allEmployees

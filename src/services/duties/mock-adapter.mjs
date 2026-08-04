@@ -58,8 +58,8 @@ export function createMockDutyAdapter({ now = () => new Date().toISOString(), se
     return tasks.filter((task) => task.ownerUid === currentUser.uid)
   }
 
-  function buildDashboard(asOf) {
-    return createDutyDashboard({ duties: visibleTasks(), employees, asOf })
+  function buildDashboard(asOf, periodType) {
+    return createDutyDashboard({ duties: visibleTasks(), employees, asOf, periodType })
   }
 
   function rolloverDueCycles(asOf) {
@@ -136,19 +136,19 @@ export function createMockDutyAdapter({ now = () => new Date().toISOString(), se
       return clone(task)
     },
 
-    async getDutyDashboard({ asOf } = {}) {
+    async getDutyDashboard({ asOf, periodType } = {}) {
       if (!canViewCompanyDutyDashboard(currentUser)) {
         throw dutyError('FORBIDDEN', '当前角色不能查看履职仪表盘')
       }
       rolloverDueCycles(now())
-      return clone(buildDashboard(asOf))
+      return clone(buildDashboard(asOf, periodType))
     },
 
-    async listDutyPeople({ department, dutyStatus, keyword } = {}) {
+    async listDutyPeople({ department, dutyStatus, keyword, periodType } = {}) {
       if (!canViewDutyPeople(currentUser)) throw dutyError('FORBIDDEN', '当前角色不能查看全员履职明细')
       rolloverDueCycles(now())
       const normalizedKeyword = typeof keyword === 'string' ? keyword.trim() : ''
-      return clone(buildDashboard().people
+      return clone(buildDashboard(undefined, periodType).people
         .filter((person) => !department || person.department === department)
         .filter((person) => !dutyStatus || person.dutyStatus === dutyStatus)
         .filter((person) => !normalizedKeyword || [person.displayName, person.department, person.position].some((value) => value?.includes(normalizedKeyword))))

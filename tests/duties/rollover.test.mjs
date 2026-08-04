@@ -93,3 +93,29 @@ test('leaves legacy tasks without a period type untouched', async () => {
   assert.equal(mine.length, 1)
   assert.equal(mine[0].id, 'duty-legacy')
 })
+
+test('filters dashboard and people by the selected period type at the service layer', async () => {
+  const seed = [
+    {
+      id: 'duty-weekly', title: '每周检查', department: '安全监察部', ownerUid: 'safety-001', ownerName: '安全监察员',
+      periodType: 'WEEKLY', dueDate: '2026-07-31', cycleStart: '2026-07-01', cycleEnd: '2026-07-31', cycleKey: 'weekly-2026-07-31',
+      status: 'APPROVED', evidence: [], submittedAt: '2026-07-28T08:00:00.000Z', review: { decision: 'APPROVE', note: '通过', reviewerUid: 'super-admin-001', reviewedAt: '2026-07-29T08:00:00.000Z' }, cycleRolledOver: false
+    },
+    {
+      id: 'duty-monthly', title: '每月检查', department: '安全监察部', ownerUid: 'safety-001', ownerName: '安全监察员',
+      periodType: 'MONTHLY', dueDate: '2026-07-31', cycleStart: '2026-07-01', cycleEnd: '2026-07-31', cycleKey: 'monthly-2026-07-31',
+      status: 'PENDING', evidence: [], submittedAt: null, review: null, cycleRolledOver: false
+    }
+  ]
+  const adapter = createMockDutyAdapter({ now: () => '2026-08-01T08:00:00.000Z', seedTasks: seed })
+  adapter.setMockRole('SUPER_ADMIN')
+
+  const monthly = await adapter.getDutyDashboard({ asOf: '2026-08-02T00:00:00.000Z', periodType: 'MONTHLY' })
+  assert.equal(monthly.company.dueCount, 1)
+  assert.equal(monthly.assessmentItems.length, 1)
+  assert.equal(monthly.assessmentItems[0].id, 'duty-monthly')
+
+  const weeklyPeople = await adapter.listDutyPeople({ periodType: 'WEEKLY' })
+  assert.equal(weeklyPeople.length, 1)
+  assert.equal(weeklyPeople[0].onTimeApprovedCount, 1)
+})

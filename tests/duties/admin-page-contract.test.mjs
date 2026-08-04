@@ -29,3 +29,12 @@ test('renders department, duty status and keyword filters backed by listDutyPeop
   assert.match(source, /ASSESSMENT/)
   assert.match(source, /NOT_APPLICABLE/)
 })
+
+test('renders a period view selector on the administrator dashboard', async () => {
+  const source = await readFile(pagePath, 'utf8')
+
+  assert.match(source, /periodView/)
+  assert.match(source, /periodType/)
+  assert.match(source, /MONTHLY/)
+  assert.match(source, /全部周期|全部/)
+})
