@@ -117,7 +117,7 @@ const shortcuts = computed(() => {
 
 function formatPercent(value) {
   if (typeof value !== 'number') return '--'
-  return `${Math.round(value * 100)}%`
+  return `${Math.round(Math.max(0, Math.min(100, value)))}%`
 }
 
 function formatGeneratedAt(value) {

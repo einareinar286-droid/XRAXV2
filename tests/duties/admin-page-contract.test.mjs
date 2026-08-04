@@ -11,5 +11,5 @@ test('renders a traceable people duty section in the administrator dashboard', a
   assert.match(source, /dashboard\.people/)
   assert.match(source, /应履职/)
   assert.match(source, /按时通过/)
-  assert.match(source, /AdaptiveNavigation active="DUTY"/)
+  assert.match(source, /AdaptiveNavigation active="DUTY_DASHBOARD"/)
 })

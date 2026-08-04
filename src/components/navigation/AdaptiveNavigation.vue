@@ -22,6 +22,9 @@
 </template>
 
 <script setup>
+import { computed, onMounted, ref } from 'vue'
+import { getCurrentUser } from '../../services/issues/index.mjs'
+
 defineProps({
   active: {
     type: String,
@@ -29,20 +32,32 @@ defineProps({
   }
 })
 
-const items = [
-  { id: 'WORKBENCH', label: '工作台', path: '/pages/index/index' },
-  { id: 'DUTY', label: '履职', path: '/pages/duty/index' },
-  { id: 'REPORT', label: '随手拍', path: '/pages/issue/create' },
-  { id: 'DRIVER_PROFILE', label: '送气工画像', disabled: true },
-  { id: 'PROFILE', label: '我的', path: '/pages/profile/index' }
-]
+const currentUser = ref(null)
+const items = computed(() => {
+  const base = [
+    { id: 'WORKBENCH', label: '工作台', path: '/pages/index/index', tab: true },
+    { id: 'REPORT', label: '随手拍', path: '/pages/issue/create', tab: true },
+    { id: 'DRIVER_PROFILE', label: '送气工画像', disabled: true },
+    { id: 'PROFILE', label: '我的', path: '/pages/profile/index', tab: true }
+  ]
+  if (!['SUPER_ADMIN', 'SAFETY_OFFICER'].includes(currentUser.value?.role)) return base
+  return [
+    base[0],
+    { id: 'ASSIGN', label: '隐患交办', path: '/pages/admin/issue-assign' },
+    { id: 'DUTY_DASHBOARD', label: '履职仪表盘', path: '/pages/admin/duty' },
+    ...base.slice(1)
+  ]
+})
+
+onMounted(async () => { currentUser.value = await getCurrentUser() })
 
 function go(item) {
   if (item.disabled) {
     uni.showToast({ title: '送气工画像规划中', icon: 'none' })
     return
   }
-  uni.switchTab({ url: item.path })
+  if (item.tab) uni.switchTab({ url: item.path })
+  else uni.navigateTo({ url: item.path })
 }
 </script>
 

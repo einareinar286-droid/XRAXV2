@@ -21,10 +21,10 @@ import { isMockRoleSwitcherEnabled } from '../../services/mock-mode.mjs'
 import AdaptiveNavigation from '../../components/navigation/AdaptiveNavigation.vue'
 const currentUser=ref(null)
 const canViewDutyDashboard=computed(()=>['SUPER_ADMIN','SAFETY_OFFICER'].includes(currentUser.value?.role))
-const canSwitchMockRole=computed(()=>isMockIssueMode && isMockRoleSwitcherEnabled() && currentUser.value?.role==='SUPER_ADMIN')
+const canSwitchMockRole=computed(()=>isMockIssueMode && isMockRoleSwitcherEnabled())
 const roles=[
   {id:'SUPER_ADMIN',name:'超级管理员',copy:'拥有全公司查看、管理与留痕重开权限'},
-  {id:'SAFETY_OFFICER',name:'安全监察部',copy:'全员隐患上报可查看、可交办市场整改并确认闭环；可查看和审核全员履职'},
+  {id:'SAFETY_OFFICER',name:'安全监察部',copy:'全员隐患上报可查看、可交办市场整改并确认闭环；可查看全员履职'},
   {id:'MARKETING_OFFICER',name:'市场营销部',copy:'提交受办隐患整改；履职只可填写和查看本人'},
   {id:'EMPLOYEE',name:'员工',copy:'可随手拍上报隐患、填写本人履职；不能改写其他人员记录'}
 ]

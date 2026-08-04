@@ -1,6 +1,6 @@
 <template>
   <view>
-    <AdaptiveNavigation active="DUTY" />
+    <AdaptiveNavigation active="DUTY_DASHBOARD" />
     <view class="page">
     <view v-if="loading" class="state">正在汇总履职数据…</view>
     <view v-else-if="error" class="state error"><text>{{ error }}</text><button @click="load">重新加载</button></view>
