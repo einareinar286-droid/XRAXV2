@@ -1,6 +1,7 @@
 import { validateAttachments } from '../../domain/issues/validation.mjs'
 import { createDutyDashboard } from '../../domain/duties/dashboard.mjs'
 import { canReviewDuty, canViewCompanyDutyDashboard, canViewDutyPeople } from '../../domain/duties/access-policy.mjs'
+import { isDueForRollover, nextCycleRange } from '../../domain/duties/periods.mjs'
 import { defaultOperationLogAdapter } from '../operation-logs/mock-adapter.mjs'
 
 const USERS = Object.freeze({
@@ -61,6 +62,28 @@ export function createMockDutyAdapter({ now = () => new Date().toISOString(), se
     return createDutyDashboard({ duties: visibleTasks(), employees, asOf })
   }
 
+  function rolloverDueCycles(asOf) {
+    for (const task of [...tasks]) {
+      if (!isDueForRollover(task, asOf)) continue
+      const range = nextCycleRange(task.periodType, task.dueDate)
+      const next = {
+        ...clone(task),
+        id: `${task.id}-cyc-${range.key}`,
+        dueDate: range.end,
+        cycleStart: range.start,
+        cycleEnd: range.end,
+        cycleKey: range.key,
+        status: 'PENDING',
+        evidence: [],
+        submittedAt: null,
+        review: null,
+        cycleRolledOver: false
+      }
+      task.cycleRolledOver = true
+      tasks.push(next)
+    }
+  }
+
   function appendOperation(action, task, note) {
     operationLog.append({
       occurredAt: now(),
@@ -85,7 +108,8 @@ export function createMockDutyAdapter({ now = () => new Date().toISOString(), se
     },
 
     async listMyDuties() {
-      return clone(tasks.filter((task) => task.ownerUid === currentUser.uid))
+      rolloverDueCycles(now())
+      return clone(tasks.filter((task) => task.ownerUid === currentUser.uid && !task.cycleRolledOver))
     },
 
     async submitDuty(id, payload) {
@@ -116,11 +140,13 @@ export function createMockDutyAdapter({ now = () => new Date().toISOString(), se
       if (!canViewCompanyDutyDashboard(currentUser)) {
         throw dutyError('FORBIDDEN', '当前角色不能查看履职仪表盘')
       }
+      rolloverDueCycles(now())
       return clone(buildDashboard(asOf))
     },
 
     async listDutyPeople({ department, dutyStatus, keyword } = {}) {
       if (!canViewDutyPeople(currentUser)) throw dutyError('FORBIDDEN', '当前角色不能查看全员履职明细')
+      rolloverDueCycles(now())
       const normalizedKeyword = typeof keyword === 'string' ? keyword.trim() : ''
       return clone(buildDashboard().people
         .filter((person) => !department || person.department === department)
