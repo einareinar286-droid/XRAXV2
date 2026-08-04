@@ -6,7 +6,7 @@
     <view v-if="loading" class="state">正在加载本期任务…</view>
     <view v-else-if="error" class="state error"><text>{{ error }}</text><button @click="load">重新加载</button></view>
     <template v-else>
-      <view v-for="task in tasks" :key="task.id" class="task" @click="open(task.id)"><view class="task-top"><text class="status" :class="task.status.toLowerCase()">{{ dutyStatusText(task.status) }}</text><text class="due">截止 {{ task.dueDate }}</text></view><text class="task-title">{{ task.title }}</text><text class="task-meta">{{ task.category || '履职任务' }} · {{ task.frequency || '本期' }}</text><text v-if="task.status==='RETURNED'" class="return-note">审核退回，请补充后重新提交</text><text v-else-if="task.status==='SUBMITTED'" class="return-note pending">已提交，等待审核</text></view>
+      <view v-for="task in tasks" :key="task.id" class="task" @click="open(task.id)"><view class="task-top"><text class="status" :class="task.status.toLowerCase()">{{ dutyStatusText(task.status) }}</text><text class="due">截止 {{ task.dueDate }}</text></view><text class="task-title">{{ task.title }}</text><text class="task-meta">{{ task.periodType ? periodLabel(task.periodType) + ' · ' + task.cycleStart + ' 至 ' + task.cycleEnd : (task.category || '履职任务') + ' · ' + (task.frequency || '本期') }}</text><text v-if="task.status==='RETURNED'" class="return-note">审核退回，请补充后重新提交</text><text v-else-if="task.status==='SUBMITTED'" class="return-note pending">已提交，等待审核</text></view>
       <view v-if="!tasks.length" class="state">本期暂无分配给你的履职任务</view>
     </template>
     </view>
@@ -17,9 +17,11 @@
 import { ref } from 'vue'
 import { onShow } from '@dcloudio/uni-app'
 import { dutyStatusText, listMyDuties } from '../../services/duty'
+import { PERIOD_TYPE_LABELS } from '../../domain/duties/periods.mjs'
 import AdaptiveNavigation from '../../components/navigation/AdaptiveNavigation.vue'
 
 const tasks = ref([])
+function periodLabel(type) { return PERIOD_TYPE_LABELS[type] || type }
 const loading = ref(true)
 const error = ref('')
 async function load(){loading.value=true;error.value='';try{tasks.value=await listMyDuties()}catch(err){error.value=err.message||'履职任务加载失败'}finally{loading.value=false}}

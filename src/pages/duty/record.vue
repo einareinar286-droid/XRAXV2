@@ -1,5 +1,5 @@
 <template>
-  <view v-if="task" class="page"><view class="summary"><text class="status" :class="task.status.toLowerCase()">{{ dutyStatusText(task.status) }}</text><text class="title">{{ task.title }}</text><text class="copy">{{ task.department }} · 截止 {{ task.dueDate }}</text></view><view class="form"><text class="label">履职说明</text><textarea v-model="form.note" :disabled="!canSubmit" maxlength="1000" placeholder="填写完成的工作内容、检查范围和发现问题" /><text class="label">现场佐证</text><view class="files"><view v-for="file in form.attachments" :key="file.id" class="file">{{ file.name }}</view><view v-if="canSubmit" class="upload" @click="choose">＋<text>照片</text></view></view><text class="hint">当前 Mock 演示支持本地附件元数据校验；生产版将接入私有附件存储。</text><text v-if="task.review?.note" class="review-note">审核意见：{{ task.review.note }}</text></view><button v-if="canSubmit" class="primary" :loading="submitting" :disabled="submitting || !form.note.trim()" @click="save">提交履职记录，进入审核</button><view v-else class="readonly">{{ task.status==='SUBMITTED'?'已提交，等待部门审核。':'本次履职已审核通过，原记录只读保留。' }}</view></view>
+  <view v-if="task" class="page"><view class="summary"><text class="status" :class="task.status.toLowerCase()">{{ dutyStatusText(task.status) }}</text><text class="title">{{ task.title }}</text><text class="copy">{{ task.department }} · {{ periodLabel }} · {{ cycleRangeText }}</text></view><view class="form"><text class="label">履职说明</text><textarea v-model="form.note" :disabled="!canSubmit" maxlength="1000" placeholder="填写完成的工作内容、检查范围和发现问题" /><text class="label">现场佐证</text><view class="files"><view v-for="file in form.attachments" :key="file.id" class="file">{{ file.name }}</view><view v-if="canSubmit" class="upload" @click="choose">＋<text>照片</text></view></view><text class="hint">当前 Mock 演示支持本地附件元数据校验；生产版将接入私有附件存储。</text><text v-if="task.review?.note" class="review-note">审核意见：{{ task.review.note }}</text></view><button v-if="canSubmit" class="primary" :loading="submitting" :disabled="submitting || !form.note.trim()" @click="save">提交履职记录，进入审核</button><view v-else class="readonly">{{ task.status==='SUBMITTED'?'已提交，等待部门审核。':'本次履职已审核通过，原记录只读保留。' }}</view></view>
 </template>
 
 <script setup>
@@ -7,6 +7,7 @@ import { computed, reactive, ref } from 'vue'
 import { onLoad } from '@dcloudio/uni-app'
 import { chooseEvidenceImages, normalizeEvidenceAttachments } from '../../services/platform'
 import { dutyStatusText, listMyDuties, submitDuty } from '../../services/duty'
+import { PERIOD_TYPE_LABELS } from '../../domain/duties/periods.mjs'
 
 const id = ref('')
 const tasks = ref([])
@@ -14,6 +15,8 @@ const form = reactive({ note:'', attachments:[] })
 const submitting = ref(false)
 const task = computed(() => tasks.value.find((item) => item.id === id.value))
 const canSubmit = computed(() => ['PENDING', 'RETURNED'].includes(task.value?.status))
+const periodLabel = computed(() => task.value?.periodType ? PERIOD_TYPE_LABELS[task.value.periodType] || task.value.periodType : '')
+const cycleRangeText = computed(() => task.value?.cycleStart ? `${task.value.cycleStart} 至 ${task.value.cycleEnd || task.value.dueDate}` : task.value?.dueDate ? `截止 ${task.value.dueDate}` : '')
 async function load(){tasks.value=await listMyDuties();const current=task.value;if(current){form.note=current.evidence?.note||'';form.attachments=current.evidence?.attachments||[]}}
 async function choose(){try{const result=await chooseEvidenceImages();form.attachments.push(...normalizeEvidenceAttachments(result).slice(0,6-form.attachments.length))}catch{}}
 async function save(){if(submitting.value)return;submitting.value=true;try{await submitDuty(id.value,{note:form.note,attachments:form.attachments});uni.showToast({title:'已提交审核',icon:'success'});setTimeout(()=>uni.navigateBack(),450)}catch(err){uni.showToast({title:err.message||'提交失败',icon:'none'})}finally{submitting.value=false}}
