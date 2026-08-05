@@ -1,6 +1,6 @@
 {
   "bsonType": "object",
-  "description": "Immutable duty cycle instances. Server access only.",
+  "description": "Duty cycle instances. Server access only. Status: PENDING/SUBMITTED/APPROVED/RETURNED/OVERDUE.",
   "permission": { "read": false, "create": false, "update": false, "delete": false },
   "required": ["assignmentId", "ownerUid", "periodStart", "periodEnd", "dueDate", "status"],
   "properties": {
@@ -9,18 +9,42 @@
     "ownerName": { "bsonType": "string" },
     "department": { "bsonType": "string" },
     "actionName": { "bsonType": "string" },
+    "title": { "bsonType": "string", "description": "任务标题（对齐前端 task.title）" },
     "category": { "bsonType": "string" },
     "frequency": { "bsonType": "string" },
+    "periodType": { "bsonType": "string", "description": "周期类型（DAILY/WEEKLY/...）" },
     "periodStart": { "bsonType": "string" },
     "periodEnd": { "bsonType": "string" },
+    "cycleKey": { "bsonType": "string", "description": "周期键（对齐前端 task.cycleKey）" },
     "dueDate": { "bsonType": "string" },
     "status": {
       "bsonType": "string",
       "enum": [
         { "text": "PENDING", "value": "PENDING" },
-        { "text": "OVERDUE", "value": "OVERDUE" },
-        { "text": "DONE", "value": "DONE" }
+        { "text": "SUBMITTED", "value": "SUBMITTED" },
+        { "text": "APPROVED", "value": "APPROVED" },
+        { "text": "RETURNED", "value": "RETURNED" },
+        { "text": "OVERDUE", "value": "OVERDUE" }
       ]
+    },
+    "evidence": {
+      "bsonType": "object",
+      "description": "履职证据（对齐前端 task.evidence）",
+      "properties": {
+        "note": { "bsonType": "string" },
+        "attachments": { "bsonType": "array" }
+      }
+    },
+    "submittedAt": { "bsonType": "string" },
+    "review": {
+      "bsonType": "object",
+      "description": "审核记录（对齐前端 task.review）",
+      "properties": {
+        "decision": { "bsonType": "string" },
+        "note": { "bsonType": "string" },
+        "reviewerUid": { "bsonType": "string" },
+        "reviewedAt": { "bsonType": "string" }
+      }
     },
     "description": { "bsonType": "string" },
     "files": { "bsonType": "array" },
