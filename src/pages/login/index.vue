@@ -31,10 +31,10 @@
         {{ mode === 'login' ? '登录' : '注册并登录' }}
       </button>
       <view class="mode-switch">
-        <text class="mode-link" @click="toggleMode">{{ mode === 'login' ? '没有账号？首次注册（自动成为管理员）' : '已有账号？去登录' }}</text>
+        <text class="mode-link" @click="toggleMode">{{ mode === 'login' ? '没有账号？注册新账号' : '已有账号？去登录' }}</text>
       </view>
       <text v-if="error" class="error-text">{{ error }}</text>
-      <text class="hint">云登录需构建时开启 VITE_XR_DUTY_MODE=cloud；当前 Mock 模式登录不可用。首个注册账号自动成为超级管理员。</text>
+      <text class="hint">云登录需构建时开启 VITE_XR_DUTY_MODE=cloud；当前 Mock 模式登录不可用。</text>
     </view>
   </view>
 </template>
