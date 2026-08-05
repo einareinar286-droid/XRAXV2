@@ -9,7 +9,17 @@ module.exports = {
   async _before() {
     this.db = uniCloud.database()
     this.clientInfo = this.getClientInfo()
-    this.uniId = uniID.createInstance({ clientInfo: this.clientInfo })
+    // uni-id 配置内联（避免依赖云端 uni-config-center 的 uni-id/config.json 上传缺失）
+    this.uniId = uniID.createInstance({
+      clientInfo: this.clientInfo,
+      config: {
+        tokenSecret: 'db18e3b07793430077bfbea1d20aedfacb13e4dafad42687b166116e014fc1df',
+        tokenExpiresIn: 7200,
+        tokenExpiresThreshold: 1200,
+        passwordErrorLimit: 6,
+        passwordErrorRetryTime: 3600
+      }
+    })
   },
 
   // 注册假账号（仅 SUPER_ADMIN 可调用；决策 2：假账号测试阶段）
