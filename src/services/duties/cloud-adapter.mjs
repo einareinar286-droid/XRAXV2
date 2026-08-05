@@ -23,6 +23,25 @@ export function mapDashboard(cloud) {
   }
 }
 
+// UNAUTHORIZED 时引导重新登录（token 过期/失效统一处理）
+function handleAuthError(err) {
+  const message = err?.message || String(err)
+  if (message.includes('UNAUTHORIZED') || err?.code === 'UNAUTHORIZED') {
+    uni.removeStorageSync('uni_id_token')
+    setTimeout(() => {
+      uni.showModal({
+        title: '登录已过期',
+        content: '请重新登录后继续操作',
+        confirmText: '去登录',
+        success: (res) => {
+          if (res.confirm) uni.navigateTo({ url: '/pages/login/index' })
+        }
+      })
+    }, 0)
+  }
+  throw err
+}
+
 export function createCloudDutyAdapter({ importObject } = {}) {
   function getObject() {
     if (importObject) return importObject('duty-service')
@@ -45,31 +64,41 @@ export function createCloudDutyAdapter({ importObject } = {}) {
     },
 
     async listMyDuties(params = {}) {
-      const service = getObject()
-      const result = await service.myDuties(params)
-      return (result || []).map(mapInstanceToTask)
+      try {
+        const service = getObject()
+        const result = await service.myDuties(params)
+        return (result || []).map(mapInstanceToTask)
+      } catch (err) { handleAuthError(err) }
     },
 
     async submitDuty(id, payload) {
-      const service = getObject()
-      return service.submitDuty({ instanceId: id, note: payload?.note, attachments: payload?.attachments || [] })
+      try {
+        const service = getObject()
+        return service.submitDuty({ instanceId: id, note: payload?.note, attachments: payload?.attachments || [] })
+      } catch (err) { handleAuthError(err) }
     },
 
     async reviewDuty(id, payload) {
-      const service = getObject()
-      return service.reviewDuty({ instanceId: id, decision: payload?.decision, note: payload?.note })
+      try {
+        const service = getObject()
+        return service.reviewDuty({ instanceId: id, decision: payload?.decision, note: payload?.note })
+      } catch (err) { handleAuthError(err) }
     },
 
     async getDutyDashboard(params = {}) {
-      const service = getObject()
-      const result = await service.dutyDashboard(params)
-      return mapDashboard(result)
+      try {
+        const service = getObject()
+        const result = await service.dutyDashboard(params)
+        return mapDashboard(result)
+      } catch (err) { handleAuthError(err) }
     },
 
     async listDutyPeople(params = {}) {
-      const service = getObject()
-      const result = await service.dutyPeople(params)
-      return result || []
+      try {
+        const service = getObject()
+        const result = await service.dutyPeople(params)
+        return result || []
+      } catch (err) { handleAuthError(err) }
     }
   }
 }
