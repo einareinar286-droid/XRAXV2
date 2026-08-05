@@ -12,7 +12,7 @@ const USERS = Object.freeze({
 })
 
 function clone(value) {
-  return structuredClone(value)
+  return deepClone(value)
 }
 
 function dutyError(code, message) {
@@ -30,6 +30,13 @@ function validateReview(payload) {
   const note = typeof payload?.note === 'string' ? payload.note.trim() : ''
   if (payload.decision === 'RETURN' && !note) throw dutyError('INVALID_PAYLOAD', '退回必须填写原因')
   return { decision: payload.decision, note }
+}
+
+
+// 兼容深拷贝：微信小程序基础库无 structuredClone，数据均为纯 JSON，用 JSON 深拷贝兜底
+function deepClone(value) {
+  if (typeof structuredClone === 'function') return structuredClone(value)
+  return JSON.parse(JSON.stringify(value))
 }
 
 export function createMockDutyAdapter({ now = () => new Date().toISOString(), seedTasks = [], seedEmployees, operationLog = defaultOperationLogAdapter } = {}) {

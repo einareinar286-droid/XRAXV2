@@ -1,7 +1,7 @@
 import { calculateDutyMetrics, getDutyAssessmentReason } from './metrics.mjs'
 
 function clone(value) {
-  return structuredClone(value)
+  return deepClone(value)
 }
 
 function getDutyStatus(metrics) {
@@ -14,6 +14,13 @@ function uniqueDepartments(employees, duties) {
     ...employees.map((employee) => employee.department),
     ...duties.map((duty) => duty.department)
   ].filter(Boolean))].sort()
+}
+
+
+// 兼容深拷贝：微信小程序基础库无 structuredClone，数据均为纯 JSON，用 JSON 深拷贝兜底
+function deepClone(value) {
+  if (typeof structuredClone === 'function') return structuredClone(value)
+  return JSON.parse(JSON.stringify(value))
 }
 
 export function createDutyDashboard({ duties = [], employees = [], asOf, periodType } = {}) {

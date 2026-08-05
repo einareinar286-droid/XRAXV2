@@ -5,6 +5,13 @@ function operationLogError(code, message) {
   return Object.assign(new Error(message), { code })
 }
 
+
+// 兼容深拷贝：微信小程序基础库无 structuredClone，数据均为纯 JSON，用 JSON 深拷贝兜底
+function deepClone(value) {
+  if (typeof structuredClone === 'function') return structuredClone(value)
+  return JSON.parse(JSON.stringify(value))
+}
+
 export function createMockOperationLogAdapter({ now = () => new Date().toISOString(), seedRecords = [] } = {}) {
   let sequence = 0
   const records = seedRecords.map((record) => ({ ...record }))
@@ -18,7 +25,7 @@ export function createMockOperationLogAdapter({ now = () => new Date().toISOStri
         occurredAt: input.occurredAt || now()
       })
       records.push(record)
-      return structuredClone(record)
+      return deepClone(record)
     },
 
     async list({ page = 1, pageSize = 20, action, actorId, dateRange } = {}, viewer) {
@@ -33,7 +40,7 @@ export function createMockOperationLogAdapter({ now = () => new Date().toISOStri
         .sort((left, right) => right.occurredAt.localeCompare(left.occurredAt) || right.id.localeCompare(left.id))
       const offset = (safePage - 1) * safePageSize
       return {
-        items: structuredClone(filtered.slice(offset, offset + safePageSize)),
+        items: deepClone(filtered.slice(offset, offset + safePageSize)),
         total: filtered.length,
         page: safePage,
         pageSize: safePageSize,

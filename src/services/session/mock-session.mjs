@@ -10,7 +10,7 @@ const DEFAULT_USERS = Object.freeze([
 ])
 
 function clone(value) {
-  return structuredClone(value)
+  return deepClone(value)
 }
 
 function toPublicUser(user) {
@@ -32,6 +32,13 @@ function resolveUsers(users, localAdmin) {
     const resolved = toPublicUser(user)
     return resolved.uid === adminUid ? { ...resolved, role: ROLE.SUPER_ADMIN } : resolved
   })
+}
+
+
+// 兼容深拷贝：微信小程序基础库无 structuredClone，数据均为纯 JSON，用 JSON 深拷贝兜底
+function deepClone(value) {
+  if (typeof structuredClone === 'function') return structuredClone(value)
+  return JSON.parse(JSON.stringify(value))
 }
 
 export function createMockSession({ users = DEFAULT_USERS, localAdmin = null } = {}) {

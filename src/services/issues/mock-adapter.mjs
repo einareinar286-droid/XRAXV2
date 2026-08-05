@@ -45,7 +45,7 @@ const USERS = {
 }
 
 function clone(value) {
-  return structuredClone(value)
+  return deepClone(value)
 }
 
 function canonicalize(value) {
@@ -59,6 +59,13 @@ function canonicalize(value) {
 function fingerprint(payload, allowedKeys) {
   const selected = Object.fromEntries(allowedKeys.filter((key) => key in payload).map((key) => [key, payload[key]]))
   return JSON.stringify(canonicalize(selected))
+}
+
+
+// 兼容深拷贝：微信小程序基础库无 structuredClone，数据均为纯 JSON，用 JSON 深拷贝兜底
+function deepClone(value) {
+  if (typeof structuredClone === 'function') return structuredClone(value)
+  return JSON.parse(JSON.stringify(value))
 }
 
 export function createMockIssueAdapter({
