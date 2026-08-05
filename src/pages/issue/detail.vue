@@ -32,7 +32,7 @@
             <view class="card-heading"><text class="card-title">{{ issue.status === 'REJECTED' ? '重新提交整改佐证' : '提交整改佐证' }}</text><text class="card-copy">填写措施并上传现场照片，提交后进入安全监察复核。</text></view>
             <textarea v-model="rectification.note" maxlength="1000" placeholder="填写整改措施、现场情况和无法完成的原因" />
             <view class="upload-row"><view v-for="item in rectification.attachments" :key="item.id" class="thumb"><image :src="item.previewUrl" mode="aspectFill" /></view><view v-if="rectification.attachments.length < 6" class="add-photo" @click="addPhotos"><view class="add-photo-mark" /><text>上传照片</text></view></view>
-            <button class="primary" :loading="submitting" :disabled="submitting || !rectification.note.trim()" @click="submit">提交安监复核</button>
+            <button class="primary" :loading="submitting" :disabled="submitting || (!rectification.note.trim() && rectification.attachments.length === 0)" @click="submit">提交安监复核</button>
           </view>
 
           <view v-if="canReview" class="action-card review-card glass-panel">

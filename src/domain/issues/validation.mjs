@@ -119,10 +119,17 @@ export function validateAssignmentPayload(payload) {
 
 export function validateRectificationPayload(payload) {
   const metadata = validateWriteMetadata(payload)
+  const note = typeof payload.note === 'string' ? payload.note.trim() : ''
+  if (note.length > 1000) throw issueError('INVALID_PAYLOAD', '整改说明不能超过 1000 个字符')
+  const attachments = validateAttachments(payload.attachments)
+  // 文字或附件至少提交其一（整改闭环需要证据，纯图片/纯文字均可）
+  if (!note && attachments.length === 0) {
+    throw issueError('INVALID_PAYLOAD', '请填写整改说明或上传整改照片')
+  }
   return {
     ...metadata,
-    note: requiredText(payload.note, 'note', 1000),
-    attachments: validateAttachments(payload.attachments)
+    note,
+    attachments
   }
 }
 

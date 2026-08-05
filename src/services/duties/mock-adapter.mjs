@@ -21,8 +21,10 @@ function dutyError(code, message) {
 
 function validateSubmission(payload) {
   const note = typeof payload?.note === 'string' ? payload.note.trim() : ''
-  if (!note || note.length > 1000) throw dutyError('INVALID_PAYLOAD', '履职说明长度应为 1 至 1000 个字符')
-  return { note, attachments: validateAttachments(payload.attachments || []) }
+  if (note.length > 1000) throw dutyError('INVALID_PAYLOAD', '履职说明不能超过 1000 个字符')
+  const attachments = validateAttachments(payload.attachments || [])
+  if (!note && attachments.length === 0) throw dutyError('INVALID_PAYLOAD', '请填写履职说明或上传现场佐证')
+  return { note, attachments }
 }
 
 function validateReview(payload) {
