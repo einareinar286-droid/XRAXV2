@@ -10,7 +10,7 @@
   },
   "transformPx": false,
   "mp-weixin": {
-    "appid": "",
+    "appid": "wx8a77ad30a25292e9",
     "setting": {
       "urlCheck": true,
       "es6": true,
@@ -23,7 +23,10 @@
     "usingComponents": true,
     "distribute": {
       "android": {
-        "permissions": ["android.permission.ACCESS_FINE_LOCATION", "android.permission.ACCESS_COARSE_LOCATION"]
+        "permissions": [
+          "android.permission.ACCESS_FINE_LOCATION",
+          "android.permission.ACCESS_COARSE_LOCATION"
+        ]
       },
       "ios": {
         "privacyDescription": {
