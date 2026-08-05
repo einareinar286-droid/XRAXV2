@@ -8,7 +8,8 @@
     "dev:mp-weixin": "uni -p mp-weixin",
     "build:mp-weixin": "uni build -p mp-weixin",
     "dev:h5": "uni",
-    "build:h5": "uni build"
+    "build:h5": "uni build",
+    "build:mp-weixin:cloud": "node scripts/build-cloud.mjs"
   },
   "dependencies": {
     "@dcloudio/uni-app": "3.0.0-alpha-5020220260725001",
