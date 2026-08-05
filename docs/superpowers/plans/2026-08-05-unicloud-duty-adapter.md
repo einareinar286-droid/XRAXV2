@@ -1,6 +1,16 @@
 # uniCloud 云适配器接线方案书（M3C · 履职模块云端化）
 
-> 状态：**方案评审中**（EE 未批准实施）
+> 状态：**EE 已批准决策，进入 P0 实施**（2026-08-05）
+
+**EE 确认的 4 项决策（2026-08-05）：**
+1. **角色体系：** 采用前端现有 4 角色 `SUPER_ADMIN / SAFETY_OFFICER / MARKETING_OFFICER / EMPLOYEE`。
+2. **账号策略：** 用假账号（测试号 AppID `wx8a77ad30a25292e9` 阶段），不导入真实姓名/手机号。
+3. **权限边界（关键收紧）：** **只有超级管理员（SUPER_ADMIN）可以修改、新增、删除数据；其余角色只有填写的权力**（填报本人履职/隐患）。审核（reviewDuty）与数据管理均仅 SUPER_ADMIN 可执行。云端 `isAdmin` 判定改为 `role === 'SUPER_ADMIN'`。
+4. **默认模式：** 同意——Mock 保持默认，云模式由 `VITE_XR_DUTY_MODE=cloud` 显式开启；未验收不切云。
+
+> 权限影响提示：前端 Mock 现有 `canReview = SAFETY_OFFICER || SUPER_ADMIN` 与决策 3 冲突，云端化后审核权限以 SUPER_ADMIN 为准（P2 适配器接线时同步收紧展示）。
+
+
 > 日期：2026-08-05
 > 给实施者：本方案经 EE 确认后才可动代码；动代码时使用 `superpowers:executing-plans`，逐项执行并复核。
 
@@ -87,9 +97,8 @@ uniCloud 阿里云服务空间 `xraxbeta1` 已就绪：`duty-service` 云对象 
 
 ## 四、风险与决策点（需 EE 拍板）
 
-### 4.1 云端角色体系（决策点）
-云端 `_before` 用 `SAFETY_ADMIN`，前端用 `SUPER_ADMIN/SAFETY_OFFICER/MARKETING_OFFICER/EMPLOYEE`。
-**建议：** uni-id 角色直接采用前端四角色，云对象 `isAdmin` 改为检查 `SUPER_ADMIN || SAFETY_OFFICER`；`MARKETING_OFFICER` 允许整改提交；其余本人数据。→ 需 EE 确认角色清单与权限边界。
+### 4.1 云端角色体系（已决策）
+云端角色直接采用前端四角色 `SUPER_ADMIN/SAFETY_OFFICER/MARKETING_OFFICER/EMPLOYEE`；**只有 SUPER_ADMIN 可增删改数据与审核**，其余角色仅填报本人数据；云对象 `isAdmin()` 改为 `role === 'SUPER_ADMIN'`。
 
 ### 4.2 真实账号来源（决策点）
 登录后 uid 如何与履职实例 `ownerUid` 对应？
