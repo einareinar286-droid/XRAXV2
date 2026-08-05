@@ -44,10 +44,20 @@ const items = computed(() => {
     { id: 'DRIVER_PROFILE', label: '送气工画像', disabled: true },
     { id: 'PROFILE', label: '我的', path: '/pages/profile/index', tab: true }
   ]
+  if (currentUser.value?.role === 'MARKETING_OFFICER') {
+    return [
+      base[0],
+      { id: 'MY_RECTIFY', label: '待整改隐患', path: '/pages/issue/my-rectify' },
+      base[1],
+      base[2],
+      base[4]
+    ]
+  }
   if (!['SUPER_ADMIN', 'SAFETY_OFFICER'].includes(currentUser.value?.role)) return base
   return [
     base[0],
     { id: 'ASSIGN', label: '隐患交办', path: '/pages/admin/issue-assign' },
+    { id: 'MY_RECTIFY', label: '待整改隐患', path: '/pages/issue/my-rectify' },
     base[1],
     { id: 'DUTY_DASHBOARD', label: '履职仪表盘', path: '/pages/admin/duty' },
     ...base.slice(2)

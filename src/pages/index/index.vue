@@ -107,6 +107,9 @@ const dutyMetricCards = computed(() => {
 const shortcuts = computed(() => {
   const role = snapshot.value?.user?.role
   const items = [{ label: '随手拍上报', copy: '全员可上报，定位可选', path: '/pages/issue/create', tab: true }]
+  if (role === 'MARKETING_OFFICER' || role === 'SUPER_ADMIN') {
+    items.push({ label: '待整改隐患', copy: '安监部交办单，整改后提交图文佐证', path: '/pages/issue/my-rectify' })
+  }
   if (['SUPER_ADMIN', 'SAFETY_OFFICER', 'MARKETING_OFFICER'].includes(role)) {
     items.push({ label: '履职仪表盘', copy: '查看履职与考核清单', path: '/pages/admin/duty' })
   }

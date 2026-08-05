@@ -20,6 +20,12 @@
       }
     },
     {
+      "path": "pages/issue/my-rectify",
+      "style": {
+        "navigationBarTitleText": "待整改隐患"
+      }
+    },
+    {
       "path": "pages/duty/index",
       "style": {
         "navigationBarTitleText": "安全履职"
