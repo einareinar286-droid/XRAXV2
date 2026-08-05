@@ -8,7 +8,7 @@
     <view v-if="canViewDutyDashboard" class="section entry glass-panel" @click="openDutyAdmin"><view><view class="section-title">履职仪表盘</view><view class="role-copy">履职率必须 100%；未完成、退回、逾期及逾期补交均进入考核清单。</view></view><view class="arrow">→</view></view>
     <view v-if="canViewDutyDashboard" class="section entry glass-panel" @click="openOperationLogs"><view><view class="section-title">操作日志</view><view class="role-copy">查看关键操作的时间、操作人、对象与结果；日志不保存密码和完整附件地址。</view></view><view class="arrow">→</view></view>
     <view class="section glass-panel"><view class="section-title">Mock 演示边界</view><view class="guide">当前版本用于本地功能验证：未接入真实账号、短信、微信 AppID、私有云附件或生产部署。真实人员数据不在本项目中保存。</view></view>
-    <view v-if="isCloudDutyMode" class="cloud-login-card" @click="openCloudLogin"><view class="cloud-login-icon"><view class="cloud-login-icon-core" /></view><view class="cloud-login-copy"><text class="cloud-login-title">云端登录</text><text class="cloud-login-sub">连接 uniCloud 服务空间 xraxbeta1，使用测试账号登录履职云端</text></view><text class="cloud-login-arrow">→</text></view>
+    <view v-if="isCloudDutyMode()" class="cloud-login-card" @click="openCloudLogin"><view class="cloud-login-icon"><view class="cloud-login-icon-core" /></view><view class="cloud-login-copy"><text class="cloud-login-title">云端登录</text><text class="cloud-login-sub">连接 uniCloud 服务空间 xraxbeta1，使用测试账号登录履职云端</text></view><text class="cloud-login-arrow">→</text></view>
     </view>
   </view>
 </template>
