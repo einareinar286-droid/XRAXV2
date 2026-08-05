@@ -31,7 +31,8 @@ function chinaToday() {
 function advancePeriod(startDay, frequency) {
   const start = parseDay(startDay)
   let end
-  if (frequency === 'weekly') end = addDays(start, 6)
+  if (frequency === 'daily') end = start
+  else if (frequency === 'weekly') end = addDays(start, 6)
   else if (frequency === 'biweekly') end = addDays(start, 13)
   else if (frequency === 'monthly') end = addDays(addMonthsClamped(start, 1), -1)
   else if (frequency === 'quarterly') end = addDays(addMonthsClamped(start, 3), -1)
