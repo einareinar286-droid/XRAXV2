@@ -13,15 +13,17 @@ module.exports = {
   },
 
   // 注册假账号（仅 SUPER_ADMIN 可调用；决策 2：假账号测试阶段）
+  // 引导规则：uni-id-users 为空库时，第一个注册账号自动成为 SUPER_ADMIN（解决首次引导）
   async register({ username, password, displayName = '', department = '', role = 'EMPLOYEE' } = {}) {
     const token = this.clientInfo.uniIdToken
-    if (token) {
+    const countResult = await this.db.collection('uni-id-users').count()
+    const isFirstAccount = countResult.total === 0
+    if (!isFirstAccount) {
+      if (!token) throw new Error('FORBIDDEN')
       const checked = await this.uniId.checkToken(token)
       if (checked.errCode || !checked.uid || !isSuperAdmin(checked.role || [])) {
         throw new Error('FORBIDDEN')
       }
-    } else {
-      throw new Error('FORBIDDEN')
     }
     if (typeof username !== 'string' || username.trim().length < 3) throw new Error('INVALID_PAYLOAD')
     if (typeof password !== 'string' || password.length < 6) throw new Error('INVALID_PAYLOAD')
@@ -30,20 +32,21 @@ module.exports = {
     const exists = await this.db.collection('uni-id-users').where({ username: username.trim() }).get()
     if (exists.data.length > 0) throw new Error('ACCOUNT_EXISTS')
 
+    const effectiveRole = isFirstAccount ? 'SUPER_ADMIN' : role
     const now = Date.now()
     const record = {
       username: username.trim(),
       passwordHash: hashPassword(password),
       displayName: displayName.trim() || username.trim(),
       department: department.trim(),
-      role: [role],
+      role: [effectiveRole],
       status: 0,
       token: [],
       createdAt: now,
       updatedAt: now
     }
     const res = await this.db.collection('uni-id-users').add(record)
-    return { ok: true, uid: res.id, role: [role] }
+    return { ok: true, uid: res.id, role: [effectiveRole] }
   },
 
   // 登录：校验密码 -> 签发 token（写入 uni-id-users.token 由 uni-id-common 维护）

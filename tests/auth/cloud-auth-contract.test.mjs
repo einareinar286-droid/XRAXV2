@@ -32,8 +32,9 @@ test('云端 roles.js 覆盖四角色且仅 SUPER_ADMIN 为管理', () => {
   assert.ok(!cjsRoles.includes('SAFETY_ADMIN'), '云端不得保留旧角色 SAFETY_ADMIN')
 })
 
-test('auth-service 云对象：register 仅限超管、login 校验密码、me 返回当前用户', () => {
+test('auth-service 云对象：register 引导/超管、login 校验密码、me 返回当前用户', () => {
   assert.match(cjsAuth, /async register\(/)
+  assert.match(cjsAuth, /isFirstAccount/, '首个账号应自动成为 SUPER_ADMIN')
   assert.match(cjsAuth, /isSuperAdmin/)
   assert.match(cjsAuth, /ACCOUNT_EXISTS/)
   assert.match(cjsAuth, /async login\(/)
