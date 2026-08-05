@@ -1,5 +1,5 @@
 <template>
-  <view v-if="task" class="page"><view class="summary glass-panel"><text class="status" :class="task.status.toLowerCase()">{{ dutyStatusText(task.status) }}</text><text class="title">{{ task.title }}</text><text class="copy">{{ task.department }} · {{ periodLabel }} · {{ cycleRangeText }}</text></view><view class="form glass-panel"><text class="label">履职说明</text><textarea v-model="form.note" :disabled="!canSubmit" maxlength="1000" placeholder="填写完成的工作内容、检查范围和发现问题" /><text class="label">现场佐证</text><view class="files"><view v-for="file in form.attachments" :key="file.id" class="file">{{ file.name }}</view><view v-if="canSubmit" class="upload" @click="choose">＋<text>照片</text></view></view><text class="hint">当前 Mock 演示支持本地附件元数据校验；生产版将接入私有附件存储。</text><text v-if="task.review?.note" class="review-note">审核意见：{{ task.review.note }}</text></view><button v-if="canSubmit" class="primary" :loading="submitting" :disabled="submitting || (!form.note.trim() && form.attachments.length === 0)" @click="save">提交履职记录，进入审核</button><view v-else class="readonly">{{ task.status==='SUBMITTED'?'已提交，等待部门审核。':'本次履职已审核通过，原记录只读保留。' }}</view></view>
+  <view v-if="task" class="page"><view class="summary glass-panel"><text class="status" :class="task.status.toLowerCase()">{{ dutyStatusText(task.status) }}</text><text class="title">{{ task.title }}</text><text class="copy">{{ task.department }} · {{ periodLabel }} · {{ cycleRangeText }}</text></view><view class="form glass-panel"><text class="label">履职说明</text><textarea v-model="form.note" :disabled="!canSubmit" maxlength="1000" placeholder="填写完成的工作内容、检查范围和发现问题" /><text class="label">现场佐证</text><view class="files"><view v-for="file in form.attachments" :key="file.id" class="file"><image v-if="file.mimeType?.startsWith('image/')" :src="file.previewUrl" mode="aspectFill" class="file-thumb" /><text v-else class="file-name">{{ fileName(file) }}</text></view><view v-if="canSubmit" class="upload" @click="choose">＋<text>照片</text></view></view><text class="hint">当前 Mock 演示支持本地附件元数据校验；生产版将接入私有附件存储。</text><text v-if="task.review?.note" class="review-note">审核意见：{{ task.review.note }}</text></view><button v-if="canSubmit" class="primary" :loading="submitting" :disabled="submitting || (!form.note.trim() && form.attachments.length === 0)" @click="save">提交履职记录，进入审核</button><view v-else class="readonly">{{ task.status==='SUBMITTED'?'已提交，等待部门审核。':'本次履职已审核通过，原记录只读保留。' }}</view></view>
 </template>
 
 <script setup>
@@ -18,6 +18,8 @@ const canSubmit = computed(() => ['PENDING', 'RETURNED'].includes(task.value?.st
 const periodLabel = computed(() => task.value?.periodType ? PERIOD_TYPE_LABELS[task.value.periodType] || task.value.periodType : '')
 const cycleRangeText = computed(() => task.value?.cycleStart ? `${task.value.cycleStart} 至 ${task.value.cycleEnd || task.value.dueDate}` : task.value?.dueDate ? `截止 ${task.value.dueDate}` : '')
 async function load(){tasks.value=await listMyDuties();const current=task.value;if(current){form.note=current.evidence?.note||'';form.attachments=current.evidence?.attachments||[]}}
+function fileName(file){return String(file?.name || '附件').split(/[\/]/).pop() || '附件'}
+
 async function choose(){try{const result=await chooseEvidenceImages();form.attachments.push(...normalizeEvidenceAttachments(result).slice(0,6-form.attachments.length))}catch{}}
 async function save(){if(submitting.value)return;submitting.value=true;try{await submitDuty(id.value,{note:form.note,attachments:form.attachments});uni.showToast({title:'已提交审核',icon:'success'});setTimeout(()=>uni.navigateBack(),450)}catch(err){uni.showToast({title:err.message||'提交失败',icon:'none'})}finally{submitting.value=false}}
 onLoad(async(options)=>{id.value=options.id||'';await load()})
@@ -37,7 +39,9 @@ onLoad(async(options)=>{id.value=options.id||'';await load()})
 .label:not(:first-child){margin-top:28rpx}
 textarea{box-sizing:border-box;width:100%;height:170rpx;padding:18rpx;border-radius:14rpx;background:rgba(255,255,255,.04);border:1rpx solid $xr-line;font-size:25rpx;color:$xr-text}
 .files{display:flex;flex-wrap:wrap;gap:12rpx}
-.file,.upload{min-width:112rpx;height:88rpx;padding:10rpx;box-sizing:border-box;border-radius:12rpx;background:rgba(255,255,255,.05);border:1rpx solid $xr-line;color:$xr-green-bright;font-size:20rpx;display:flex;align-items:center;justify-content:center;text-align:center}
+.file,.upload{min-width:112rpx;height:88rpx;padding:10rpx;box-sizing:border-box;border-radius:12rpx;background:rgba(255,255,255,.05);border:1rpx solid $xr-line;color:$xr-green-bright;font-size:20rpx;display:flex;align-items:center;justify-content:center;text-align:center;overflow:hidden}
+.file-thumb{width:100%;height:100%;border-radius:8rpx}
+.file-name{font-size:18rpx;word-break:break-all;line-height:1.3}
 .upload{border:1rpx dashed $xr-line-strong;background:transparent;flex-direction:column;font-size:34rpx}
 .upload text{font-size:19rpx}
 .hint{display:block;margin-top:14rpx}

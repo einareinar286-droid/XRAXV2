@@ -186,7 +186,10 @@ module.exports = {
 
   // 提交履职：PENDING/RETURNED → SUBMITTED（对齐前端 submitDuty）
   async submitDuty({ instanceId, note, attachments = [] } = {}) {
-    if (!instanceId || !note || !String(note).trim()) throw new Error('INVALID_PAYLOAD')
+    // 文字或附件至少其一（与前端校验一致）
+    const hasNote = typeof note === 'string' && Boolean(note.trim())
+    const hasAttachments = Array.isArray(attachments) && attachments.length > 0
+    if (!instanceId || (!hasNote && !hasAttachments)) throw new Error('INVALID_PAYLOAD')
     const instance = await this.db.collection('xr-duty-instances').doc(instanceId).get()
     const item = instance.data[0]
     if (!item || item.ownerUid !== this.auth.uid) throw new Error('FORBIDDEN')
