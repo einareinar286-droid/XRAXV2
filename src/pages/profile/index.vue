@@ -3,6 +3,7 @@
     <AdaptiveNavigation active="PROFILE" />
     <view class="profile-page">
     <view class="identity"><view class="avatar">{{ currentUser?.displayName?.slice(0,1) || '安' }}</view><view><view class="name">{{ currentUser?.displayName || '加载中' }}</view><view class="sub">{{ issueRoleText(currentUser?.role) }} · {{ currentUser?.department }}</view></view></view>
+    <view v-if="isCloudDutyMode" class="section entry glass-panel" @click="openCloudLogin"><view><view class="section-title">云端登录</view><view class="role-copy">连接 uniCloud 服务空间 xraxbeta1，使用测试账号登录履职云端。</view></view><view class="arrow">→</view></view>
     <view v-if="isMockIssueMode" class="mock-warning"><view class="warning-title">Mock 演示模式</view><view>身份切换只用于验证权限和流程，不是生产级登录；附件也未上传至私有云存储。</view></view>
     <view v-if="canSwitchMockRole" class="section glass-panel"><view class="section-title">切换 Mock 身份</view><view v-for="item in roles" :key="item.id" class="role-row" :class="{ active:item.id===currentUser?.role }" @click="switchRole(item.id)"><view><view class="role-name">{{ item.name }}</view><view class="role-copy">{{ item.copy }}</view></view><view class="check">{{ item.id===currentUser?.role?'✓':'' }}</view></view></view>
     <view v-if="canViewDutyDashboard" class="section entry glass-panel" @click="openDutyAdmin"><view><view class="section-title">履职仪表盘</view><view class="role-copy">履职率必须 100%；未完成、退回、逾期及逾期补交均进入考核清单。</view></view><view class="arrow">→</view></view>
@@ -18,6 +19,7 @@ import { onShow } from '@dcloudio/uni-app'
 import { getCurrentUser, isMockIssueMode, issueRoleText, setMockRole } from '../../services/issues/index.mjs'
 import { setMockRole as setDutyMockRole } from '../../services/duty'
 import { isMockRoleSwitcherEnabled } from '../../services/mock-mode.mjs'
+import { isCloudDutyMode } from '../../services/duties/mode.mjs'
 import AdaptiveNavigation from '../../components/navigation/AdaptiveNavigation.vue'
 const currentUser=ref(null)
 const canViewDutyDashboard=computed(()=>['SUPER_ADMIN','SAFETY_OFFICER'].includes(currentUser.value?.role))
@@ -32,6 +34,7 @@ async function refreshUser(){currentUser.value=await getCurrentUser()}
 function switchRole(role){currentUser.value=setMockRole(role);setDutyMockRole(role);uni.showToast({title:'Mock 身份已切换',icon:'none'})}
 function openDutyAdmin(){uni.navigateTo({url:'/pages/admin/duty'})}
 function openOperationLogs(){uni.navigateTo({url:'/pages/admin/operation-logs'})}
+function openCloudLogin(){uni.navigateTo({url:'/pages/login/index'})}
 onShow(refreshUser)
 </script>
 

@@ -1,0 +1,34 @@
+{
+  "bsonType": "object",
+  "description": "uni-id 角色表（opendb 兼容，server-only）。本项目角色权限由代码硬编码，此表保留扩展。",
+  "permission": {
+    "read": false,
+    "create": false,
+    "update": false,
+    "delete": false
+  },
+  "required": ["role_id", "role_name"],
+  "properties": {
+    "_id": {
+      "description": "角色 id"
+    },
+    "role_id": {
+      "bsonType": "string",
+      "description": "角色标识"
+    },
+    "role_name": {
+      "bsonType": "string",
+      "description": "角色名称"
+    },
+    "permission": {
+      "bsonType": "array",
+      "items": {
+        "bsonType": "string"
+      },
+      "description": "权限列表"
+    },
+    "comment": {
+      "bsonType": "string"
+    }
+  }
+}

@@ -14,3 +14,6 @@ config/local-admin.json
 AGENTS.md
 docs/*子项目提示词.md
 docs/三模块开发规格与提示词.md
+
+# uni-id token 密钥不入库（部署时本地生成）
+uniCloud-aliyun/cloudfunctions/common/uni-config-center/uni-id/config.json

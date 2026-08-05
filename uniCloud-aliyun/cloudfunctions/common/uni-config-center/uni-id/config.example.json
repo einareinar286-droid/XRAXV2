@@ -1,0 +1,9 @@
+{
+  "tokenSecret": "<部署时生成，见开发日志>",
+  "tokenExpiresIn": 7200,
+  "tokenExpiresThreshold": 1200,
+  "passwordErrorLimit": 6,
+  "passwordErrorRetryTime": 3600,
+  "passwordSecretVersion": 1,
+  "bindTokenToDevice": false
+}

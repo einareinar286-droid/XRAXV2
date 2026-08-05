@@ -1,0 +1,11 @@
+{
+  "name": "auth-service",
+  "version": "0.1.0",
+  "cloudfunction-config": {
+    "timeout": 60,
+    "memorySize": 256
+  },
+  "dependencies": {
+    "uni-id-common": "file:../common/uni-id-common"
+  }
+}
