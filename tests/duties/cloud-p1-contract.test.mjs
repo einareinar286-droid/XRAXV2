@@ -65,7 +65,7 @@ test('P1: dutyPeople 人员明细（部门/状态/关键字筛选）', () => {
 
 test('P1: adminInstances 权限收紧为 SUPER_ADMIN', () => {
   assert.match(src, /async adminInstances\(/)
-  assert.match(src, /assertAdmin/, '保留管理员校验')
+  assert.match(src, /requireAdmin\(this\)/, '保留管理员校验（模块级函数）')
 })
 
 test('P1: _timing 生成实例补 title/periodType/cycleKey（对齐前端 task）', () => {

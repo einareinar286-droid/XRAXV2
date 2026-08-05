@@ -130,17 +130,6 @@ function buildPeople(instances, asOf) {
 }
 
 module.exports = {
-  async __debug() {
-    const methods = Object.keys(this).filter((k) => typeof this[k] === 'function')
-    return {
-      methods,
-      hasAssertAdmin: typeof this.assertAdmin,
-      hasIsAdmin: typeof this.isAdmin,
-      auth: this.auth ? { uid: this.auth.uid, roles: this.auth.roles } : null,
-      hasDb: Boolean(this.db)
-    }
-  },
-
   async _before() {
     this.db = uniCloud.database()
     const clientInfo = this.getClientInfo()
