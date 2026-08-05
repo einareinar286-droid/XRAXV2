@@ -38,10 +38,10 @@
     }
   ],
   "tabBar": {
-    "color": "#7C8490",
-    "selectedColor": "#006E55",
-    "backgroundColor": "#FFFFFF",
-    "borderStyle": "white",
+    "color": "#8c9291",
+    "selectedColor": "#63f7ff",
+    "backgroundColor": "#0d0e0e",
+    "borderStyle": "black",
     "list": [
       { "pagePath": "pages/index/index", "text": "工作台" },
       { "pagePath": "pages/duty/index", "text": "履职" },
@@ -50,9 +50,9 @@
     ]
   },
   "globalStyle": {
-    "navigationBarBackgroundColor": "#F3F6F4",
-    "navigationBarTextStyle": "black",
-    "backgroundColor": "#F3F6F4",
+    "navigationBarBackgroundColor": "#0d0e0e",
+    "navigationBarTextStyle": "white",
+    "backgroundColor": "#050707",
     "backgroundTextStyle": "dark"
   }
 }

@@ -1,15 +1,44 @@
-$xr-canvas: #f3f6f4;
-$xr-surface: #ffffff;
-$xr-surface-strong: #0e1b18;
-$xr-panel: #15231f;
-$xr-text: #17201d;
-$xr-text-inverse: #f4f8f6;
-$xr-muted: #69756f;
-$xr-line: #dce4e0;
-$xr-line-strong: #b9c8c0;
-$xr-green: #006e55;
-$xr-green-bright: #28c89b;
-$xr-active-path: #0c9f79;
-$xr-red: #d83a2e;
-$xr-amber: #d58b11;
+// ============================================================
+// Obsidian Cipher · Deep Mineral Safety 设计系统 token（深色版）
+// 基线：DESIGN.md（obsidian_cipher）——深矿安全 × 玻璃拟态 × 霓虹
+// 说明：保留 $xr-* 命名以兼容渐进替换；新页面使用 $xr-* 即可
+// ============================================================
+
+// ---- 基础面 ----
+$xr-canvas: #050707;            // Obsidian 基底层
+$xr-surface: #131313;           // surface（玻璃面板底色）
+$xr-surface-strong: #0d1f1f;    // Mineral Deep 主色容器
+$xr-panel: #1f2020;             // surface-container 面板
+$xr-surface-container-low: #1b1c1c;
+$xr-surface-container-high: #292a2a;
+$xr-surface-container-highest: #343535;
+
+// ---- 文本 ----
+$xr-text: #e4e2e1;              // on-surface
+$xr-text-inverse: #131313;      // 深色字（用在霓虹亮色上）
+$xr-muted: #c2c8c7;             // on-surface-variant
+$xr-muted-dim: #8c9291;         // outline
+
+// ---- 描边/分割 ----
+$xr-line: rgba(255, 255, 255, 0.10);        // glass_stroke
+$xr-line-strong: rgba(255, 255, 255, 0.22); // 高亮玻璃描边
+$xr-glass-edge: rgba(255, 255, 255, 0.4);   // 玻璃顶边高光
+
+// ---- 玻璃拟态 ----
+$xr-glass-bg: rgba(255, 255, 255, 0.05);    // 中景玻璃 10-15% 白
+$xr-glass-bg-high: rgba(255, 255, 255, 0.10); // 悬浮玻璃 25% 白
+$xr-blur: blur(20px);
+$xr-blur-high: blur(40px);
+
+// ---- 霓虹（Neon） ----
+$xr-green: #b7caca;             // primary（矿物青灰，中性高亮）
+$xr-green-bright: #00f4fe;      // secondary 霓虹青——主行动色
+$xr-active-path: #63f7ff;       // secondary-fixed 亮青
+$xr-cyan-glow: 0 0 15px rgba(99, 247, 255, 0.30);
+$xr-red: #ffb4ab;               // error 霓虹红——危险/逾期
+$xr-red-glow: 0 0 15px rgba(255, 180, 171, 0.40);
+$xr-amber: #ffd28a;             // 暖琥珀——待办/警示（保持语义）
+$xr-magenta: #fface8;           // tertiary 品红——次要数据点
+$xr-lime: #a8f09a;              // accent 酸橙——安全确认
+
 $xr-ink: $xr-text;
