@@ -12,6 +12,19 @@ export async function cloudLogin({ username, password }) {
   return { uid: result.uid, role: result.role }
 }
 
+export async function cloudRegister({ username, password, displayName, department, role = 'EMPLOYEE' }) {
+  if (!isCloudDutyMode()) throw Object.assign(new Error('当前为 Mock 演示模式，未启用云端登录'), { code: 'MOCK_MODE' })
+  const auth = uniCloud.importObject('auth-service')
+  const result = await auth.register({ username, password, displayName, department, role })
+  if (!result || result.ok !== true) throw Object.assign(new Error('注册失败'), { code: result?.errCode })
+  // 注册成功后自动登录，返回 token
+  const loginResult = await auth.login({ username, password })
+  if (loginResult.errCode !== 0) throw Object.assign(new Error('注册成功但登录失败'), { code: loginResult.errCode })
+  uni.setStorageSync('uni_id_token', loginResult.token)
+  uni.setStorageSync('uni_id_token_expired', loginResult.tokenExpired)
+  return { uid: loginResult.uid, role: loginResult.role }
+}
+
 export async function cloudLogout() {
   try {
     const auth = uniCloud.importObject('auth-service')

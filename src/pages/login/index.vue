@@ -3,46 +3,72 @@
     <view class="login-card glass-panel-high neon-glow-cyan">
       <view class="login-brand">
         <view class="brand-mark"><view class="brand-mark-core" /></view>
-        <text class="login-title">徐燃安巡 · 云端登录</text>
+        <text class="login-title">徐燃安巡 · 云端{{ mode === 'login' ? '登录' : '注册' }}</text>
         <text class="login-subtitle">测试版 AppID · 假账号测试阶段</text>
       </view>
 
       <view class="form-field">
         <text class="field-label">用户名</text>
-        <input v-model="form.username" class="field-input" placeholder="测试账号用户名" placeholder-class="placeholder" />
+        <input v-model="form.username" class="field-input" placeholder="3 位以上" placeholder-class="placeholder" />
       </view>
       <view class="form-field">
         <text class="field-label">密码</text>
-        <input v-model="form.password" class="field-input" password placeholder="测试账号密码" placeholder-class="placeholder" />
+        <input v-model="form.password" class="field-input" password placeholder="6 位以上" placeholder-class="placeholder" />
+      </view>
+      <view v-if="mode === 'register'" class="form-field">
+        <text class="field-label">显示名称（可选）</text>
+        <input v-model="form.displayName" class="field-input" placeholder="如：测试员001" placeholder-class="placeholder" />
+      </view>
+      <view v-if="mode === 'register'" class="form-field">
+        <text class="field-label">部门（可选）</text>
+        <input v-model="form.department" class="field-input" placeholder="如：安全监察部" placeholder-class="placeholder" />
       </view>
 
-      <button class="primary" :loading="submitting" :disabled="submitting || !form.username || !form.password" @click="login">
-        登录
+      <button class="primary" :loading="submitting" :disabled="submitting || !form.username || !form.password" @click="submit">
+        {{ mode === 'login' ? '登录' : '注册并登录' }}
       </button>
+      <view class="mode-switch">
+        <text class="mode-link" @click="toggleMode">{{ mode === 'login' ? '没有账号？首次注册（自动成为管理员）' : '已有账号？去登录' }}</text>
+      </view>
       <text v-if="error" class="error-text">{{ error }}</text>
-      <text class="hint">云登录需构建时开启 VITE_XR_DUTY_MODE=cloud；当前 Mock 模式登录不可用。</text>
+      <text class="hint">云登录需构建时开启 VITE_XR_DUTY_MODE=cloud；当前 Mock 模式登录不可用。首个注册账号自动成为超级管理员。</text>
     </view>
   </view>
 </template>
 
 <script setup>
 import { reactive, ref } from 'vue'
-import { cloudLogin } from '../../services/auth/index.mjs'
+import { cloudLogin, cloudRegister } from '../../services/auth/index.mjs'
 
-const form = reactive({ username: '', password: '' })
+const mode = ref('login')
+const form = reactive({ username: '', password: '', displayName: '', department: '' })
 const submitting = ref(false)
 const error = ref('')
 
-async function login() {
+function toggleMode() {
+  mode.value = mode.value === 'login' ? 'register' : 'login'
+  error.value = ''
+}
+
+async function submit() {
   if (submitting.value) return
   submitting.value = true
   error.value = ''
   try {
-    const user = await cloudLogin({ username: form.username, password: form.password })
-    uni.showToast({ title: `欢迎，${form.username}`, icon: 'success' })
+    if (mode.value === 'login') {
+      await cloudLogin({ username: form.username, password: form.password })
+    } else {
+      await cloudRegister({
+        username: form.username,
+        password: form.password,
+        displayName: form.displayName,
+        department: form.department
+      })
+    }
+    uni.showToast({ title: mode.value === 'login' ? '登录成功' : '注册成功', icon: 'success' })
     setTimeout(() => uni.navigateBack(), 400)
   } catch (err) {
-    error.value = err?.message || '登录失败'
+    error.value = err?.message || (mode.value === 'login' ? '登录失败' : '注册失败')
   } finally {
     submitting.value = false
   }
@@ -64,6 +90,8 @@ async function login() {
 .placeholder{color:$xr-muted-dim}
 .primary{height:92rpx;line-height:92rpx;margin-top:16rpx;border-radius:16rpx;background:$xr-green-bright;color:$xr-text-inverse;font-size:28rpx;font-weight:700;box-shadow:$xr-cyan-glow}
 .primary[disabled]{background:$xr-surface-container-high;color:$xr-muted;box-shadow:none}
+.mode-switch{margin-top:18rpx;text-align:center}
+.mode-link{font-size:22rpx;color:$xr-green-bright;text-decoration:underline}
 .error-text{display:block;margin-top:14rpx;text-align:center;color:$xr-red;font-size:22rpx}
 .hint{display:block;margin-top:18rpx;text-align:center;font-size:19rpx;line-height:1.6;color:$xr-muted}
 </style>
