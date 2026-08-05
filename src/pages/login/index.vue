@@ -1,5 +1,8 @@
 <template>
   <view class="login-page">
+    <view class="back-bar">
+      <view class="back-btn" @click="goBack">← 返回</view>
+    </view>
     <view class="login-card glass-panel-high neon-glow-cyan">
       <view class="login-brand">
         <view class="brand-mark"><view class="brand-mark-core" /></view>
@@ -45,6 +48,15 @@ const form = reactive({ username: '', password: '', displayName: '', department:
 const submitting = ref(false)
 const error = ref('')
 
+function goBack() {
+  const pages = getCurrentPages()
+  if (pages.length > 1) {
+    uni.navigateBack()
+  } else {
+    uni.switchTab({ url: '/pages/profile/index' })
+  }
+}
+
 function toggleMode() {
   mode.value = mode.value === 'login' ? 'register' : 'login'
   error.value = ''
@@ -76,7 +88,9 @@ async function submit() {
 </script>
 
 <style lang="scss" scoped>
-.login-page{min-height:100vh;padding:80rpx 40rpx;display:flex;flex-direction:column;align-items:center;background:transparent}
+.login-page{min-height:100vh;padding:30rpx 40rpx 80rpx;display:flex;flex-direction:column;align-items:center;background:transparent}
+.back-bar{width:100%;max-width:560rpx;margin-bottom:16rpx}
+.back-btn{display:inline-flex;align-items:center;padding:12rpx 20rpx;border-radius:12rpx;border:1rpx solid $xr-line;background:rgba(255,255,255,.04);color:$xr-text;font-size:24rpx}
 .login-card{width:100%;max-width:560rpx;padding:48rpx 36rpx;border-radius:28rpx;display:flex;flex-direction:column;gap:8rpx}
 .login-brand{display:flex;flex-direction:column;align-items:center;gap:12rpx;margin-bottom:28rpx}
 .brand-mark{width:72rpx;height:72rpx;border-radius:20rpx 20rpx 20rpx 8rpx;background:$xr-surface-strong;border:1rpx solid rgba(0,244,254,.55);display:flex;align-items:center;justify-content:center;box-shadow:$xr-cyan-glow}
