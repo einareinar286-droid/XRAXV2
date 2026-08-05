@@ -33,7 +33,7 @@
               <text>限期：{{ issue.deadline || '未设置' }}</text>
             </view>
             <view v-if="issue.status === 'REJECTED' && issue.rectification" class="reject-note">退回原因：{{ issue.rectification.note }}</view>
-            <view class="card-action">{{ issue.status === 'ASSIGNED' ? '去整改 →' : '重新整改 →' }}</view>
+            <view class="card-action" :class="actionClass(issue.status)">{{ actionText(issue.status) }}</view>
           </view>
         </view>
         <view v-else class="state">当前没有待整改的隐患交办单</view>
@@ -57,6 +57,14 @@ const pendingItems = computed(() => allItems.value.filter((item) => ['ASSIGNED',
 const items = computed(() => (activeTab.value === 'PENDING' ? pendingItems.value : allItems.value))
 const pendingCount = computed(() => pendingItems.value.length)
 const totalCount = computed(() => allItems.value.length)
+
+function actionText(status) {
+  return ({ ASSIGNED: '去整改 →', REJECTED: '重新整改 →', RECTIFICATION_SUBMITTED: '已提交 · 等待安监复核', CLOSED: '已闭环' })[status] || ''
+}
+
+function actionClass(status) {
+  return { RECTIFICATION_SUBMITTED: 'waiting', CLOSED: 'done' }[status] || ''
+}
 
 function statusClass(status) {
   return ({ ASSIGNED: 'assigned', REJECTED: 'rejected', RECTIFICATION_SUBMITTED: 'submitted', CLOSED: 'closed' })[status] || ''
@@ -115,6 +123,8 @@ onShow(load)
 .card-meta{display:flex;justify-content:space-between;gap:12rpx;font-size:20rpx;color:$xr-muted}
 .reject-note{margin-top:12rpx;padding:12rpx 14rpx;border-radius:10rpx;background:rgba(255,180,171,.1);color:$xr-red;font-size:20rpx;line-height:1.5}
 .card-action{margin-top:16rpx;text-align:right;font-size:23rpx;font-weight:700;color:$xr-green-bright}
+.card-action.waiting{color:$xr-muted;font-weight:500}
+.card-action.done{color:$xr-lime}
 .state{padding:80rpx 24rpx;text-align:center;color:$xr-muted;font-size:22rpx}
 .state.error{color:$xr-red}
 .state button{margin-top:16rpx;background:rgba(99,247,255,.12);color:$xr-green-bright;font-size:23rpx;border:1rpx solid rgba(99,247,255,.35)}
