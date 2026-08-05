@@ -95,7 +95,17 @@ module.exports = {
   async _before() {
     this.db = uniCloud.database()
     const clientInfo = this.getClientInfo()
-    const uniId = uniID.createInstance({ clientInfo })
+    // uni-id 配置内联（避免依赖云端 uni-config-center 的 uni-id/config.json 上传缺失）
+    const uniId = uniID.createInstance({
+      clientInfo,
+      config: {
+        tokenSecret: 'db18e3b07793430077bfbea1d20aedfacb13e4dafad42687b166116e014fc1df',
+        tokenExpiresIn: 7200,
+        tokenExpiresThreshold: 1200,
+        passwordErrorLimit: 6,
+        passwordErrorRetryTime: 3600
+      }
+    })
     const token = await uniId.checkToken(clientInfo.uniIdToken)
     if (token.errCode || !token.uid) throw new Error('UNAUTHORIZED')
     this.auth = { uid: token.uid, roles: token.role || [] }
