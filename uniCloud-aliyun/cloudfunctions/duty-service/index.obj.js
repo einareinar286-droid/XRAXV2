@@ -91,7 +91,56 @@ function getAssessmentReason(task) {
   return '未达到按时审核通过要求'
 }
 
+// 权限检查（模块级，不依赖 this 绑定；isAdmin 已实测可用）
+function requireAdmin(context) {
+  const roles = context?.auth?.roles || []
+  if (!roles.includes('SUPER_ADMIN')) throw new Error('FORBIDDEN')
+}
+
+// 内部：拉取全部实例（按 periodType 过滤）——模块级，避免云对象 this 绑定问题
+async function collectAll(db, periodType) {
+  const where = periodType ? { periodType } : {}
+  const result = await db.collection('xr-duty-instances').where(where).limit(1000).get()
+  return result.data
+}
+
+// 内部：人员聚合（ownerUid 去重）——模块级
+function buildPeople(instances, asOf) {
+  const byUid = new Map()
+  for (const item of instances) {
+    if (!byUid.has(item.ownerUid)) {
+      byUid.set(item.ownerUid, {
+        employeeId: `EMP-${item.ownerUid}`,
+        uid: item.ownerUid,
+        displayName: item.ownerName || item.ownerUid,
+        department: item.department || '',
+        position: '员工',
+        duties: []
+      })
+    }
+    byUid.get(item.ownerUid).duties.push(item)
+  }
+  return [...byUid.values()]
+    .map((person) => {
+      const metrics = calculateMetrics(person.duties, { asOf })
+      const { duties, ...rest } = person
+      return { ...rest, ...metrics, dutyStatus: getDutyStatus(metrics) }
+    })
+    .sort((left, right) => left.department.localeCompare(right.department) || left.employeeId.localeCompare(right.employeeId))
+}
+
 module.exports = {
+  async __debug() {
+    const methods = Object.keys(this).filter((k) => typeof this[k] === 'function')
+    return {
+      methods,
+      hasAssertAdmin: typeof this.assertAdmin,
+      hasIsAdmin: typeof this.isAdmin,
+      auth: this.auth ? { uid: this.auth.uid, roles: this.auth.roles } : null,
+      hasDb: Boolean(this.db)
+    }
+  },
+
   async _before() {
     this.db = uniCloud.database()
     const clientInfo = this.getClientInfo()
@@ -116,9 +165,7 @@ module.exports = {
     return this.auth.roles.includes('SUPER_ADMIN')
   },
 
-  assertAdmin() {
-    if (!this.isAdmin()) throw new Error('FORBIDDEN')
-  },
+
 
   // 本人履职实例列表（对齐前端 task 形状）
   async myDuties({ status, category, periodType } = {}) {
@@ -132,7 +179,7 @@ module.exports = {
 
   // 管理员实例列表（仅 SUPER_ADMIN）
   async adminInstances({ status, category, department, ownerUid, page = 1, pageSize = 100 } = {}) {
-    this.assertAdmin()
+    requireAdmin(this)
     const safePage = Math.max(1, Number(page) || 1)
     const safePageSize = Math.min(100, Math.max(1, Number(pageSize) || 100))
     const where = {}
@@ -171,7 +218,7 @@ module.exports = {
 
   // 审核履职：SUBMITTED → APPROVED / RETURNED（仅 SUPER_ADMIN）
   async reviewDuty({ instanceId, decision, note = '' } = {}) {
-    this.assertAdmin()
+    requireAdmin(this)
     if (!['APPROVE', 'RETURN'].includes(decision)) throw new Error('INVALID_PAYLOAD')
     if (decision === 'RETURN' && !String(note).trim()) throw new Error('INVALID_PAYLOAD')
     const instance = await this.db.collection('xr-duty-instances').doc(instanceId).get()
@@ -193,10 +240,10 @@ module.exports = {
 
   // 履职仪表盘（公司/部门/人员聚合；仅 SUPER_ADMIN）
   async dutyDashboard({ asOf, periodType } = {}) {
-    this.assertAdmin()
-    const instances = await this.collectAll(periodType)
+    requireAdmin(this)
+    const instances = await collectAll(this.db, periodType)
     const company = calculateMetrics(instances, { asOf })
-    const people = this.buildPeople(instances, asOf)
+    const people = buildPeople(instances, asOf)
     const departments = [...new Set(instances.map((item) => item.department).filter(Boolean))].sort().map((department) => {
       const metrics = calculateMetrics(instances.filter((item) => item.department === department), { asOf })
       return { department, employeeCount: people.filter((p) => p.department === department).length, ...metrics }
@@ -214,45 +261,13 @@ module.exports = {
 
   // 全员履职明细（部门/状态/关键字；仅 SUPER_ADMIN）
   async dutyPeople({ department, dutyStatus, keyword, periodType } = {}) {
-    this.assertAdmin()
-    const instances = await this.collectAll(periodType)
+    requireAdmin(this)
+    const instances = await collectAll(this.db, periodType)
     const normalizedKeyword = typeof keyword === 'string' ? keyword.trim() : ''
-    return this.buildPeople(instances, undefined)
+    return buildPeople(instances, undefined)
       .filter((person) => !department || person.department === department)
       .filter((person) => !dutyStatus || person.dutyStatus === dutyStatus)
       .filter((person) => !normalizedKeyword || [person.displayName, person.department, person.position].some((value) => value?.includes(normalizedKeyword)))
-  },
-
-  // 内部：拉取全部实例（按 periodType 过滤）
-  async collectAll(periodType) {
-    const where = periodType ? { periodType } : {}
-    const result = await this.db.collection('xr-duty-instances').where(where).limit(1000).get()
-    return result.data
-  },
-
-  // 内部：人员聚合（ownerUid 去重）
-  buildPeople(instances, asOf) {
-    const byUid = new Map()
-    for (const item of instances) {
-      if (!byUid.has(item.ownerUid)) {
-        byUid.set(item.ownerUid, {
-          employeeId: `EMP-${item.ownerUid}`,
-          uid: item.ownerUid,
-          displayName: item.ownerName || item.ownerUid,
-          department: item.department || '',
-          position: '员工',
-          duties: []
-        })
-      }
-      byUid.get(item.ownerUid).duties.push(item)
-    }
-    return [...byUid.values()]
-      .map((person) => {
-        const metrics = calculateMetrics(person.duties, { asOf })
-        const { duties, ...rest } = person
-        return { ...rest, ...metrics, dutyStatus: getDutyStatus(metrics) }
-      })
-      .sort((left, right) => left.department.localeCompare(right.department) || left.employeeId.localeCompare(right.employeeId))
   },
 
   // 定时任务：逾期置 OVERDUE + 按分配生成周期实例
