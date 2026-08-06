@@ -30,6 +30,11 @@ uni-app/Vue3 → 微信小程序(mp-weixin) → uniCloud 阿里云 → 云数据
 | spaceId | `mp-26bb2b7f-109b-4fb9-b5bc-1d2e90561c9c` |
 | clientSecret | 见本地 `.env`（不入库） |
 | HBuilderX 登录账号 | `1565031066@qq.com` |
+
+### 3.1 服务空间套餐（2026-08-05 更新）
+- 免费版 1000 GBs/月 已耗尽（**云函数小时级最低消耗 90GBs 规则**导致快速烧完），触发 `resource exhausted` 停服。
+- **EE 已升配基础版 5 元/月（1 万 GBs/月）**，云端已恢复。
+- ⚠️ **教训：不要频繁上传/运行云函数**；`resource exhausted` = 配额耗尽，先查 uniCloud 控制台资源用量（unicloud.dcloud.net.cn → xraxbeta1 → 资源用量）。
 | 云端云函数 | `auth-service`（登录）、`duty-service`（履职） |
 | 云端公共模块 | `uni-config-center`、`uni-id-common` |
 | 云端 6 张表 | `uni-id-users`、`uni-id-roles`、`xr-duty-templates`、`xr-duty-instances`、`xr-duty-audit`、`xr-duty-assignments` |
